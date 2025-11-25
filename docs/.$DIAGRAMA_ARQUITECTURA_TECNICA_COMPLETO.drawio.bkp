@@ -1,0 +1,304 @@
+<mxfile host="Electron" agent="Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) draw.io/29.0.3 Chrome/140.0.7339.249 Electron/38.7.0 Safari/537.36" version="29.0.3">
+  <diagram name="Arquitectura Técnica Hergon-Vector01" id="arquitectura-hergon">
+    <mxGraphModel dx="1873" dy="1263" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1920" pageHeight="1080" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="titulo" value="ARQUITECTURA TÉCNICA - HERGON VECTOR01&lt;br&gt;Sistema de Validación de Archivos Regulatorios CONSAR" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=20;fontStyle=1" parent="1" vertex="1">
+          <mxGeometry x="560" y="20" width="800" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="capa1-container" value="&lt;font style=&quot;color: rgb(0, 0, 0);&quot;&gt;SISTEMAS EXTERNOS (ORIGEN DE DATOS)&lt;/font&gt;" style="swimlane;whiteSpace=wrap;html=1;fillColor=#b0e3e6;strokeColor=#0e8088;fontSize=14;fontStyle=1" parent="1" vertex="1">
+          <mxGeometry x="40" y="100" width="1840" height="190" as="geometry" />
+        </mxCell>
+        <mxCell id="sistema-precios" value="&lt;b&gt;Sistema de Precios&lt;/b&gt;&#xa;&#xa;• Precios de valores&#xa;• Tipos de cambio&#xa;• Valuación diaria" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#60a917;strokeColor=#2D7600;fontColor=#ffffff;fontSize=12" parent="capa1-container" vertex="1">
+          <mxGeometry x="20" y="40" width="180" height="120" as="geometry" />
+        </mxCell>
+        <mxCell id="sap-erp" value="&lt;b&gt;SAP ERP (AFORE)&lt;/b&gt;&#xa;&#xa;• Balanza de comprobación&#xa;• Cuentas contables&#xa;• Auxiliares contables&#xa;&#xa;Conector: RFC/BAPI" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#60a917;strokeColor=#2D7600;fontColor=#ffffff;fontSize=12" parent="capa1-container" vertex="1">
+          <mxGeometry x="260" y="40" width="200" height="120" as="geometry" />
+        </mxCell>
+        <mxCell id="oracle-erp" value="&lt;b&gt;Oracle ERP (AFORE)&lt;/b&gt;&#xa;&#xa;• General Ledger&#xa;• Sub-ledgers&#xa;• Reportes financieros&#xa;&#xa;Conector: DB Link/OData" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#60a917;strokeColor=#2D7600;fontColor=#ffffff;fontSize=12" parent="capa1-container" vertex="1">
+          <mxGeometry x="500" y="40" width="200" height="120" as="geometry" />
+        </mxCell>
+        <mxCell id="aladdin-api" value="&lt;b&gt;Aladdin API&lt;/b&gt;&#xa;(BlackRock)&#xa;&#xa;• Posiciones de portafolio&#xa;• Valuación de activos&#xa;• Risk metrics&#xa;&#xa;Protocolo: REST API&#xa;Auth: OAuth 2.0" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#60A917;strokeColor=#000000;fontColor=#ffffff;fontSize=12" parent="capa1-container" vertex="1">
+          <mxGeometry x="740" y="30" width="200" height="140" as="geometry" />
+        </mxCell>
+        <mxCell id="sftp-inbound" value="&lt;b&gt;SFTP Server&lt;/b&gt;&#xa;(Inbound)&#xa;&#xa;• Recepción de archivos&#xa;• Upload manual AFOREs&#xa;• Polling automático&#xa;&#xa;Protocolo: SFTP&#xa;Encryption: TLS 1.3" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#60a917;strokeColor=#2D7600;fontColor=#ffffff;fontSize=12" parent="capa1-container" vertex="1">
+          <mxGeometry x="980" y="30" width="200" height="140" as="geometry" />
+        </mxCell>
+        <mxCell id="sistemas-genericos" value="&lt;b&gt;Sistemas Contables&lt;/b&gt;&#xa;(Genéricos)&#xa;&#xa;• CSV/Excel&#xa;• Archivos posicionales&#xa;• APIs REST custom&#xa;&#xa;Conector: Generic Parser" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#60a917;strokeColor=#2D7600;fontColor=#ffffff;fontSize=12" parent="capa1-container" vertex="1">
+          <mxGeometry x="1220" y="40" width="200" height="120" as="geometry" />
+        </mxCell>
+        <mxCell id="usuario-web" value="&lt;b&gt;Usuarios Web&lt;/b&gt;&#xa;(Portal)&#xa;&#xa;• Upload manual&#xa;• Consulta resultados&#xa;• Corrección archivos&#xa;&#xa;Auth: Azure AD B2C" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#1ba1e2;strokeColor=#006EAF;fontColor=#ffffff;fontSize=12" parent="capa1-container" vertex="1">
+          <mxGeometry x="1460" y="30" width="200" height="130" as="geometry" />
+        </mxCell>
+        <mxCell id="iGY2HBRLbFRJomJ3edDT-6" value="DB Link/OData" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];fontSize=9;fontColor=#82b366;fontStyle=1" vertex="1" connectable="0" parent="capa1-container">
+          <mxGeometry x="600" y="170" as="geometry">
+            <mxPoint x="4" y="1" as="offset" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="iGY2HBRLbFRJomJ3edDT-7" value="REST API/SFTP" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];fontSize=9;fontColor=#82b366;fontStyle=1" vertex="1" connectable="0" parent="capa1-container">
+          <mxGeometry x="840" y="180" as="geometry" />
+        </mxCell>
+        <mxCell id="capa3-container" value="CORE SYSTEM HERGON" style="swimlane;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=14;fontStyle=1" parent="1" vertex="1">
+          <mxGeometry x="40" y="876" width="1840" height="480" as="geometry" />
+        </mxCell>
+        <mxCell id="parser-service" value="&lt;b&gt;PARSER SERVICE&lt;/b&gt;&#xa;&#xa;• Parse fixed-width files (77 chars)&#xa;• Extract encabezado + detalle&#xa;• Identify file type:&#xa;  - 1101: Balanza Comprobación&#xa;  - 1102: Cuentas de Orden&#xa;  - 1103: Posiciones Extranjero&#xa;  - 1104: Cuentas Individuales&#xa;• Validate basic structure&#xa;• Split by record type&#xa;&#xa;Tech: .NET 8 Azure Function&#xa;       AWS Lambda (Graviton4)&#xa;&#xa;Trigger: Service Bus / SQS" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#1ba1e2;strokeColor=#006EAF;fontColor=#ffffff;fontSize=10" parent="capa3-container" vertex="1">
+          <mxGeometry x="40" y="40" width="280" height="180" as="geometry" />
+        </mxCell>
+        <mxCell id="sistema-contable" value="&lt;b&gt;SISTEMA CONTABLE&lt;/b&gt;&#xa;(Write Model)&#xa;&#xa;• Store parsed records&#xa;• Catalog data (cuentas, divisas)&#xa;• File metadata&#xa;• Processing status&#xa;&#xa;Database: Azure SQL / RDS&#xa;  - CatalogDB (4 vCore)&#xa;  - FileRecordsDB (4 vCore)&#xa;  - Zone redundant&#xa;&#xa;Features:&#xa;• Row-Level Security (RLS)&#xa;• Multi-tenant isolation&#xa;• Optimized indexes" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#1ba1e2;strokeColor=#006EAF;fontColor=#ffffff;fontSize=10" parent="capa3-container" vertex="1">
+          <mxGeometry x="360" y="40" width="280" height="180" as="geometry" />
+        </mxCell>
+        <mxCell id="sistema-validacion" value="&lt;b&gt;SISTEMA VALIDACIÓN&lt;/b&gt;&#xa;(37 Validaciones CONSAR)&#xa;&#xa;&lt;b&gt;Validation Orchestrator:&lt;/b&gt;&#xa;• Trigger 37 validators in parallel&#xa;• Monitor execution status&#xa;• Aggregate results&#xa;• Generate report&#xa;&#xa;&lt;b&gt;Validators (Azure Functions / Lambda):&lt;/b&gt;&#xa;V01-V08: Longitud, Tipo Dato, Caracteres&#xa;V09-V15: Montos, Naturaleza Cuentas&#xa;V16-V25: Contracuentas, Plus/Minus&#xa;V26-V33: Divisas vs Pesos, Tipo Cambio&#xa;V34-V37: Balanza, Cuentas Válidas, Integridad&#xa;&#xa;&lt;b&gt;Results Aggregator:&lt;/b&gt;&#xa;• Consolidate 37 validation results&#xa;• Calculate pass/fail summary&#xa;• Generate PDF/Excel report&#xa;• Update file status (OK/ERROR)&#xa;&#xa;&lt;b&gt;Tech:&lt;/b&gt;&#xa;• .NET 8 Functions (10 Premium + 27 Consumption)&#xa;• AWS Lambda (Graviton4 ARM64)&#xa;• Parallel execution (max 37 concurrent)&#xa;&#xa;&lt;b&gt;Storage:&lt;/b&gt;&#xa;• Validation results → SQL DB&#xa;• Reports → Blob Storage / S3" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#1ba1e2;strokeColor=#006EAF;fontColor=#ffffff;fontSize=9;align=left" parent="capa3-container" vertex="1">
+          <mxGeometry x="680" y="40" width="460" height="260" as="geometry" />
+        </mxCell>
+        <mxCell id="correccion-manual" value="&lt;b&gt;CORRECCIÓN&lt;/b&gt;&#xa;&lt;b&gt;MANUAL&lt;/b&gt;&#xa;&#xa;Usuario edita&#xa;archivo en&#xa;portal web&#xa;&#xa;→ Re-validación" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f8cecc;strokeColor=#b85450;fontSize=10" parent="capa3-container" vertex="1">
+          <mxGeometry x="1180" y="40" width="140" height="120" as="geometry" />
+        </mxCell>
+        <mxCell id="correccion-raiz" value="&lt;b&gt;CORRECCIÓN&lt;/b&gt;&#xa;&lt;b&gt;DE RAÍZ&lt;/b&gt;&#xa;&#xa;Fix en sistema&#xa;origen (Aladdin,&#xa;SAP, Oracle)&#xa;&#xa;→ Re-extracción" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f8cecc;strokeColor=#b85450;fontSize=10" parent="capa3-container" vertex="1">
+          <mxGeometry x="1180" y="180" width="140" height="120" as="geometry" />
+        </mxCell>
+        <mxCell id="sftp-gateway" value="&lt;b&gt;SFTP GATEWAY&lt;/b&gt;&#xa;(to CONSAR)&#xa;&#xa;&lt;b&gt;Process:&lt;/b&gt;&#xa;1. Encrypt file with PGP&#xa;   (CONSAR public key)&#xa;2. Establish SFTP connection&#xa;   (TLS 1.3)&#xa;3. Upload encrypted file&#xa;   to CONSAR server&#xa;4. Wait for acknowledgment&#xa;5. Store proof of submission&#xa;6. Notify user (email/SMS)&#xa;&#xa;&lt;b&gt;PGP Encryption:&lt;/b&gt;&#xa;• Public key from CONSAR&#xa;• Private key in Key Vault&#xa;• Signature verification&#xa;&#xa;&lt;b&gt;Tech:&lt;/b&gt;&#xa;• Azure FTP Service&#xa;• AWS Transfer Family&#xa;• .NET 8 SFTP Client&#xa;&#xa;&lt;b&gt;Security:&lt;/b&gt;&#xa;• TLS 1.3 minimum&#xa;• Certificate-based auth&#xa;• IP whitelisting" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#60a917;strokeColor=#2D7600;fontColor=#ffffff;fontSize=9;align=left" parent="capa3-container" vertex="1">
+          <mxGeometry x="1360" y="40" width="240" height="320" as="geometry" />
+        </mxCell>
+        <mxCell id="report-generator" value="&lt;b&gt;REPORT GENERATOR&lt;/b&gt;&#xa;&#xa;• PDF Reports (QuestPDF)&#xa;• Excel Reports&#xa;• Summary dashboard&#xa;• Error details&#xa;&#xa;Storage: Blob / S3" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#1ba1e2;strokeColor=#006EAF;fontColor=#ffffff;fontSize=10" parent="capa3-container" vertex="1">
+          <mxGeometry x="680" y="320" width="220" height="120" as="geometry" />
+        </mxCell>
+        <mxCell id="notification-service" value="&lt;b&gt;NOTIFICATION SERVICE&lt;/b&gt;&#xa;&#xa;• Email (SES/SendGrid)&#xa;• SMS (SNS/Twilio)&#xa;• Webhooks&#xa;• Push notifications&#xa;&#xa;Templates: Markdown" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#1ba1e2;strokeColor=#006EAF;fontColor=#ffffff;fontSize=10" parent="capa3-container" vertex="1">
+          <mxGeometry x="920" y="320" width="220" height="120" as="geometry" />
+        </mxCell>
+        <mxCell id="capa4-container" value="DATA LAYER (Transversal)" style="swimlane;whiteSpace=wrap;html=1;fillColor=#f5f5f5;strokeColor=#666666;fontSize=14;fontStyle=1;fontColor=#333333" parent="1" vertex="1">
+          <mxGeometry x="40" y="1396" width="1840" height="200" as="geometry" />
+        </mxCell>
+        <mxCell id="event-store" value="&lt;b&gt;EVENT STORE / AUDIT LOG&lt;/b&gt;&#xa;&#xa;• All events (immutable, append-only)&#xa;• 7-year retention (CONSAR compliance)&#xa;• Event sourcing pattern&#xa;&#xa;Events:&#xa;• FileUploaded, FileParsed&#xa;• ValidationStarted, ValidationCompleted (x37)&#xa;• ManualCorrectionApplied&#xa;• FileSentToCONSAR, CONSARConfirmationReceived&#xa;&#xa;Tech: Cosmos DB (Serverless)&#xa;       DynamoDB (On-Demand)&#xa;&#xa;Features:&#xa;• Change feed for projections&#xa;• Point-in-time recovery&#xa;• Global distribution" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f5f5f5;strokeColor=#666666;fontSize=10;fontColor=#333333" parent="capa4-container" vertex="1">
+          <mxGeometry x="40" y="40" width="360" height="140" as="geometry" />
+        </mxCell>
+        <mxCell id="redis-cache" value="&lt;b&gt;REDIS CACHE&lt;/b&gt;&#xa;&#xa;• Catalog caching&#xa;  (cuentas, divisas)&#xa;• Session state&#xa;• Distributed locks&#xa;• Rate limiting&#xa;&#xa;Tech: Azure Cache&#xa;       ElastiCache&#xa;&#xa;Tier: Standard C1 (1GB)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f5f5f5;strokeColor=#666666;fontSize=10;fontColor=#333333" parent="capa4-container" vertex="1">
+          <mxGeometry x="440" y="40" width="240" height="140" as="geometry" />
+        </mxCell>
+        <mxCell id="blob-storage" value="&lt;b&gt;BLOB STORAGE / S3&lt;/b&gt;&#xa;&#xa;• Original files&#xa;• Encrypted files (PGP)&#xa;• Reports (PDF/Excel)&#xa;• Proof of submission&#xa;&#xa;Lifecycle:&#xa;• Hot: &lt; 30 days&#xa;• Cool: 30-365 days&#xa;• Archive: &gt; 365 days&#xa;&#xa;Encryption: AES-256&#xa;Versioning: Enabled" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f5f5f5;strokeColor=#666666;fontSize=10;fontColor=#333333" parent="capa4-container" vertex="1">
+          <mxGeometry x="720" y="40" width="240" height="140" as="geometry" />
+        </mxCell>
+        <mxCell id="sql-databases" value="&lt;b&gt;SQL DATABASES&lt;/b&gt;&#xa;&#xa;1. CatalogDB&#xa;   • Catálogos CONSAR&#xa;   • Configuración AFOREs&#xa;   • Business rules&#xa;&#xa;2. ReadModelsDB (CQRS)&#xa;   • File records parsed&#xa;   • Validation results&#xa;   • User queries&#xa;&#xa;Tech: Azure SQL / RDS PostgreSQL&#xa;Tier: 4 vCore General Purpose&#xa;HA: Zone redundant&#xa;Backup: 7 days PITR" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f5f5f5;strokeColor=#666666;fontSize=10;fontColor=#333333" parent="capa4-container" vertex="1">
+          <mxGeometry x="1000" y="40" width="340" height="140" as="geometry" />
+        </mxCell>
+        <mxCell id="logs" value="&lt;b&gt;LOGS&lt;/b&gt;&#xa;&#xa;• Structured JSON logs&#xa;• Correlation IDs&#xa;• Sensitive data masking&#xa;• Log Analytics / Insights&#xa;&#xa;Retention: 90 days" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f5f5f5;strokeColor=#666666;fontSize=10;fontColor=#333333" parent="capa4-container" vertex="1">
+          <mxGeometry x="1380" y="40" width="220" height="140" as="geometry" />
+        </mxCell>
+        <mxCell id="metrics" value="&lt;b&gt;METRICS&lt;/b&gt;&#xa;&#xa;• Custom metrics&#xa;• Performance counters&#xa;• Business KPIs&#xa;• Dashboards&#xa;&#xa;Tech: Prometheus&#xa;       CloudWatch" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f5f5f5;strokeColor=#666666;fontSize=10;fontColor=#333333" parent="capa4-container" vertex="1">
+          <mxGeometry x="1640" y="40" width="160" height="140" as="geometry" />
+        </mxCell>
+        <mxCell id="capa5-container" value="SISTEMA EXTERNO (DESTINO)" style="swimlane;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;fontSize=14;fontStyle=1" parent="1" vertex="1">
+          <mxGeometry x="40" y="1636" width="1840" height="140" as="geometry" />
+        </mxCell>
+        <mxCell id="consar" value="&lt;b&gt;CONSAR - Comisión Nacional del Sistema de Ahorro para el Retiro&lt;/b&gt;&#xa;(AUTORIDAD REGULATORIA)&#xa;&#xa;• SFTP Server&#xa;• Recepción de archivos encriptados (PGP)&#xa;• Validación de formato de nombre de archivo&#xa;• Confirmación de recepción (acknowledgment)&#xa;• Procesamiento regulatorio&#xa;&#xa;Protocolo: SFTP + TLS 1.3&#xa;Encriptación: PGP con clave pública CONSAR&#xa;Formato archivo: YYYYMMDD_XX_AAA_FFFFFF.TTSS (ej: 20250804_SB_544_001980.0300)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#60a917;strokeColor=#2D7600;fontColor=#ffffff;fontSize=11" parent="capa5-container" vertex="1">
+          <mxGeometry x="240" y="40" width="1360" height="80" as="geometry" />
+        </mxCell>
+        <mxCell id="conn-precios-gateway" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#82b366;strokeWidth=2;endArrow=classic;endFill=1;entryX=0.388;entryY=0.013;entryDx=0;entryDy=0;entryPerimeter=0;" parent="1" source="sistema-precios" target="api-gateway" edge="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="180" y="360" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="label-precios-gateway" value="REST API" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];fontSize=9;fontColor=#82b366;fontStyle=1" parent="conn-precios-gateway" vertex="1" connectable="0">
+          <mxGeometry x="-0.1" y="1" relative="1" as="geometry">
+            <mxPoint x="-1" y="-36" as="offset" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="conn-sap-gateway" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#82b366;strokeWidth=2;endArrow=classic;endFill=1;" parent="1" source="sap-erp" edge="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="400" y="360" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="label-sap-gateway" value="RFC/BAPI" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];fontSize=9;fontColor=#82b366;fontStyle=1" parent="conn-sap-gateway" vertex="1" connectable="0">
+          <mxGeometry x="-0.1" y="1" relative="1" as="geometry">
+            <mxPoint x="-1" y="-36" as="offset" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="conn-oracle-gateway" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#82b366;strokeWidth=2;endArrow=classic;endFill=1" parent="1" source="oracle-erp" target="integration-service" edge="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="conn-aladdin-integration" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#60A917;strokeWidth=2;endArrow=classic;endFill=1" parent="1" source="aladdin-api" target="integration-service" edge="1">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="880" y="310" />
+              <mxPoint x="600" y="310" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="conn-sftp-integration" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#82b366;strokeWidth=2;endArrow=classic;endFill=1" parent="1" source="sftp-inbound" target="integration-service" edge="1">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="1120" y="310" />
+              <mxPoint x="600" y="310" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="label-sftp-integration" value="SFTP Polling" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];fontSize=9;fontColor=#82b366;fontStyle=1" parent="conn-sftp-integration" vertex="1" connectable="0">
+          <mxGeometry x="-0.1" y="1" relative="1" as="geometry">
+            <mxPoint x="234" y="-33" as="offset" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="conn-usuario-azuread" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#1ba1e2;strokeWidth=2;endArrow=classic;endFill=1" parent="1" source="usuario-web" target="azure-ad" edge="1">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="1600" y="310" />
+              <mxPoint x="960" y="310" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="label-usuario-azuread" value="OAuth 2.0 / OIDC" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];fontSize=9;fontColor=#1ba1e2;fontStyle=1;backgroundColor=#ffffff" parent="conn-usuario-azuread" vertex="1" connectable="0">
+          <mxGeometry x="-0.1" y="1" relative="1" as="geometry">
+            <mxPoint x="273" y="-41" as="offset" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="conn-integration-parser" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#6c8ebf;strokeWidth=3;endArrow=classic;endFill=1;exitX=0.5;exitY=1;exitDx=0;exitDy=0;" parent="1" source="integration-service" target="parser-service" edge="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="600" y="810" as="sourcePoint" />
+            <Array as="points">
+              <mxPoint x="530" y="850" />
+              <mxPoint x="220" y="850" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="label-integration-parser" value="Transformed Data&#xa;(CONSAR Format)" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];fontSize=9;fontColor=#6c8ebf;fontStyle=1;backgroundColor=#ffffff" parent="conn-integration-parser" vertex="1" connectable="0">
+          <mxGeometry x="-0.1" y="1" relative="1" as="geometry">
+            <mxPoint as="offset" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="conn-parser-contable" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#006EAF;strokeWidth=3;endArrow=classic;endFill=1" parent="1" source="parser-service" target="sistema-contable" edge="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="label-parser-contable" value="Parsed Records&#xa;(Bulk Insert)" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];fontSize=9;fontColor=#006EAF;fontStyle=1;backgroundColor=#ffffff" parent="conn-parser-contable" vertex="1" connectable="0">
+          <mxGeometry x="-0.1" y="1" relative="1" as="geometry">
+            <mxPoint as="offset" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="conn-contable-validacion" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#006EAF;strokeWidth=3;endArrow=classic;endFill=1" parent="1" source="sistema-contable" target="sistema-validacion" edge="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="label-contable-validacion" value="Trigger Validation&#xa;(37 validators)" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];fontSize=9;fontColor=#006EAF;fontStyle=1;backgroundColor=#ffffff" parent="conn-contable-validacion" vertex="1" connectable="0">
+          <mxGeometry x="-0.1" y="1" relative="1" as="geometry">
+            <mxPoint as="offset" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="conn-validacion-manual" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#b85450;strokeWidth=2;endArrow=classic;endFill=1;dashed=1" parent="1" source="sistema-validacion" target="correccion-manual" edge="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="label-validacion-manual" value="ERROR" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];fontSize=9;fontColor=#b85450;fontStyle=1;backgroundColor=#ffffff" parent="conn-validacion-manual" vertex="1" connectable="0">
+          <mxGeometry x="-0.1" y="1" relative="1" as="geometry">
+            <mxPoint as="offset" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="conn-validacion-raiz" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#b85450;strokeWidth=2;endArrow=classic;endFill=1;dashed=1" parent="1" source="sistema-validacion" target="correccion-raiz" edge="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="label-validacion-raiz" value="ERROR" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];fontSize=9;fontColor=#b85450;fontStyle=1;backgroundColor=#ffffff" parent="conn-validacion-raiz" vertex="1" connectable="0">
+          <mxGeometry x="-0.1" y="1" relative="1" as="geometry">
+            <mxPoint as="offset" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="conn-raiz-integration" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#b85450;strokeWidth=2;endArrow=classic;endFill=1;dashed=1;exitX=0;exitY=0.5;exitDx=0;exitDy=0;entryX=1;entryY=0.75;entryDx=0;entryDy=0" parent="1" source="correccion-raiz" target="integration-service" edge="1">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="1220" y="690" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="label-raiz-integration" value="Re-extract from source" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];fontSize=9;fontColor=#b85450;fontStyle=1;backgroundColor=#ffffff" parent="conn-raiz-integration" vertex="1" connectable="0">
+          <mxGeometry x="-0.1" y="1" relative="1" as="geometry">
+            <mxPoint x="10" as="offset" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="conn-validacion-sftp" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#2D7600;strokeWidth=3;endArrow=classic;endFill=1" parent="1" source="sistema-validacion" target="sftp-gateway" edge="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="label-validacion-sftp" value="VALIDATION OK&#xa;(37/37 passed)" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];fontSize=9;fontColor=#2D7600;fontStyle=1;backgroundColor=#ffffff" parent="conn-validacion-sftp" vertex="1" connectable="0">
+          <mxGeometry x="-0.1" y="1" relative="1" as="geometry">
+            <mxPoint as="offset" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="conn-sftp-consar" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#2D7600;strokeWidth=4;endArrow=classic;endFill=1" parent="1" source="sftp-gateway" target="consar" edge="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="label-sftp-consar" value="SFTP + TLS 1.3&#xa;PGP Encrypted File" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];fontSize=10;fontColor=#2D7600;fontStyle=1;backgroundColor=#ffffff" parent="conn-sftp-consar" vertex="1" connectable="0">
+          <mxGeometry x="-0.1" y="1" relative="1" as="geometry">
+            <mxPoint as="offset" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="conn-validacion-report" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#006EAF;strokeWidth=2;endArrow=classic;endFill=1;dashed=1" parent="1" source="sistema-validacion" target="report-generator" edge="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="conn-report-notification" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#006EAF;strokeWidth=2;endArrow=classic;endFill=1" parent="1" source="report-generator" target="notification-service" edge="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="conn-parser-eventstore" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#666666;strokeWidth=1;endArrow=classic;endFill=1;dashed=1;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.15;entryY=0;entryDx=0;entryDy=0;entryPerimeter=0" parent="1" source="parser-service" target="event-store" edge="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="conn-validacion-eventstore" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#666666;strokeWidth=1;endArrow=classic;endFill=1;dashed=1;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0" parent="1" source="sistema-validacion" target="event-store" edge="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="conn-sftp-eventstore" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#666666;strokeWidth=1;endArrow=classic;endFill=1;dashed=1;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.85;entryY=0;entryDx=0;entryDy=0;entryPerimeter=0" parent="1" source="sftp-gateway" target="event-store" edge="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="label-events" value="Events (audit trail)" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];fontSize=9;fontColor=#666666;fontStyle=1;backgroundColor=#ffffff" parent="conn-sftp-eventstore" vertex="1" connectable="0">
+          <mxGeometry x="-0.1" y="1" relative="1" as="geometry">
+            <mxPoint as="offset" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="conn-validacion-redis" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#d6b656;strokeWidth=1;endArrow=classic;endFill=1;dashed=1;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0" parent="1" source="sistema-contable" target="redis-cache" edge="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="label-redis" value="Cache (catalogs)" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];fontSize=9;fontColor=#d6b656;fontStyle=1;backgroundColor=#ffffff" parent="conn-validacion-redis" vertex="1" connectable="0">
+          <mxGeometry x="-0.1" y="1" relative="1" as="geometry">
+            <mxPoint as="offset" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="leyenda-container" value="LEYENDA" style="swimlane;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#000000;fontSize=12;fontStyle=1" parent="1" vertex="1">
+          <mxGeometry x="40" y="1816" width="600" height="180" as="geometry" />
+        </mxCell>
+        <mxCell id="leyenda-texto" value="&lt;b&gt;Colores de Componentes:&lt;/b&gt;&#xa;• Verde: Sistemas externos (origen/destino)&#xa;• Negro: Aladdin (BlackRock)&#xa;• Azul claro: Portal web / Usuarios&#xa;• Morado: Seguridad (API Gateway, Auth, Secrets)&#xa;• Amarillo: Mensajería (Service Bus, SQS)&#xa;• Azul: Core Hergon (Parser, Contable, Validación, SFTP Gateway)&#xa;• Rojo: Corrección (Manual / Raíz)&#xa;• Gris: Data Layer (Event Store, Cache, Storage, DB, Logs)&#xa;&#xa;&lt;b&gt;Tipos de Conexión:&lt;/b&gt;&#xa;━━━━  Flujo principal de datos (línea sólida gruesa)&#xa;- - - -  Flujo secundario / eventos (línea punteada)&#xa;&#xa;&lt;b&gt;Protocolos:&lt;/b&gt;&#xa;• REST API + OAuth 2.0 (Aladdin, APIs modernas)&#xa;• RFC/BAPI (SAP)&#xa;• DB Link/OData (Oracle)&#xa;• SFTP + TLS 1.3 (CONSAR, file transfers)&#xa;• PGP Encryption (archivos a CONSAR)" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=top;whiteSpace=wrap;rounded=0;fontSize=10" parent="leyenda-container" vertex="1">
+          <mxGeometry x="10" y="30" width="580" height="140" as="geometry" />
+        </mxCell>
+        <mxCell id="notas-container" value="NOTAS TÉCNICAS IMPORTANTES" style="swimlane;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;fontSize=12;fontStyle=1" parent="1" vertex="1">
+          <mxGeometry x="680" y="1816" width="1200" height="180" as="geometry" />
+        </mxCell>
+        <mxCell id="notas-texto" value="&lt;b&gt;1. ETL / INTEGRATION SERVICE:&lt;/b&gt; Componente crítico para extracción automatizada desde sistemas corporativos (SAP, Oracle, Aladdin). Implementar con .NET 8 Worker Service + Azure Data Factory o AWS Glue.&#xa;&#xa;&lt;b&gt;2. 37 VALIDACIONES CONSAR:&lt;/b&gt; Implementadas como Azure Functions (10 Premium + 27 Consumption) o AWS Lambda (Graviton4). Ejecución en paralelo para máxima performance. Ver catálogo completo en: docs/Catalogo Scripts Validaciones.csv&#xa;&#xa;&lt;b&gt;3. SFTP + PGP OBLIGATORIO:&lt;/b&gt; Requerimiento regulatorio CONSAR. El archivo debe ser encriptado con la clave pública de CONSAR antes del envío. Implementar con Azure FTP Service o AWS Transfer Family.&#xa;&#xa;&lt;b&gt;4. EVENT SOURCING:&lt;/b&gt; Todos los eventos se almacenan en Event Store (Cosmos DB/DynamoDB) con retención de 7 años para cumplir con auditorías CONSAR. Patrón append-only, immutable.&#xa;&#xa;&lt;b&gt;5. MULTI-TENANCY:&lt;/b&gt; Row-Level Security (RLS) en SQL Database para aislar datos por AFORE. Cada request incluye aforeId en JWT token.&#xa;&#xa;&lt;b&gt;6. SECRETS MANAGEMENT:&lt;/b&gt; Azure Key Vault o AWS Secrets Manager para almacenar: API Keys (Aladdin), certificados PGP (CONSAR), credenciales DB, certificados SSL. Auto-rotation cada 90 días.&#xa;&#xa;&lt;b&gt;7. CORRECCIÓN DE RAÍZ vs MANUAL:&lt;/b&gt; Si el error está en sistema origen (Aladdin, SAP, Oracle) → Corrección de Raíz → Re-extracción automática. Si es error de formato/mapeo → Corrección Manual en portal web.&#xa;&#xa;&lt;b&gt;8. ESCALABILIDAD:&lt;/b&gt; Auto-scaling configurado en: Container Apps/ECS (1-10 replicas), Functions/Lambda (0-500 concurrent), SQL Database (4-16 vCore), Cosmos/DynamoDB (1000-10000 RU/s)." style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=top;whiteSpace=wrap;rounded=0;fontSize=9" parent="notas-container" vertex="1">
+          <mxGeometry x="10" y="30" width="1180" height="140" as="geometry" />
+        </mxCell>
+        <mxCell id="conn-generic-integration" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#82b366;strokeWidth=2;endArrow=classic;endFill=1" parent="1" source="sistemas-genericos" target="integration-service" edge="1">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="1360" y="310" />
+              <mxPoint x="600" y="310" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="label-generic-integration" value="CSV/Excel Parser" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];fontSize=9;fontColor=#82b366;fontStyle=1" parent="conn-generic-integration" vertex="1" connectable="0">
+          <mxGeometry x="-0.1" y="1" relative="1" as="geometry">
+            <mxPoint x="337" y="-41" as="offset" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="capa2-container" value="&lt;font style=&quot;color: rgb(0, 0, 0);&quot;&gt;CAPA DE SEGURIDAD E INTEGRACIÓN&lt;/font&gt;" style="swimlane;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;fontSize=14;fontStyle=1" parent="1" vertex="1">
+          <mxGeometry x="40" y="320" width="1840" height="490" as="geometry" />
+        </mxCell>
+        <mxCell id="api-gateway" value="&lt;b&gt;API GATEWAY&lt;/b&gt;&#xa;(M2M Auth)&#xa;&#xa;• OAuth 2.0 Client Credentials&#xa;• API Key validation&#xa;• Rate limiting per source&#xa;• Request/Response logging&#xa;• JWT validation&#xa;&#xa;Tech: Azure API Management&#xa;       AWS API Gateway" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#d0cee2;strokeColor=#56517e;fontSize=12;fontColor=#000000;" parent="capa2-container" vertex="1">
+          <mxGeometry x="10" y="40" width="260" height="210" as="geometry" />
+        </mxCell>
+        <mxCell id="integration-service" value="&lt;b&gt;INTEGRATION SERVICE / ETL HUB&lt;/b&gt;&lt;br&gt;&lt;br&gt;&lt;b&gt;Extract:&lt;/b&gt;&lt;br&gt;• Pull data from source systems (API/SFTP/DB)&lt;br&gt;• Schedule-based or event-driven&lt;br&gt;• Error handling &amp;amp; retry logic&lt;br&gt;&lt;br&gt;&lt;b&gt;Transform:&lt;/b&gt;&lt;br&gt;• Map source fields → CONSAR format&lt;br&gt;• Data validation (pre-load)&lt;br&gt;• Business rules application&lt;br&gt;• Type conversions &amp;amp; formatting&lt;br&gt;&lt;br&gt;&lt;b&gt;Load:&lt;/b&gt;• Bulk insert to Sistema Contable&lt;br&gt;• Transaction management&lt;br&gt;• Rollback on errors&lt;br&gt;&lt;br&gt;&lt;b&gt;Connectors:&lt;/b&gt;&lt;br&gt;├─ SAP Connector (RFC/BAPI)&lt;br&gt;├─ Oracle Connector (DB Link/OData)&lt;br&gt;├─ Aladdin Connector (REST API OAuth 2.0)&lt;br&gt;├─ SFTP Connector (polling)&lt;br&gt;└─ Generic Parser (CSV/Excel)&lt;br&gt;&lt;br&gt;&lt;b&gt;Tech:&lt;/b&gt; .NET 8 Worker Service&lt;br&gt;       Azure Data Factory / AWS Glue&lt;br&gt;&lt;br&gt;&lt;b&gt;Deployment:&lt;/b&gt; Container Apps / ECS Fargate" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#d0cee2;strokeColor=#56517e;fontSize=12;align=center;fontColor=#000000;" parent="capa2-container" vertex="1">
+          <mxGeometry x="340" y="40" width="300" height="440" as="geometry" />
+        </mxCell>
+        <mxCell id="azure-ad" value="&lt;b&gt;AZURE AD B2C&lt;/b&gt;&#xa;/ AWS Cognito&#xa;&#xa;• OAuth 2.0 / OIDC&#xa;• Multi-Factor Auth (MFA)&#xa;• Conditional Access&#xa;• B2B Collaboration&#xa;• Claims mapping&#xa;  - aforeId&#xa;  - fondoIds[]&#xa;  - role&#xa;  - country" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#d0cee2;strokeColor=#56517e;fontSize=12;fontColor=#000000;" parent="capa2-container" vertex="1">
+          <mxGeometry x="820" y="40" width="200" height="200" as="geometry" />
+        </mxCell>
+        <mxCell id="secrets-manager" value="&lt;b&gt;SECRETS MANAGER&lt;/b&gt;&#xa;&#xa;• API Keys (Aladdin, etc)&#xa;• PGP Keys (CONSAR)&#xa;• DB Credentials&#xa;• Certificates (SSL/TLS)&#xa;• Auto-rotation (90 days)&#xa;&#xa;Tech: Azure Key Vault&#xa;       AWS Secrets Manager" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#d0cee2;strokeColor=#56517e;fontSize=12;fontColor=#000000;" parent="capa2-container" vertex="1">
+          <mxGeometry x="1060" y="40" width="220" height="180" as="geometry" />
+        </mxCell>
+        <mxCell id="service-bus" value="&lt;b&gt;MESSAGE QUEUE&lt;/b&gt;&#xa;&#xa;Topics:&#xa;• file-events&#xa;• validation-events&#xa;• integration-events&#xa;&#xa;Queues:&#xa;• validation-queue&#xa;• report-queue&#xa;• dlq (dead-letter)&#xa;&#xa;Tech: Azure Service Bus&#xa;       AWS SQS + SNS" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#d0cee2;strokeColor=#56517e;fontSize=12;fontColor=#000000;" parent="capa2-container" vertex="1">
+          <mxGeometry x="1320" y="40" width="220" height="240" as="geometry" />
+        </mxCell>
+        <mxCell id="monitoring" value="&lt;b&gt;MONITORING&lt;/b&gt;&#xa;&#xa;• Health checks&#xa;• Metrics (custom)&#xa;• Distributed tracing&#xa;• Alerts (email/SMS)&#xa;• Dashboards&#xa;&#xa;Tech: App Insights&#xa;       CloudWatch" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#d0cee2;strokeColor=#56517e;fontSize=12;fontColor=#000000;" parent="capa2-container" vertex="1">
+          <mxGeometry x="1580" y="40" width="200" height="200" as="geometry" />
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>

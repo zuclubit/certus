@@ -1,0 +1,293 @@
+<mxfile host="Electron" agent="Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) draw.io/29.0.3 Chrome/140.0.7339.249 Electron/38.7.0 Safari/537.36" version="29.0.3">
+  <diagram name="Sistema Validacion Workflow" id="validation-workflow">
+    <mxGraphModel dx="681" dy="459" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1900" pageHeight="1800" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="lane-event-input" value="EVENT BUS/API (INPUT)" style="swimlane;horizontal=0;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=14;fontStyle=1;startSize=40;" parent="1" vertex="1">
+          <mxGeometry x="40" y="40" width="1820" height="140" as="geometry" />
+        </mxCell>
+        <mxCell id="event-fileparsed" value="FileParsed&lt;br&gt;&lt;br&gt;Payload:&lt;br&gt;FileId&lt;br&gt;UserId&lt;br&gt;RowCount&lt;br&gt;Timestamp" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=10;fontStyle=1;" parent="lane-event-input" vertex="1">
+          <mxGeometry x="60" y="15" width="120" height="110" as="geometry" />
+        </mxCell>
+        <mxCell id="lane-orchestrator" value="VALIDATION ORCHESTRATOR" style="swimlane;horizontal=0;whiteSpace=wrap;html=1;fillColor=#e1d5e7;strokeColor=#9673a6;fontSize=14;fontStyle=1;startSize=40;" parent="1" vertex="1">
+          <mxGeometry x="40" y="180" width="1820" height="200" as="geometry" />
+        </mxCell>
+        <mxCell id="orch-receive" value="Recibir&#xa;Evento&#xa;&#xa;Queue:&#xa;validation&#xa;-queue" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#e1d5e7;strokeColor=#9673a6;fontSize=10;fontStyle=1;" parent="lane-orchestrator" vertex="1">
+          <mxGeometry x="200" y="50" width="100" height="90" as="geometry" />
+        </mxCell>
+        <mxCell id="orch-load-file" value="Cargar&#xa;Archivo&#xa;desde&#xa;ValidationDB&#xa;&#xa;FileId" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#e1d5e7;strokeColor=#9673a6;fontSize=10;fontStyle=1;" parent="lane-orchestrator" vertex="1">
+          <mxGeometry x="320" y="50" width="100" height="90" as="geometry" />
+        </mxCell>
+        <mxCell id="orch-load-rules" value="Cargar&#xa;Reglas&#xa;Activas&#xa;&#xa;EffectiveDate&#xa;= TODAY&#xa;Status=ACTIVE" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#e1d5e7;strokeColor=#9673a6;fontSize=9;fontStyle=1;" parent="lane-orchestrator" vertex="1">
+          <mxGeometry x="440" y="50" width="100" height="90" as="geometry" />
+        </mxCell>
+        <mxCell id="orch-init-context" value="Inicializar&#xa;Validation&#xa;Context&#xa;&#xa;FileData&#xa;Rules&#xa;Catalogs&#xa;Config" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#e1d5e7;strokeColor=#9673a6;fontSize=9;fontStyle=1;" parent="lane-orchestrator" vertex="1">
+          <mxGeometry x="560" y="50" width="100" height="90" as="geometry" />
+        </mxCell>
+        <mxCell id="lane-rules-engine" value="RULES ENGINE (DYNAMIC)" style="swimlane;horizontal=0;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;fontSize=14;fontStyle=1;startSize=40;" parent="1" vertex="1">
+          <mxGeometry x="40" y="380" width="1820" height="180" as="geometry" />
+        </mxCell>
+        <mxCell id="rules-compile" value="JIT Compile&#xa;Reglas&#xa;(si no cached)&#xa;&#xa;Roslyn&#xa;Compiler&#xa;&#xa;Cache: 1h" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;fontSize=9;fontStyle=1;" parent="lane-rules-engine" vertex="1">
+          <mxGeometry x="680" y="50" width="100" height="90" as="geometry" />
+        </mxCell>
+        <mxCell id="rules-feature-flags" value="Verificar&#xa;Feature Flags&#xa;&#xa;LaunchDarkly&#xa;&#xa;rule_enabled&#xa;rollout_pct" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;fontSize=9;fontStyle=1;" parent="lane-rules-engine" vertex="1">
+          <mxGeometry x="800" y="50" width="100" height="90" as="geometry" />
+        </mxCell>
+        <mxCell id="rules-prepare" value="Preparar&#xa;Execution&#xa;Plan&#xa;&#xa;37 Reglas&#xa;Paralelo&#xa;Max 10&#xa;concurrent" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;fontSize=9;fontStyle=1;" parent="lane-rules-engine" vertex="1">
+          <mxGeometry x="920" y="50" width="100" height="90" as="geometry" />
+        </mxCell>
+        <mxCell id="lane-validators" value="37 VALIDADORES CONSAR (PARALELO)" style="swimlane;horizontal=0;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;fontSize=14;fontStyle=1;startSize=40;" parent="1" vertex="1">
+          <mxGeometry x="40" y="560" width="1820" height="260" as="geometry" />
+        </mxCell>
+        <mxCell id="val-grupo1" value="GRUPO 1&#xa;Estructura&#xa;&#xa;V01: Length&#xa;V02: Encoding&#xa;V03: Format&#xa;V04: Header&#xa;V05: Footer" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;fontSize=9;fontStyle=1;" parent="lane-validators" vertex="1">
+          <mxGeometry x="80" y="50" width="100" height="110" as="geometry" />
+        </mxCell>
+        <mxCell id="val-grupo2" value="GRUPO 2&#xa;Catalogos&#xa;&#xa;V06: CuentaConsar&#xa;V07: TipoCambio&#xa;V08: AFORE&#xa;V09: Regimen&#xa;V10: Estado" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;fontSize=9;fontStyle=1;" parent="lane-validators" vertex="1">
+          <mxGeometry x="200" y="50" width="110" height="110" as="geometry" />
+        </mxCell>
+        <mxCell id="val-grupo3" value="GRUPO 3&#xa;Rangos&#xa;&#xa;V11: Saldo mayor 0&#xa;V12: Fecha rango&#xa;V13: Monto max&#xa;V14: Porcentaje&#xa;V15: Precision" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;fontSize=9;fontStyle=1;" parent="lane-validators" vertex="1">
+          <mxGeometry x="330" y="50" width="110" height="110" as="geometry" />
+        </mxCell>
+        <mxCell id="val-grupo4" value="GRUPO 4&#xa;Calculos&#xa;&#xa;V16: Suma total&#xa;V17: Balance&#xa;V18: Interes&#xa;V19: Comision&#xa;V20: Impuesto" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;fontSize=9;fontStyle=1;" parent="lane-validators" vertex="1">
+          <mxGeometry x="460" y="50" width="110" height="110" as="geometry" />
+        </mxCell>
+        <mxCell id="val-grupo5" value="GRUPO 5&#xa;Cruce&#xa;&#xa;V21: Duplicados&#xa;V22: Secuencia&#xa;V23: Integridad&#xa;V24: FK exist&#xa;V25: Unique" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;fontSize=9;fontStyle=1;" parent="lane-validators" vertex="1">
+          <mxGeometry x="590" y="50" width="110" height="110" as="geometry" />
+        </mxCell>
+        <mxCell id="val-grupo6" value="GRUPO 6&#xa;Negocio&#xa;&#xa;V26: Edad valida&#xa;V27: NSS format&#xa;V28: CURP valid&#xa;V29: RFC valid&#xa;V30: CLABE" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;fontSize=9;fontStyle=1;" parent="lane-validators" vertex="1">
+          <mxGeometry x="720" y="50" width="110" height="110" as="geometry" />
+        </mxCell>
+        <mxCell id="val-grupo7" value="GRUPO 7&#xa;Regulatorio&#xa;&#xa;V31: Limite aport&#xa;V32: Tope retiro&#xa;V33: Plazo&#xa;V34: Comision max&#xa;V35-37: Custom" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;fontSize=9;fontStyle=1;" parent="lane-validators" vertex="1">
+          <mxGeometry x="850" y="50" width="110" height="110" as="geometry" />
+        </mxCell>
+        <mxCell id="val-semaphore" value="Semaphore&#xa;Control&#xa;&#xa;Max 10&#xa;concurrent&#xa;&#xa;Queue&#xa;remaining&#xa;27" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffe6cc;strokeColor=#d79b00;fontSize=9;fontStyle=1;" parent="lane-validators" vertex="1">
+          <mxGeometry x="1040" y="60" width="100" height="90" as="geometry" />
+        </mxCell>
+        <mxCell id="lane-catalog" value="CATALOG SERVICE" style="swimlane;horizontal=0;whiteSpace=wrap;html=1;fillColor=#ffe6cc;strokeColor=#d79b00;fontSize=14;fontStyle=1;startSize=40;" parent="1" vertex="1">
+          <mxGeometry x="40" y="820" width="1820" height="160" as="geometry" />
+        </mxCell>
+        <mxCell id="cat-cache" value="Cache&#xa;Catalogos&#xa;&#xa;Redis&#xa;TTL: 1 hora&#xa;&#xa;Hit Rate:&#xa;mayor 95 pct" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffe6cc;strokeColor=#d79b00;fontSize=9;fontStyle=1;" parent="lane-catalog" vertex="1">
+          <mxGeometry x="200" y="40" width="100" height="90" as="geometry" />
+        </mxCell>
+        <mxCell id="cat-lookup" value="Lookup&#xa;Decision&#xa;&#xa;Cache HIT:&#xa;return&#xa;&#xa;Cache MISS:&#xa;DB query" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffe6cc;strokeColor=#d79b00;fontSize=9;fontStyle=1;" parent="lane-catalog" vertex="1">
+          <mxGeometry x="320" y="40" width="100" height="90" as="geometry" />
+        </mxCell>
+        <mxCell id="cat-db-query" value="Query&#xa;ValidationDB&#xa;&#xa;Table:&#xa;Catalogs&#xa;&#xa;WHERE&#xa;Version=&#xa;ACTIVE" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffe6cc;strokeColor=#d79b00;fontSize=8;fontStyle=1;" parent="lane-catalog" vertex="1">
+          <mxGeometry x="440" y="40" width="100" height="90" as="geometry" />
+        </mxCell>
+        <mxCell id="lane-aggregator" value="RESULT AGGREGATOR" style="swimlane;horizontal=0;whiteSpace=wrap;html=1;fillColor=#f8cecc;strokeColor=#b85450;fontSize=14;fontStyle=1;startSize=40;" parent="1" vertex="1">
+          <mxGeometry x="40" y="980" width="1820" height="200" as="geometry" />
+        </mxCell>
+        <mxCell id="agg-collect" value="Recolectar&#xa;37 Resultados&#xa;&#xa;Task.WhenAll()&#xa;&#xa;Timeout: 5 min" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f8cecc;strokeColor=#b85450;fontSize=10;fontStyle=1;" parent="lane-aggregator" vertex="1">
+          <mxGeometry x="1040" y="50" width="120" height="90" as="geometry" />
+        </mxCell>
+        <mxCell id="agg-analyze" value="Analizar&#xa;Resultados&#xa;&#xa;Errores: Count&#xa;Warnings: Count&#xa;Success: Count&#xa;&#xa;Severidad:&#xa;CRITICO/ALTO/&#xa;MEDIO/BAJO" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f8cecc;strokeColor=#b85450;fontSize=8;fontStyle=1;" parent="lane-aggregator" vertex="1">
+          <mxGeometry x="1180" y="50" width="120" height="90" as="geometry" />
+        </mxCell>
+        <mxCell id="agg-decision" value="Validacion&#xa;Global&#xa;OK?" style="rhombus;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;fontSize=11;fontStyle=1;" parent="lane-aggregator" vertex="1">
+          <mxGeometry x="1320" y="50" width="100" height="90" as="geometry" />
+        </mxCell>
+        <mxCell id="lane-validationdb" value="VALIDATION DB" style="swimlane;horizontal=0;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=14;fontStyle=1;startSize=40;" parent="1" vertex="1">
+          <mxGeometry x="40" y="1180" width="1820" height="180" as="geometry" />
+        </mxCell>
+        <mxCell id="db-store-results" value="Almacenar&#xa;Resultados&#xa;&#xa;Table:&#xa;ValidationResults&#xa;&#xa;FileId&#xa;RuleId&#xa;Status&#xa;ErrorMessage&#xa;Timestamp" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=9;fontStyle=1;" parent="lane-validationdb" vertex="1">
+          <mxGeometry x="1440" y="40" width="120" height="100" as="geometry" />
+        </mxCell>
+        <mxCell id="db-update-file-status" value="Actualizar&#xa;File Status&#xa;&#xa;Table: Files&#xa;&#xa;Status:&#xa;VALIDATED_OK&#xa;o&#xa;VALIDATED_ERROR&#xa;&#xa;ErrorCount" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=8;fontStyle=1;" parent="lane-validationdb" vertex="1">
+          <mxGeometry x="1580" y="40" width="120" height="100" as="geometry" />
+        </mxCell>
+        <mxCell id="lane-event-output" value="EVENT BUS (OUTPUT)" style="swimlane;horizontal=0;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;fontSize=14;fontStyle=1;startSize=40;" parent="1" vertex="1">
+          <mxGeometry x="40" y="1360" width="1820" height="160" as="geometry" />
+        </mxCell>
+        <mxCell id="event-validated-ok" value="Publicar&#xa;FileValidated&#xa;(OK)&#xa;&#xa;Queue:&#xa;accounting&#xa;-queue&#xa;&#xa;Payload:&#xa;FileId&#xa;Status: OK" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;fontSize=9;fontStyle=1;" parent="lane-event-output" vertex="1">
+          <mxGeometry x="1440" y="40" width="120" height="90" as="geometry" />
+        </mxCell>
+        <mxCell id="event-validated-error" value="Publicar&#xa;FileValidated&#xa;(ERROR)&#xa;&#xa;Queue:&#xa;notification&#xa;-queue&#xa;&#xa;Payload:&#xa;FileId&#xa;Status: ERROR&#xa;ErrorCount" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f8cecc;strokeColor=#b85450;fontSize=8;fontStyle=1;" parent="lane-event-output" vertex="1">
+          <mxGeometry x="1580" y="40" width="120" height="90" as="geometry" />
+        </mxCell>
+        <mxCell id="lane-reporting" value="REPORTING SERVICE" style="swimlane;horizontal=0;whiteSpace=wrap;html=1;fillColor=#e1d5e7;strokeColor=#9673a6;fontSize=14;fontStyle=1;startSize=40;" parent="1" vertex="1">
+          <mxGeometry x="40" y="1520" width="1820" height="160" as="geometry" />
+        </mxCell>
+        <mxCell id="report-generate" value="Generar&#xa;Reporte&#xa;Errores&#xa;&#xa;PDF + Excel&#xa;&#xa;Detalle por&#xa;Registro&#xa;RuleId&#xa;ErrorMsg" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#e1d5e7;strokeColor=#9673a6;fontSize=9;fontStyle=1;" parent="lane-reporting" vertex="1">
+          <mxGeometry x="1320" y="40" width="120" height="90" as="geometry" />
+        </mxCell>
+        <mxCell id="report-store" value="Almacenar&#xa;Reporte&#xa;&#xa;Azure Blob&#xa;&#xa;Container:&#xa;reports&#xa;&#xa;Retention:&#xa;7 años" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#e1d5e7;strokeColor=#9673a6;fontSize=9;fontStyle=1;" parent="lane-reporting" vertex="1">
+          <mxGeometry x="1460" y="40" width="120" height="90" as="geometry" />
+        </mxCell>
+        <mxCell id="arrow1" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeWidth=2;strokeColor=#6c8ebf;" parent="1" source="event-fileparsed" target="orch-receive" edge="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="arrow2" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeWidth=2;strokeColor=#9673a6;" parent="1" source="orch-receive" target="orch-load-file" edge="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="arrow3" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeWidth=2;strokeColor=#9673a6;" parent="1" source="orch-load-file" target="orch-load-rules" edge="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="arrow4" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeWidth=2;strokeColor=#9673a6;" parent="1" source="orch-load-rules" target="orch-init-context" edge="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="arrow5" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeWidth=2;strokeColor=#d6b656;" parent="1" source="orch-init-context" target="rules-compile" edge="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="arrow6" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeWidth=2;strokeColor=#d6b656;" parent="1" source="rules-compile" target="rules-feature-flags" edge="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="arrow7" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeWidth=2;strokeColor=#d6b656;" parent="1" source="rules-feature-flags" target="rules-prepare" edge="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="arrow8" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeWidth=2;strokeColor=#82b366;dashed=1;" parent="1" source="rules-prepare" target="val-grupo1" edge="1">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="1010" y="530" />
+              <mxPoint x="170" y="530" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="arrow9" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeWidth=2;strokeColor=#82b366;dashed=1;" parent="1" source="rules-prepare" target="val-grupo2" edge="1">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="1010" y="530" />
+              <mxPoint x="295" y="530" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="arrow10" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeWidth=2;strokeColor=#82b366;dashed=1;" parent="1" source="rules-prepare" target="val-grupo3" edge="1">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="1010" y="530" />
+              <mxPoint x="425" y="530" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="arrow11" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeWidth=2;strokeColor=#82b366;dashed=1;" parent="1" source="rules-prepare" target="val-grupo4" edge="1">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="1010" y="530" />
+              <mxPoint x="555" y="530" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="arrow12" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeWidth=2;strokeColor=#82b366;dashed=1;" parent="1" source="rules-prepare" target="val-grupo5" edge="1">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="1010" y="530" />
+              <mxPoint x="685" y="530" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="arrow13" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeWidth=2;strokeColor=#82b366;dashed=1;" parent="1" source="rules-prepare" target="val-grupo6" edge="1">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="1010" y="530" />
+              <mxPoint x="815" y="530" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="arrow14" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeWidth=2;strokeColor=#82b366;dashed=1;" parent="1" source="rules-prepare" target="val-grupo7" edge="1">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="1010" y="530" />
+              <mxPoint x="945" y="530" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="label-parallel" value="Ejecucion Paralela&#xa;Max 10 concurrent&#xa;Semaphore control" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=10;fontColor=#82b366;fontStyle=1;" parent="1" vertex="1">
+          <mxGeometry x="560" y="540" width="140" height="45" as="geometry" />
+        </mxCell>
+        <mxCell id="arrow-cat1" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeWidth=1;strokeColor=#d79b00;dashed=1;" parent="1" source="val-grupo2" target="cat-cache" edge="1">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="295" y="750" />
+              <mxPoint x="290" y="750" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="label-lookup" value="Catalog&#xa;Lookups" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=9;fontColor=#d79b00;fontStyle=1;" parent="1" vertex="1">
+          <mxGeometry x="250" y="730" width="60" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="arrow-cat2" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeWidth=1;strokeColor=#d79b00;" parent="1" source="cat-cache" target="cat-lookup" edge="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="arrow-cat3" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeWidth=1;strokeColor=#d79b00;" parent="1" source="cat-lookup" target="cat-db-query" edge="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="arrow15" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeWidth=2;strokeColor=#b85450;" parent="1" source="val-grupo1" target="agg-collect" edge="1">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="170" y="900" />
+              <mxPoint x="1140" y="900" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="arrow16" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeWidth=2;strokeColor=#b85450;" parent="1" source="val-grupo7" target="agg-collect" edge="1">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="945" y="900" />
+              <mxPoint x="1140" y="900" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="label-collect" value="Collect 37 Results&#xa;Task.WhenAll()" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=10;fontColor=#b85450;fontStyle=1;" parent="1" vertex="1">
+          <mxGeometry x="560" y="885" width="120" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="arrow17" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeWidth=2;strokeColor=#b85450;" parent="1" source="agg-collect" target="agg-analyze" edge="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="arrow18" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeWidth=2;strokeColor=#b85450;" parent="1" source="agg-analyze" target="agg-decision" edge="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="arrow19" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeWidth=2;strokeColor=#82b366;" parent="1" source="agg-decision" target="db-store-results" edge="1">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="1410" y="1095" />
+              <mxPoint x="1540" y="1095" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="label-ok" value="OK&#xa;(0 errores CRITICO)" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=10;fontColor=#82b366;fontStyle=1;" parent="1" vertex="1">
+          <mxGeometry x="1410" y="1050" width="120" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="arrow20" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeWidth=2;strokeColor=#82b366;" parent="1" source="db-store-results" target="db-update-file-status" edge="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="arrow21" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeWidth=2;strokeColor=#82b366;" parent="1" source="db-update-file-status" target="event-validated-ok" edge="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="arrow22" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeWidth=2;strokeColor=#b85450;dashed=1;" parent="1" source="agg-decision" target="report-generate" edge="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="label-error" value="ERROR&#xa;(mayor= 1 error CRITICO)" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=10;fontColor=#b85450;fontStyle=1;" parent="1" vertex="1">
+          <mxGeometry x="1340" y="1340" width="140" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="arrow23" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeWidth=2;strokeColor=#b85450;" parent="1" source="report-generate" target="report-store" edge="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="arrow24" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeWidth=2;strokeColor=#b85450;" parent="1" source="report-store" target="db-store-results" edge="1">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="1560" y="1610" />
+              <mxPoint x="1760" y="1610" />
+              <mxPoint x="1760" y="1270" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="arrow25" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeWidth=2;strokeColor=#b85450;" parent="1" source="db-update-file-status" target="event-validated-error" edge="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="metrics-performance" value="METRICAS PERFORMANCE&#xa;&#xa;Tiempo promedio validacion: 2-3 minutos&#xa;Throughput: 5,000 archivos/dia&#xa;Concurrencia: 10 archivos simultaneos&#xa;&#xa;Ejecucion por archivo:&#xa;- Load file: 2-5 seg&#xa;- Load rules: 1-3 seg (cached)&#xa;- JIT compile: 5-10 seg (primera vez)&#xa;- Parallel execution 37 validators: 60-120 seg&#xa;- Aggregation: 2-5 seg&#xa;- Store results: 5-10 seg&#xa;Total: 120-180 segundos (2-3 min)&#xa;&#xa;Parallel execution:&#xa;- Max concurrent validators: 10&#xa;- Semaphore control&#xa;- CPU utilization: 60-80 pct&#xa;- Memory: menor 2 GB por archivo&#xa;&#xa;Cache performance:&#xa;- Rules cache hit rate: mayor 95 pct&#xa;- Catalog cache hit rate: mayor 98 pct&#xa;- Redis latency: menor 5ms p99" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;fontSize=10;fontStyle=1;align=left;verticalAlign=top;arcSize=6;" parent="1" vertex="1">
+          <mxGeometry x="40" y="1720" width="580" height="360" as="geometry" />
+        </mxCell>
+        <mxCell id="validators-detail" value="37 VALIDADORES CONSAR - DETALLE&#xa;&#xa;GRUPO 1 - ESTRUCTURA (5):&#xa;V01: Longitud registro 77 caracteres exacto&#xa;V02: Encoding ISO-8859-1 valido&#xa;V03: Formato fixed-width correcto&#xa;V04: Header presente y valido&#xa;V05: Footer presente y match row count&#xa;&#xa;GRUPO 2 - CATALOGOS (5):&#xa;V06: Cuenta CONSAR existe en catalogo&#xa;V07: Tipo cambio valido para fecha&#xa;V08: AFORE autorizada por CONSAR&#xa;V09: Regimen valido (RCV/Obligatorio/Voluntario)&#xa;V10: Estado Mexico valido (32 estados)&#xa;&#xa;GRUPO 3 - RANGOS (5):&#xa;V11: Saldo mayor 0 (sin negativos)&#xa;V12: Fecha dentro rango valido&#xa;V13: Monto menor limite maximo&#xa;V14: Porcentaje entre 0-100&#xa;V15: Precision decimal correcta (2 decimales)&#xa;&#xa;GRUPO 4 - CALCULOS (5):&#xa;V16: Suma total match detalle&#xa;V17: Balance debe = 0&#xa;V18: Interes calculado correcto&#xa;V19: Comision dentro limites CONSAR&#xa;V20: Impuesto ISR correcto&#xa;&#xa;GRUPO 5 - CRUCE (5):&#xa;V21: Sin duplicados (NSS + Fecha)&#xa;V22: Secuencia folio consecutiva&#xa;V23: Integridad referencial&#xa;V24: Foreign keys existen&#xa;V25: Unique constraints&#xa;&#xa;GRUPO 6 - NEGOCIO (5):&#xa;V26: Edad trabajador 18-70 años&#xa;V27: NSS formato valido (11 digitos)&#xa;V28: CURP valido (18 caracteres)&#xa;V29: RFC valido (13 caracteres)&#xa;V30: CLABE interbancaria valida&#xa;&#xa;GRUPO 7 - REGULATORIO (7):&#xa;V31: Limite aportacion menor tope anual&#xa;V32: Tope retiro segun edad&#xa;V33: Plazo inversion valido&#xa;V34: Comision menor maximo CONSAR&#xa;V35-V37: Reglas custom (dinamicas)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#e1d5e7;strokeColor=#9673a6;fontSize=9;fontStyle=1;align=left;verticalAlign=top;arcSize=6;" parent="1" vertex="1">
+          <mxGeometry x="660" y="1720" width="580" height="520" as="geometry" />
+        </mxCell>
+        <mxCell id="error-severity" value="SEVERIDAD ERRORES&#xa;&#xa;CRITICO (bloquea archivo completo):&#xa;- Estructura invalida (V01-V05)&#xa;- Encoding incorrecto&#xa;- Header/Footer missing&#xa;- Cuenta CONSAR no existe&#xa;Accion: Rechazar archivo completo&#xa;&#xa;ALTO (bloquea registro):&#xa;- Catalogo no existe (V06-V10)&#xa;- NSS/CURP/RFC invalido (V27-V29)&#xa;- Saldo negativo (V11)&#xa;- Balance no = 0 (V17)&#xa;Accion: Rechazar registro, continuar archivo&#xa;&#xa;MEDIO (warning):&#xa;- Formato menor (espacios extra)&#xa;- Precision decimal (redondeo)&#xa;- Fecha futura (no historica)&#xa;Accion: Warning, procesar registro&#xa;&#xa;BAJO (informativo):&#xa;- Sugerencias optimizacion&#xa;- Mejores practicas&#xa;Accion: Informativo, procesar normal&#xa;&#xa;Decision validacion global:&#xa;- 0 errores CRITICO: OK (procesar)&#xa;- mayor= 1 error CRITICO: ERROR (rechazar)&#xa;- Solo ALTO/MEDIO/BAJO: OK (procesar con warnings)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f8cecc;strokeColor=#b85450;fontSize=10;fontStyle=1;align=left;verticalAlign=top;arcSize=6;" parent="1" vertex="1">
+          <mxGeometry x="1280" y="1720" width="580" height="380" as="geometry" />
+        </mxCell>
+        <mxCell id="title" value="WORKFLOW SISTEMA VALIDACION - 37 VALIDADORES CONSAR PARALELO" style="text;html=1;strokeColor=#6c8ebf;fillColor=#dae8fc;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=1;fontSize=16;fontStyle=1;" parent="1" vertex="1">
+          <mxGeometry x="560" width="900" height="30" as="geometry" />
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>

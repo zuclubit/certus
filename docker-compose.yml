@@ -1,0 +1,47 @@
+version: '3.8'
+
+services:
+  # Frontend Application
+  app:
+    build:
+      context: ./app
+      dockerfile: Dockerfile
+      args:
+        - VITE_API_URL=${VITE_API_URL:-http://localhost:5000/api}
+        - VITE_AZURE_CLIENT_ID=${VITE_AZURE_CLIENT_ID}
+        - VITE_AZURE_TENANT_ID=${VITE_AZURE_TENANT_ID}
+        - VITE_APP_INSIGHTS_CONNECTION_STRING=${VITE_APP_INSIGHTS_CONNECTION_STRING}
+    ports:
+      - "3000:80"
+    environment:
+      - NODE_ENV=production
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "wget", "--no-verbose", "--tries=1", "--spider", "http://localhost/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 10s
+    networks:
+      - certus-network
+
+  # Development server (for local development with hot reload)
+  app-dev:
+    image: node:20-alpine
+    working_dir: /app
+    volumes:
+      - ./app:/app
+      - /app/node_modules
+    ports:
+      - "3000:3000"
+    environment:
+      - NODE_ENV=development
+    command: sh -c "npm install && npm run dev -- --host 0.0.0.0"
+    profiles:
+      - dev
+    networks:
+      - certus-network
+
+networks:
+  certus-network:
+    driver: bridge

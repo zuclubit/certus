@@ -1,0 +1,323 @@
+CORRIDA FINANCIERA HERGON - PESOS MEXICANOS (MXN)
+Fecha: 2025-01-20
+Tipo de Cambio: 1 USD = 20 MXN
+
+=== RESUMEN EJECUTIVO ===
+Concepto,MVP (3 meses),Full (5 meses),Full sin IA (9 meses)
+Costo Total Desarrollo,"$2,272,800","$3,934,400","$6,960,000"
+Costo Operación Año 1 (post-launch),"$3,876,000","$3,876,000","$3,876,000"
+Costo Total Año 1,"$6,148,800","$7,810,400","$10,836,000"
+Revenue Proyectado Año 1,"$9,600,000","$12,000,000","$9,600,000"
+Utilidad Neta Año 1,"$3,451,200","$4,189,600","-$1,236,000"
+ROI Año 1,56%,54%,-11%
+Tiempo a Go-Live,12 semanas,20 semanas,36 semanas
+
+=== 1. COSTOS DE DESARROLLO - PERSONAL (SALARIOS MÉXICO) ===
+Rol,Salario Mensual MXN,MVP (3 meses),Full (5 meses),Full sin IA (9 meses)
+Tech Lead / Architect,"$70,000","$210,000","$350,000","$630,000"
+Backend Developer Senior (2),"$50,000","$300,000","$500,000","$900,000"
+Frontend Developer Senior,"$45,000","$135,000","$225,000","$405,000"
+DevOps Engineer,"$50,000","$150,000","$250,000","$450,000"
+QA Engineer,"$40,000","$120,000","$200,000","$360,000"
+SUBTOTAL PERSONAL,,"$915,000","$1,525,000","$2,745,000"
+
+=== 2. COSTOS DE INFRAESTRUCTURA AWS (MXN) ===
+Concepto,Mensual MXN,MVP (3 meses),Full (5 meses),Full sin IA (9 meses)
+Staging Environment,"$9,000","$27,000","$45,000","$81,000"
+Production Environment (últimos meses),"$33,000","$33,000","$99,000","$198,000"
+SUBTOTAL AWS,,"$60,000","$144,000","$279,000"
+
+=== 3. COSTOS DE AI TOOLS (MXN) ===
+Herramienta,Por Dev/Mes,5 Devs/Mes,MVP (3 meses),Full (5 meses),Full sin IA (9 meses)
+Claude Code Pro,"$600","$3,000","$9,000","$15,000","$0"
+GitHub Copilot Enterprise,"$380","$1,900","$5,700","$9,500","$0"
+Cursor AI (opcional),"$400","$2,000","$6,000","$10,000","$0"
+SUBTOTAL AI TOOLS,,"$6,900","$20,700","$34,500","$0"
+
+=== 4. COSTOS DE HERRAMIENTAS & SERVICIOS (MXN) ===
+Concepto,Mensual,MVP (3 meses),Full (5 meses),Full sin IA (9 meses)
+GitHub Enterprise,"$5,600","$16,800","$28,000","$50,400"
+Azure AD B2C,"$0","$0","$0","$0"
+Monitoring Tools (Datadog/New Relic),"$8,000","$24,000","$40,000","$72,000"
+Security Tools (SonarQube/Snyk),"$6,000","$18,000","$30,000","$54,000"
+Diseño/UX Tools (Figma),"$2,400","$7,200","$12,000","$21,600"
+SUBTOTAL HERRAMIENTAS,,"$66,000","$110,000","$198,000"
+
+=== 5. OTROS COSTOS DE DESARROLLO (MXN) ===
+Concepto,MVP (3 meses),Full (5 meses),Full sin IA (9 meses)
+Office/Coworking (5 personas),"$75,000","$125,000","$225,000"
+Internet & Servicios,"$15,000","$25,000","$45,000"
+Hardware/Laptops (5 devs),"$150,000","$150,000","$150,000"
+Capacitación & Training,"$30,000","$50,000","$90,000"
+Legal & Constitución,"$40,000","$40,000","$40,000"
+Contingencia (10%),"$129,070","$204,950","$377,290"
+SUBTOTAL OTROS,,"$439,070","$594,950","$927,290"
+
+=== 6. COSTOS DE CERTIFICACIONES & COMPLIANCE (MXN) ===
+Concepto,MVP (3 meses),Full (5 meses),Full sin IA (9 meses),Notas
+Pentesting Externo,"$0","$100,000","$100,000",Post-MVP en Full
+SOC 2 Type II Audit,"$0","$200,000","$200,000",Post-MVP en Full
+ISO 27001 Certificación,"$0","$150,000","$150,000",Post-MVP en Full
+CONSAR Compliance Review,"$50,000","$80,000","$80,000",Consultoría regulatoria
+SUBTOTAL COMPLIANCE,,"$50,000","$530,000","$530,000"
+
+=== 7. MARKETING & PRE-VENTA (MXN) ===
+Concepto,MVP (3 meses),Full (5 meses),Full sin IA (9 meses)
+Website Marketing,"$40,000","$60,000","$100,000"
+Materiales de Venta,"$30,000","$50,000","$80,000"
+Eventos & Networking,"$50,000","$80,000","$150,000"
+Demo Videos & Contenido,"$20,000","$40,000","$60,000"
+SUBTOTAL MARKETING,,"$140,000","$230,000","$390,000"
+
+=== RESUMEN COSTOS DE DESARROLLO ===
+Categoría,MVP (3 meses),Full (5 meses),Full sin IA (9 meses)
+Personal,"$915,000","$1,525,000","$2,745,000"
+Infraestructura AWS,"$60,000","$144,000","$279,000"
+AI Tools,"$20,700","$34,500","$0"
+Herramientas & Servicios,"$66,000","$110,000","$198,000"
+Otros Costos,"$439,070","$594,950","$927,290"
+Certificaciones & Compliance,"$50,000","$530,000","$530,000"
+Marketing & Pre-venta,"$140,000","$230,000","$390,000"
+IVA (16%),"$270,043","$471,752","$830,886"
+TOTAL DESARROLLO,"$1,960,813","$3,640,202","$5,900,176"
+Reserva Operacional (3 meses),"$312,000","$294,200","$1,059,824"
+INVERSIÓN INICIAL TOTAL,"$2,272,813","$3,934,402","$6,960,000"
+
+=== 8. COSTOS OPERACIONALES MENSUALES (POST-LAUNCH) ===
+Concepto,Mensual,Anual,Notas
+AWS Producción,"$33,000","$396,000","ECS + RDS + Lambda + S3"
+Azure AD B2C,"$0","$0","Free tier suficiente"
+Monitoring & Alerting,"$8,000","$96,000","CloudWatch + Datadog"
+Support Engineer,"$40,000","$480,000","1 persona 24/5"
+DevOps Engineer (0.5 FTE),"$25,000","$300,000","Mantenimiento continuo"
+Customer Success (0.5 FTE),"$20,000","$240,000","Onboarding AFOREs"
+AI Tools (5 licencias),"$6,900","$82,800","Claude + Copilot"
+Herramientas SaaS,"$8,000","$96,000","GitHub + Security + Monitoring"
+Backups & DR,"$5,000","$60,000","S3 replication + snapshots"
+Licencias & Renovaciones,"$4,000","$48,000","Certificados SSL, dominios"
+Office & Servicios,"$10,000","$120,000","Internet, servicios"
+Contingencia Operacional (10%),"$15,990","$191,880",
+TOTAL OPERACIÓN MENSUAL,"$175,890","$2,110,680",
+TOTAL OPERACIÓN ANUAL,,"$2,110,680",
+
+=== 9. COSTOS ANUALES ADICIONALES (AÑO 1) ===
+Concepto,Año 1,Notas
+Renovación SOC 2,"$150,000","Auditoría anual"
+Renovación ISO 27001,"$80,000","Mantenimiento certificación"
+Pentesting Anual,"$100,000","2 pentests/año"
+CONSAR Compliance,"$60,000","Consultoría regulatoria continua"
+Marketing & Ventas,"$200,000","Adquisición de AFOREs"
+Capacitación Usuarios,"$100,000","Training nuevas AFOREs"
+Legal & Contratos,"$80,000","Contratos AFOREs, legal continuo"
+Contingencia (10%),"$97,000",
+TOTAL COSTOS ANUALES,"$867,000",
+
+=== TOTAL COSTOS AÑO 1 (DESARROLLO + OPERACIÓN) ===
+Concepto,MVP,Full (5 meses),Full sin IA (9 meses)
+Desarrollo,"$2,272,813","$3,934,402","$6,960,000"
+Operación (meses post-launch),9 meses,7 meses,3 meses
+Costos Operación Post-Launch,"$1,583,010","$1,230,230","$532,704"
+Costos Anuales Adicionales,"$867,000","$867,000","$867,000"
+TOTAL AÑO 1,"$4,722,823","$6,031,632","$8,359,704"
+Reserva para Año 2,"$1,426,000","$1,778,800","$2,476,296"
+INVERSIÓN TOTAL REQUERIDA,"$6,148,823","$7,810,432","$10,836,000"
+
+=== 10. PROYECCIÓN DE INGRESOS ===
+Concepto,Año 1,Año 2,Año 3
+Número de AFOREs (inicio año),0,4,10
+Número de AFOREs (fin año),4,10,20
+Precio por AFORE/Mes,"$200,000","$220,000","$242,000"
+Ingreso Mensual Promedio Año,"$400,000","$1,540,000","$3,630,000"
+INGRESOS ANUALES,"$4,800,000","$18,480,000","$43,560,000"
+
+Desglose Año 1 (MVP - go-live Marzo 2026):
+Mes,AFOREs Activas,Ingreso Mensual,Ingreso Acumulado
+Enero 2026,0,"$0","$0"
+Febrero 2026,0,"$0","$0"
+Marzo 2026 (Go-Live),1,"$200,000","$200,000"
+Abril 2026,1,"$200,000","$400,000"
+Mayo 2026,2,"$400,000","$800,000"
+Junio 2026,2,"$400,000","$1,200,000"
+Julio 2026,3,"$600,000","$1,800,000"
+Agosto 2026,3,"$600,000","$2,400,000"
+Septiembre 2026,4,"$800,000","$3,200,000"
+Octubre 2026,4,"$800,000","$4,000,000"
+Noviembre 2026,4,"$800,000","$4,800,000"
+Diciembre 2026,4,"$800,000","$5,600,000"
+TOTAL AÑO 1,,"$5,600,000","$5,600,000"
+
+Desglose Año 1 (Full - go-live Mayo 2026):
+Mes,AFOREs Activas,Ingreso Mensual,Ingreso Acumulado
+Enero-Abril 2026,0,"$0","$0"
+Mayo 2026 (Go-Live),2,"$400,000","$400,000"
+Junio 2026,2,"$400,000","$800,000"
+Julio 2026,4,"$800,000","$1,600,000"
+Agosto 2026,4,"$800,000","$2,400,000"
+Septiembre 2026,6,"$1,200,000","$3,600,000"
+Octubre 2026,6,"$1,200,000","$4,800,000"
+Noviembre 2026,8,"$1,600,000","$6,400,000"
+Diciembre 2026,8,"$1,600,000","$8,000,000"
+TOTAL AÑO 1,,"$8,000,000","$8,000,000"
+
+=== 11. ANÁLISIS DE RENTABILIDAD ===
+Métrica,MVP (3 meses),Full (5 meses),Full sin IA (9 meses)
+Ingresos Año 1,"$5,600,000","$8,000,000","$4,800,000"
+Costos Año 1,"$4,722,823","$6,031,632","$8,359,704"
+Utilidad Neta Año 1,"$877,177","$1,968,368","-$3,559,704"
+Margen Neto Año 1,16%,25%,-74%
+ROI Año 1,14%,25%,-34%
+Punto de Equilibrio,Mes 10 (Dic 2026),Mes 9 (Ene 2027),Mes 18 (Jun 2027)
+
+Año 2 (proyección):
+Ingresos Año 2,"$18,480,000","$18,480,000","$18,480,000"
+Costos Operación Año 2,"$2,977,680","$2,977,680","$2,977,680"
+Utilidad Neta Año 2,"$15,502,320","$15,502,320","$15,502,320"
+Margen Neto Año 2,84%,84%,84%
+ROI Acumulado 2 años,267%,221%,51%
+
+=== 12. OPCIONES DE FINANCIAMIENTO ===
+
+OPCIÓN A: FINANCIAMIENTO BANCARIO
+Concepto,MVP,Full,Full sin IA
+Monto a Financiar (70%),"$1,590,975","$2,753,881","$4,872,000"
+Aporte Propio (30%),"$681,848","$1,180,521","$2,088,000"
+Tasa Anual,12%,12%,12%
+Plazo,12 meses,18 meses,24 meses
+Pago Mensual,"$141,550","$169,445","$229,890"
+Intereses Totales,"$108,625","$298,129","$645,360"
+Total a Pagar,"$1,699,600","$3,052,010","$5,517,360"
+
+OPCIÓN B: FINANCIAMIENTO VENTURE DEBT
+Concepto,MVP,Full,Full sin IA
+Monto a Financiar (60%),"$1,363,688","$2,360,641","$4,176,000"
+Aporte Propio (40%),"$909,125","$1,573,761","$2,784,000"
+Tasa Anual,15%,15%,15%
+Plazo,18 meses,24 meses,36 meses
+Pago Mensual,"$82,555","$116,301","$149,847"
+Warrants (5% equity),5%,5%,5%
+Intereses Totales,"$222,990","$431,224","$1,218,492"
+Total a Pagar,"$1,586,678","$2,791,865","$5,394,492"
+
+OPCIÓN C: CAPITAL DE RIESGO (EQUITY)
+Concepto,MVP,Full,Full sin IA
+Equity a Vender,20%,20%,25%
+Valuación Pre-Money,"$11,364,000","$19,672,000","$27,840,000"
+Monto a Recibir,"$2,272,800","$3,934,400","$6,960,000"
+Valuación Post-Money,"$13,636,800","$23,606,400","$34,800,000"
+Dilución Fundadores,20%,20%,25%
+Equity Restante,80%,80%,75%
+No hay deuda,✓,✓,✓
+Control del negocio,Mantiene,Mantiene,Compartido
+
+OPCIÓN D: BOOTSTRAPPING (SIN FINANCIAMIENTO)
+Concepto,MVP,Full,Full sin IA
+Inversión Requerida,"$2,272,813","$3,934,402","$6,960,000"
+Fuente,Ahorros propios,Ahorros propios,Ahorros propios
+Equity Fundadores,100%,100%,100%
+Riesgo,Medio,Alto,Muy Alto
+Velocidad de Crecimiento,Moderada,Moderada,Lenta
+Recomendado para,Fundadores con capital,Fundadores con capital,No recomendado
+
+=== 13. RECOMENDACIÓN DE FINANCIAMIENTO ===
+
+RECOMENDACIÓN: Opción C (Capital de Riesgo) + Opción A (Deuda Bancaria)
+Estrategia Híbrida,MVP,Full
+Equity (15%),"$1,704,600","$2,950,800"
+Deuda Bancaria (30%),"$681,844","$1,180,200"
+Aporte Propio (25%),"$568,203","$983,600"
+Total Financiado (70%),"$2,386,444","$4,131,000"
+Equity Fundadores Final,85%,85%
+Deuda a Pagar en 12 meses,"$60,700/mes","$105,000/mes"
+Ventajas,"Menos dilución, flexibilidad financiera"
+
+=== 14. FLUJO DE CAJA PROYECTADO (MVP - Meses 1-12) ===
+Mes,Desarrollo,Operación,Financiamiento,Ingresos,Flujo Neto,Saldo Acumulado
+Mes 1 (Ene),"$757,604","$0","$2,386,444","$0","$1,628,840","$1,628,840"
+Mes 2 (Feb),"$757,604","$0","$0","$0","-$757,604","$871,236"
+Mes 3 (Mar),"$757,605","$175,890","-$60,700","$200,000","-$794,195","$77,041"
+Mes 4 (Abr),"$0","$175,890","-$60,700","$200,000","-$36,590","$40,451"
+Mes 5 (May),"$0","$175,890","-$60,700","$400,000","$163,410","$203,861"
+Mes 6 (Jun),"$0","$175,890","-$60,700","$400,000","$163,410","$367,271"
+Mes 7 (Jul),"$0","$175,890","-$60,700","$600,000","$363,410","$730,681"
+Mes 8 (Ago),"$0","$175,890","-$60,700","$600,000","$363,410","$1,094,091"
+Mes 9 (Sep),"$0","$175,890","-$60,700","$800,000","$563,410","$1,657,501"
+Mes 10 (Oct),"$0","$175,890","-$60,700","$800,000","$563,410","$2,220,911"
+Mes 11 (Nov),"$0","$175,890","-$60,700","$800,000","$563,410","$2,784,321"
+Mes 12 (Dic),"$0","$175,890","-$60,700","$800,000","$563,410","$3,347,731"
+TOTAL 12 MESES,"$2,272,813","$1,583,010","$668,400","$5,600,000","$1,075,777","$3,347,731"
+
+=== 15. ANÁLISIS DE SENSIBILIDAD ===
+
+Escenario,Ingresos Año 1,Costos Año 1,Utilidad,ROI
+Optimista (+30% AFOREs),"$7,280,000","$4,722,823","$2,557,177",112%
+Base (proyectado),"$5,600,000","$4,722,823","$877,177",14%
+Conservador (-20% AFOREs),"$4,480,000","$4,722,823","-$242,823",-11%
+Pesimista (-40% AFOREs),"$3,360,000","$4,722,823","-$1,362,823",-60%
+
+Variables Críticas de Riesgo:
+Variable,Impacto en ROI,Probabilidad,Mitigación
+Adopción AFOREs,Alto,Media,Contratos pre-venta
+Cumplimiento Regulatorio,Alto,Baja,Compliance desde inicio
+Retención Clientes,Medio,Baja,Customer Success dedicado
+Costos de Operación,Medio,Media,Optimización continua AWS
+Competencia,Medio,Alta,Diferenciación tecnológica
+
+=== 16. INDICADORES CLAVE DE DESEMPEÑO (KPIs) ===
+
+KPI,Meta Año 1,Meta Año 2,Meta Año 3
+AFOREs Activas,4,10,20
+Revenue Mensual Promedio,"$466,667","$1,540,000","$3,630,000"
+CAC (Costo Adquisición Cliente),"$550,000","$400,000","$300,000"
+LTV (Lifetime Value Cliente),"$4,800,000","$5,280,000","$5,808,000"
+LTV/CAC Ratio,8.7x,13.2x,19.4x
+Churn Rate,<5%,<3%,<2%
+Net Revenue Retention,>110%,>120%,>130%
+Gross Margin,>75%,>80%,>85%
+EBITDA Margin,16%,84%,88%
+Burn Rate (primeros 3 meses),"$757,604/mes","$0","$0"
+Runway (meses),12+ meses,24+ meses,36+ meses
+
+=== 17. COMPARATIVA FINAL: MVP vs FULL vs SIN IA ===
+
+Métrica,MVP (3 meses),Full (5 meses),Full sin IA (9 meses),Ganador
+Inversión Inicial,"$2,272,813","$3,934,402","$6,960,000",MVP
+Time to Market,12 semanas,20 semanas,36 semanas,MVP
+Revenue Año 1,"$5,600,000","$8,000,000","$4,800,000",Full
+Utilidad Año 1,"$877,177","$1,968,368","-$3,559,704",Full
+ROI Año 1,14%,25%,-34%,Full
+ROI Año 2,267%,221%,51%,MVP
+Riesgo Financiero,Bajo,Medio,Alto,MVP
+Validación Mercado,Rápida,Moderada,Lenta,MVP
+Features Completos,70%,100%,100%,Full
+Escalabilidad,Post-MVP,Inmediata,Inmediata,Full
+
+RECOMENDACIÓN FINAL:
+- CORTO PLAZO (validación): MVP (3 meses)
+- MEDIANO PLAZO (crecimiento): Full (5 meses)
+- NO RECOMENDADO: Full sin IA (9 meses)
+
+=== NOTAS IMPORTANTES ===
+1. Todos los montos están en PESOS MEXICANOS (MXN)
+2. Tipo de cambio: 1 USD = 20 MXN
+3. Salarios ajustados a mercado mexicano 2025
+4. IVA (16%) incluido en inversión inicial
+5. Pricing por AFORE: $200,000 MXN/mes (~$10,000 USD/mes)
+6. Proyecciones asumen adopción gradual de AFOREs
+7. Costos operacionales incluyen AI tools post-launch
+8. Compliance costs incluyen SOC 2, ISO 27001, CONSAR
+9. Marketing incluye adquisición de primeras 4-8 AFOREs
+10. Contingencias incluidas en todos los rubros
+
+SUPUESTOS CLAVE:
+- Equipo de 5 desarrolladores full-time
+- Office en Ciudad de México (coworking)
+- AWS en región us-east-1
+- Azure AD para autenticación
+- Go-live con 1 AFORE piloto (MVP) o 2 AFOREs (Full)
+- Crecimiento: +1-2 AFOREs por trimestre
+- Precio aumenta 10% anual
+- Churn <5% anual
+- Costos AWS optimizados con Reserved Instances Año 2
+
+CONTACTO:
+Para financiamiento o inversión: contacto@hergon.com

@@ -1,0 +1,53 @@
+{
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "name": "Launch Chrome (Dev)",
+      "type": "chrome",
+      "request": "launch",
+      "url": "http://localhost:3000",
+      "webRoot": "${workspaceFolder}/app/src",
+      "sourceMapPathOverrides": {
+        "webpack:///./src/*": "${webRoot}/*"
+      }
+    },
+    {
+      "name": "Launch Edge (Dev)",
+      "type": "msedge",
+      "request": "launch",
+      "url": "http://localhost:3000",
+      "webRoot": "${workspaceFolder}/app/src"
+    },
+    {
+      "name": "Debug Vitest Tests",
+      "type": "node",
+      "request": "launch",
+      "autoAttachChildProcesses": true,
+      "skipFiles": ["<node_internals>/**", "**/node_modules/**"],
+      "program": "${workspaceFolder}/app/node_modules/vitest/vitest.mjs",
+      "args": ["run", "--reporter", "verbose"],
+      "smartStep": true,
+      "cwd": "${workspaceFolder}/app",
+      "console": "integratedTerminal"
+    },
+    {
+      "name": "Debug Current Vitest Test",
+      "type": "node",
+      "request": "launch",
+      "autoAttachChildProcesses": true,
+      "skipFiles": ["<node_internals>/**", "**/node_modules/**"],
+      "program": "${workspaceFolder}/app/node_modules/vitest/vitest.mjs",
+      "args": ["run", "${relativeFile}", "--reporter", "verbose"],
+      "smartStep": true,
+      "cwd": "${workspaceFolder}/app",
+      "console": "integratedTerminal"
+    }
+  ],
+  "compounds": [
+    {
+      "name": "Full Stack Debug",
+      "configurations": ["Launch Chrome (Dev)"],
+      "stopAll": true
+    }
+  ]
+}

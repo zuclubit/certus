@@ -1,0 +1,121 @@
+# ============================================================================
+# TERRAFORM .GITIGNORE
+# Archivos que NO deben ser versionados en Git
+# ============================================================================
+
+# Local .terraform directories
+**/.terraform/*
+
+# .tfstate files (contienen información sensible)
+*.tfstate
+*.tfstate.*
+
+# Crash log files
+crash.log
+crash.*.log
+
+# Exclude all .tfvars files (pueden contener información sensible)
+*.tfvars
+*.tfvars.json
+
+# EXCEPCIÓN: Permitir archivos .example
+!*.tfvars.example
+
+# Ignore override files (usados para configuración local temporal)
+override.tf
+override.tf.json
+*_override.tf
+*_override.tf.json
+
+# Ignore CLI configuration files
+.terraformrc
+terraform.rc
+
+# Ignore plan files
+*.tfplan
+*.plan
+*.out
+
+# Lock file (comentar esta línea si quieres versionar el lock file)
+# .terraform.lock.hcl
+
+# Backup files
+*.backup
+*.bak
+
+# Temporary files
+*.tmp
+*.temp
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# IDE files
+.idea/
+.vscode/
+*.swp
+*.swo
+*~
+
+# SSH keys
+*.pem
+*.key
+*.pub
+
+# Environment files
+.env
+.env.local
+.env.*.local
+
+# Logs
+*.log
+
+# Archives
+*.tar.gz
+*.zip
+
+# Python (si usas scripts Python)
+__pycache__/
+*.py[cod]
+*$py.class
+.Python
+venv/
+.venv/
+
+# Node (si usas scripts Node)
+node_modules/
+package-lock.json
+yarn.lock
+
+# Secrets
+secrets.yml
+secrets.yaml
+secrets.json
+
+# ============================================================================
+# NOTAS IMPORTANTES
+# ============================================================================
+
+# SIEMPRE ignorar:
+# 1. *.tfstate - Contiene state de infraestructura (puede tener passwords, IPs)
+# 2. *.tfvars - Contiene variables con valores reales (passwords, keys, IDs)
+# 3. .terraform/ - Directorio de providers y módulos descargados
+# 4. *.tfplan - Planes de ejecución que pueden contener datos sensibles
+
+# NUNCA hacer commit de:
+# - Passwords
+# - API keys
+# - Client secrets
+# - Private keys
+# - Tokens
+# - Certificados privados
+# - IPs internas
+# - Información de producción
+
+# ¿Qué SÍ versionar?
+# - *.tf (archivos de configuración Terraform)
+# - *.tfvars.example (ejemplos sin datos reales)
+# - README.md (documentación)
+# - Módulos propios
+# - Scripts de deployment (sin secrets)

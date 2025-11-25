@@ -1,0 +1,320 @@
+<mxfile host="app.diagrams.net">
+  <diagram name="Envio Seguro CONSAR Workflow" id="envio-seguro-workflow">
+    <mxGraphModel dx="1434" dy="844" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1900" pageHeight="2000" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+
+        <!-- SWIMLANE 1: TRIGGER / SCHEDULER -->
+        <mxCell id="lane-trigger" value="TRIGGER / SCHEDULER" style="swimlane;horizontal=0;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=14;fontStyle=1;startSize=40;" parent="1" vertex="1">
+          <mxGeometry x="40" y="40" width="1820" height="160" as="geometry" />
+        </mxCell>
+        <mxCell id="trigger-monthly" value="Scheduler&#xa;Mensual&#xa;&#xa;Cron:&#xa;Dia 1&#xa;6:00 AM&#xa;&#xa;Periodo:&#xa;Mes anterior" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=9;fontStyle=1;" parent="lane-trigger" vertex="1">
+          <mxGeometry x="60" y="40" width="100" height="90" as="geometry" />
+        </mxCell>
+        <mxCell id="trigger-manual" value="Manual&#xa;Override&#xa;&#xa;API Request&#xa;&#xa;Usuario:&#xa;Compliance&#xa;Officer" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#e1d5e7;strokeColor=#9673a6;fontSize=9;fontStyle=1;" parent="lane-trigger" vertex="1">
+          <mxGeometry x="180" y="40" width="100" height="90" as="geometry" />
+        </mxCell>
+        <mxCell id="trigger-retry" value="Retry&#xa;Automatico&#xa;&#xa;Trigger:&#xa;Failed&#xa;Transmission&#xa;&#xa;Max: 3x" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f8cecc;strokeColor=#b85450;fontSize=9;fontStyle=1;" parent="lane-trigger" vertex="1">
+          <mxGeometry x="300" y="40" width="100" height="90" as="geometry" />
+        </mxCell>
+
+        <!-- SWIMLANE 2: REPORT GENERATOR CONSAR -->
+        <mxCell id="lane-report-gen" value="REPORT GENERATOR (FORMATO CONSAR)" style="swimlane;horizontal=0;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;fontSize=14;fontStyle=1;startSize=40;" parent="1" vertex="1">
+          <mxGeometry x="40" y="200" width="1820" height="200" as="geometry" />
+        </mxCell>
+        <mxCell id="gen-query-data" value="Query&#xa;ValidationDB&#xa;&#xa;SELECT *&#xa;WHERE&#xa;Periodo =&#xa;YYYYMM&#xa;AND&#xa;Status =&#xa;VALIDATED_OK" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;fontSize=8;fontStyle=1;" parent="lane-report-gen" vertex="1">
+          <mxGeometry x="420" y="50" width="110" height="100" as="geometry" />
+        </mxCell>
+        <mxCell id="gen-transform" value="Transform&#xa;a Formato&#xa;CONSAR&#xa;&#xa;Layout&#xa;Regulatorio&#xa;&#xa;Fixed-Width&#xa;Especifico" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;fontSize=8;fontStyle=1;" parent="lane-report-gen" vertex="1">
+          <mxGeometry x="550" y="50" width="100" height="100" as="geometry" />
+        </mxCell>
+        <mxCell id="gen-header-footer" value="Agregar&#xa;Header&#xa;Footer&#xa;&#xa;AFORE ID&#xa;Periodo&#xa;Total&#xa;Registros&#xa;Checksum" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;fontSize=8;fontStyle=1;" parent="lane-report-gen" vertex="1">
+          <mxGeometry x="670" y="50" width="100" height="100" as="geometry" />
+        </mxCell>
+        <mxCell id="gen-create-file" value="Generar&#xa;Archivo&#xa;TXT&#xa;&#xa;Encoding:&#xa;ISO-8859-1&#xa;&#xa;LineEnding:&#xa;CRLF" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;fontSize=8;fontStyle=1;" parent="lane-report-gen" vertex="1">
+          <mxGeometry x="790" y="50" width="100" height="100" as="geometry" />
+        </mxCell>
+
+        <!-- SWIMLANE 3: VALIDATION SERVICE -->
+        <mxCell id="lane-validation" value="VALIDATION SERVICE (FORMATO)" style="swimlane;horizontal=0;whiteSpace=wrap;html=1;fillColor=#e1d5e7;strokeColor=#9673a6;fontSize=14;fontStyle=1;startSize=40;" parent="1" vertex="1">
+          <mxGeometry x="40" y="400" width="1820" height="180" as="geometry" />
+        </mxCell>
+        <mxCell id="val-schema" value="Validar&#xa;Schema&#xa;CONSAR&#xa;&#xa;XSD&#xa;Validation&#xa;&#xa;Estructura&#xa;Correcta" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#e1d5e7;strokeColor=#9673a6;fontSize=9;fontStyle=1;" parent="lane-validation" vertex="1">
+          <mxGeometry x="910" y="50" width="100" height="90" as="geometry" />
+        </mxCell>
+        <mxCell id="val-checksum" value="Verificar&#xa;Checksum&#xa;&#xa;MD5/SHA256&#xa;&#xa;Match&#xa;Header" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#e1d5e7;strokeColor=#9673a6;fontSize=9;fontStyle=1;" parent="lane-validation" vertex="1">
+          <mxGeometry x="1030" y="50" width="100" height="90" as="geometry" />
+        </mxCell>
+        <mxCell id="val-decision" value="Validacion&#xa;OK?" style="rhombus;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;fontSize=11;fontStyle=1;" parent="lane-validation" vertex="1">
+          <mxGeometry x="1150" y="50" width="100" height="90" as="geometry" />
+        </mxCell>
+
+        <!-- SWIMLANE 4: ENCRYPTION SERVICE -->
+        <mxCell id="lane-encryption" value="ENCRYPTION SERVICE" style="swimlane;horizontal=0;whiteSpace=wrap;html=1;fillColor=#ffe6cc;strokeColor=#d79b00;fontSize=14;fontStyle=1;startSize=40;" parent="1" vertex="1">
+          <mxGeometry x="40" y="580" width="1820" height="200" as="geometry" />
+        </mxCell>
+        <mxCell id="enc-load-keys" value="Cargar&#xa;Keys&#xa;&#xa;Public Key&#xa;CONSAR&#xa;(PGP 4096)&#xa;&#xa;Private Key&#xa;AFORE&#xa;(Firma)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffe6cc;strokeColor=#d79b00;fontSize=8;fontStyle=1;" parent="lane-encryption" vertex="1">
+          <mxGeometry x="1270" y="50" width="100" height="100" as="geometry" />
+        </mxCell>
+        <mxCell id="enc-pgp-encrypt" value="Encriptar&#xa;PGP&#xa;&#xa;Algorithm:&#xa;RSA 4096&#xa;&#xa;Recipient:&#xa;CONSAR&#xa;Public Key" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffe6cc;strokeColor=#d79b00;fontSize=8;fontStyle=1;" parent="lane-encryption" vertex="1">
+          <mxGeometry x="1390" y="50" width="100" height="100" as="geometry" />
+        </mxCell>
+        <mxCell id="enc-sign" value="Firma&#xa;Digital&#xa;&#xa;Certificate:&#xa;AFORE&#xa;&#xa;Algorithm:&#xa;SHA-256&#xa;with RSA" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffe6cc;strokeColor=#d79b00;fontSize=8;fontStyle=1;" parent="lane-encryption" vertex="1">
+          <mxGeometry x="1510" y="50" width="100" height="100" as="geometry" />
+        </mxCell>
+        <mxCell id="enc-verify-sig" value="Verificar&#xa;Firma&#xa;&#xa;Self-Test&#xa;&#xa;Signature&#xa;Valid" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffe6cc;strokeColor=#d79b00;fontSize=9;fontStyle=1;" parent="lane-encryption" vertex="1">
+          <mxGeometry x="1630" y="50" width="100" height="100" as="geometry" />
+        </mxCell>
+
+        <!-- SWIMLANE 5: COMPRESSION SERVICE -->
+        <mxCell id="lane-compression" value="COMPRESSION SERVICE" style="swimlane;horizontal=0;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;fontSize=14;fontStyle=1;startSize=40;" parent="1" vertex="1">
+          <mxGeometry x="40" y="780" width="1820" height="180" as="geometry" />
+        </mxCell>
+        <mxCell id="comp-zip" value="Crear ZIP&#xa;&#xa;Compression:&#xa;DEFLATE&#xa;Level: 9&#xa;&#xa;Files:&#xa;- Report.txt.pgp&#xa;- Signature.sig" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;fontSize=8;fontStyle=1;" parent="lane-compression" vertex="1">
+          <mxGeometry x="1520" y="50" width="110" height="90" as="geometry" />
+        </mxCell>
+        <mxCell id="comp-password" value="Proteger&#xa;Password&#xa;&#xa;AES-256&#xa;&#xa;Password:&#xa;Pre-shared&#xa;CONSAR" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;fontSize=9;fontStyle=1;" parent="lane-compression" vertex="1">
+          <mxGeometry x="1650" y="50" width="100" height="90" as="geometry" />
+        </mxCell>
+
+        <!-- SWIMLANE 6: SFTP TRANSMISSION SERVICE -->
+        <mxCell id="lane-sftp" value="SFTP TRANSMISSION SERVICE" style="swimlane;horizontal=0;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=14;fontStyle=1;startSize=40;" parent="1" vertex="1">
+          <mxGeometry x="40" y="960" width="1820" height="220" as="geometry" />
+        </mxCell>
+        <mxCell id="sftp-connect" value="Conectar&#xa;SFTP&#xa;&#xa;Host:&#xa;consar.gob.mx&#xa;Port: 22&#xa;&#xa;Auth:&#xa;SSH Key&#xa;&#xa;TLS: 1.3" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=8;fontStyle=1;" parent="lane-sftp" vertex="1">
+          <mxGeometry x="1520" y="50" width="100" height="110" as="geometry" />
+        </mxCell>
+        <mxCell id="sftp-upload" value="Upload&#xa;Archivo&#xa;&#xa;Path:&#xa;/reportes/&#xa;AFORE_ID/&#xa;YYYYMM/&#xa;&#xa;Filename:&#xa;AFORE_YYYYMM&#xa;.zip" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=8;fontStyle=1;" parent="lane-sftp" vertex="1">
+          <mxGeometry x="1640" y="50" width="110" height="110" as="geometry" />
+        </mxCell>
+        <mxCell id="sftp-verify-upload" value="Verificar&#xa;Upload&#xa;&#xa;Remote&#xa;Checksum&#xa;&#xa;Match&#xa;Local&#xa;Checksum" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=8;fontStyle=1;" parent="lane-sftp" vertex="1">
+          <mxGeometry x="1770" y="50" width="100" height="110" as="geometry" />
+        </mxCell>
+
+        <!-- SWIMLANE 7: CONSAR (EXTERNO) -->
+        <mxCell id="lane-consar" value="CONSAR (SISTEMA EXTERNO)" style="swimlane;horizontal=0;whiteSpace=wrap;html=1;fillColor=#f8cecc;strokeColor=#b85450;fontSize=14;fontStyle=1;startSize=40;" parent="1" vertex="1">
+          <mxGeometry x="40" y="1180" width="1820" height="200" as="geometry" />
+        </mxCell>
+        <mxCell id="consar-receive" value="Recibir&#xa;Archivo&#xa;&#xa;SFTP Server&#xa;&#xa;Path:&#xa;/incoming/&#xa;AFORE_ID/" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f8cecc;strokeColor=#b85450;fontSize=9;fontStyle=1;" parent="lane-consar" vertex="1">
+          <mxGeometry x="1520" y="50" width="100" height="90" as="geometry" />
+        </mxCell>
+        <mxCell id="consar-validate" value="Validar&#xa;Archivo&#xa;&#xa;- Decrypt PGP&#xa;- Verify Firma&#xa;- Uncompress&#xa;- Validate&#xa;Schema" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f8cecc;strokeColor=#b85450;fontSize=8;fontStyle=1;" parent="lane-consar" vertex="1">
+          <mxGeometry x="1640" y="50" width="100" height="90" as="geometry" />
+        </mxCell>
+        <mxCell id="consar-process" value="Procesar&#xa;Reporte&#xa;&#xa;Sistema&#xa;Interno&#xa;CONSAR&#xa;&#xa;Analytics&#xa;Compliance" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f8cecc;strokeColor=#b85450;fontSize=8;fontStyle=1;" parent="lane-consar" vertex="1">
+          <mxGeometry x="1320" y="50" width="100" height="90" as="geometry" />
+        </mxCell>
+        <mxCell id="consar-confirm" value="Generar&#xa;Confirmacion&#xa;&#xa;Receipt&#xa;Number&#xa;&#xa;Timestamp&#xa;&#xa;Status:&#xa;RECEIVED" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f8cecc;strokeColor=#b85450;fontSize=8;fontStyle=1;" parent="lane-consar" vertex="1">
+          <mxGeometry x="1200" y="50" width="100" height="90" as="geometry" />
+        </mxCell>
+
+        <!-- SWIMLANE 8: RECEIPT HANDLER -->
+        <mxCell id="lane-receipt" value="RECEIPT HANDLER" style="swimlane;horizontal=0;whiteSpace=wrap;html=1;fillColor=#e1d5e7;strokeColor=#9673a6;fontSize=14;fontStyle=1;startSize=40;" parent="1" vertex="1">
+          <mxGeometry x="40" y="1380" width="1820" height="180" as="geometry" />
+        </mxCell>
+        <mxCell id="receipt-listen" value="Escuchar&#xa;Webhook&#xa;CONSAR&#xa;&#xa;Endpoint:&#xa;/api/consar/&#xa;receipt" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#e1d5e7;strokeColor=#9673a6;fontSize=9;fontStyle=1;" parent="lane-receipt" vertex="1">
+          <mxGeometry x="1080" y="50" width="100" height="90" as="geometry" />
+        </mxCell>
+        <mxCell id="receipt-validate" value="Validar&#xa;Receipt&#xa;&#xa;Signature&#xa;CONSAR&#xa;&#xa;Timestamp&#xa;menor 1h" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#e1d5e7;strokeColor=#9673a6;fontSize=9;fontStyle=1;" parent="lane-receipt" vertex="1">
+          <mxGeometry x="960" y="50" width="100" height="90" as="geometry" />
+        </mxCell>
+        <mxCell id="receipt-store" value="Almacenar&#xa;Receipt&#xa;&#xa;TransmissionDB&#xa;&#xa;ReceiptNumber&#xa;Status&#xa;Timestamp" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#e1d5e7;strokeColor=#9673a6;fontSize=8;fontStyle=1;" parent="lane-receipt" vertex="1">
+          <mxGeometry x="840" y="50" width="100" height="90" as="geometry" />
+        </mxCell>
+
+        <!-- SWIMLANE 9: AUDIT TRAIL / STORAGE -->
+        <mxCell id="lane-audit" value="AUDIT TRAIL / STORAGE" style="swimlane;horizontal=0;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;fontSize=14;fontStyle=1;startSize=40;" parent="1" vertex="1">
+          <mxGeometry x="40" y="1560" width="1820" height="200" as="geometry" />
+        </mxCell>
+        <mxCell id="audit-log-event" value="Log Evento&#xa;&#xa;TransmissionLog&#xa;&#xa;- FileId&#xa;- Timestamp&#xa;- Status&#xa;- ReceiptNumber&#xa;- Duration&#xa;- FileSize" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;fontSize=8;fontStyle=1;" parent="lane-audit" vertex="1">
+          <mxGeometry x="720" y="50" width="110" height="100" as="geometry" />
+        </mxCell>
+        <mxCell id="audit-store-files" value="Almacenar&#xa;Archivos&#xa;&#xa;Azure Blob&#xa;&#xa;Container:&#xa;consar-official&#xa;&#xa;Files:&#xa;- Original.txt&#xa;- Encrypted.pgp&#xa;- Signed.sig&#xa;- Final.zip" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;fontSize=7;fontStyle=1;" parent="lane-audit" vertex="1">
+          <mxGeometry x="590" y="50" width="110" height="100" as="geometry" />
+        </mxCell>
+        <mxCell id="audit-retention" value="Retention&#xa;Policy&#xa;&#xa;Archive:&#xa;7 años&#xa;&#xa;Inmutable&#xa;Storage&#xa;&#xa;Compliance&#xa;CONSAR" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;fontSize=8;fontStyle=1;" parent="lane-audit" vertex="1">
+          <mxGeometry x="460" y="50" width="110" height="100" as="geometry" />
+        </mxCell>
+
+        <!-- SWIMLANE 10: NOTIFICATION SERVICE -->
+        <mxCell id="lane-notification" value="NOTIFICATION SERVICE" style="swimlane;horizontal=0;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;fontSize=14;fontStyle=1;startSize=40;" parent="1" vertex="1">
+          <mxGeometry x="40" y="1760" width="1820" height="160" as="geometry" />
+        </mxCell>
+        <mxCell id="notif-success" value="Notificar&#xa;SUCCESS&#xa;&#xa;Email:&#xa;Compliance&#xa;Officer&#xa;&#xa;Slack:&#xa;canal consar&#xa;&#xa;Receipt#:&#xa;XXXXX" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;fontSize=8;fontStyle=1;" parent="lane-notification" vertex="1">
+          <mxGeometry x="720" y="40" width="110" height="90" as="geometry" />
+        </mxCell>
+        <mxCell id="notif-error" value="Notificar&#xa;ERROR&#xa;&#xa;Email + SMS:&#xa;CTO&#xa;Compliance&#xa;&#xa;PagerDuty:&#xa;On-Call&#xa;&#xa;Escalation:&#xa;Immediate" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f8cecc;strokeColor=#b85450;fontSize=7;fontStyle=1;" parent="lane-notification" vertex="1">
+          <mxGeometry x="1150" y="40" width="100" height="90" as="geometry" />
+        </mxCell>
+
+        <!-- ARROWS - TRIGGER TO REPORT GEN -->
+        <mxCell id="arrow1" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeWidth=2;strokeColor=#6c8ebf;" parent="1" source="trigger-monthly" target="gen-query-data" edge="1">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="150" y="180" />
+              <mxPoint x="515" y="180" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="arrow2" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeWidth=2;strokeColor=#9673a6;" parent="1" source="trigger-manual" target="gen-query-data" edge="1">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="270" y="180" />
+              <mxPoint x="515" y="180" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="arrow3" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeWidth=2;strokeColor=#b85450;" parent="1" source="trigger-retry" target="gen-query-data" edge="1">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="390" y="180" />
+              <mxPoint x="515" y="180" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+
+        <!-- ARROWS - REPORT GENERATION FLOW -->
+        <mxCell id="arrow4" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeWidth=2;strokeColor=#d6b656;" parent="1" source="gen-query-data" target="gen-transform" edge="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="arrow5" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeWidth=2;strokeColor=#d6b656;" parent="1" source="gen-transform" target="gen-header-footer" edge="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="arrow6" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeWidth=2;strokeColor=#d6b656;" parent="1" source="gen-header-footer" target="gen-create-file" edge="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <!-- ARROWS - VALIDATION FLOW -->
+        <mxCell id="arrow7" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeWidth=2;strokeColor=#9673a6;" parent="1" source="gen-create-file" target="val-schema" edge="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="arrow8" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeWidth=2;strokeColor=#9673a6;" parent="1" source="val-schema" target="val-checksum" edge="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="arrow9" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeWidth=2;strokeColor=#9673a6;" parent="1" source="val-checksum" target="val-decision" edge="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <!-- ERROR PATH from validation -->
+        <mxCell id="arrow-error1" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeWidth=2;strokeColor=#b85450;dashed=1;" parent="1" source="val-decision" target="notif-error" edge="1">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="1240" y="535" />
+              <mxPoint x="1240" y="1825" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="label-error" value="ERROR&#xa;Retry o Alert" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=10;fontColor=#b85450;fontStyle=1;" parent="1" vertex="1">
+          <mxGeometry x="1250" y="1000" width="90" height="30" as="geometry" />
+        </mxCell>
+
+        <!-- SUCCESS PATH - ENCRYPTION -->
+        <mxCell id="arrow10" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeWidth=2;strokeColor=#d79b00;" parent="1" source="val-decision" target="enc-load-keys" edge="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="label-ok" value="OK" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=11;fontColor=#82b366;fontStyle=1;" parent="1" vertex="1">
+          <mxGeometry x="1210" y="560" width="40" height="20" as="geometry" />
+        </mxCell>
+        <mxCell id="arrow11" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeWidth=2;strokeColor=#d79b00;" parent="1" source="enc-load-keys" target="enc-pgp-encrypt" edge="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="arrow12" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeWidth=2;strokeColor=#d79b00;" parent="1" source="enc-pgp-encrypt" target="enc-sign" edge="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="arrow13" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeWidth=2;strokeColor=#d79b00;" parent="1" source="enc-sign" target="enc-verify-sig" edge="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <!-- ARROWS - COMPRESSION -->
+        <mxCell id="arrow14" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeWidth=2;strokeColor=#82b366;" parent="1" source="enc-verify-sig" target="comp-zip" edge="1">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="1720" y="750" />
+              <mxPoint x="1615" y="750" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="arrow15" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeWidth=2;strokeColor=#82b366;" parent="1" source="comp-zip" target="comp-password" edge="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <!-- ARROWS - SFTP TRANSMISSION -->
+        <mxCell id="arrow16" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeWidth=2;strokeColor=#6c8ebf;" parent="1" source="comp-password" target="sftp-connect" edge="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="arrow17" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeWidth=2;strokeColor=#6c8ebf;" parent="1" source="sftp-connect" target="sftp-upload" edge="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="arrow18" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeWidth=2;strokeColor=#6c8ebf;" parent="1" source="sftp-upload" target="sftp-verify-upload" edge="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <!-- ARROWS - CONSAR FLOW -->
+        <mxCell id="arrow19" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeWidth=2;strokeColor=#b85450;" parent="1" source="sftp-verify-upload" target="consar-receive" edge="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="arrow20" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeWidth=2;strokeColor=#b85450;" parent="1" source="consar-receive" target="consar-validate" edge="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="arrow21" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeWidth=2;strokeColor=#b85450;" parent="1" source="consar-validate" target="consar-process" edge="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="arrow22" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeWidth=2;strokeColor=#b85450;" parent="1" source="consar-process" target="consar-confirm" edge="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <!-- ARROWS - RECEIPT HANDLING -->
+        <mxCell id="arrow23" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeWidth=2;strokeColor=#9673a6;dashed=1;" parent="1" source="consar-confirm" target="receipt-listen" edge="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="label-webhook" value="API Callback&#xa;Webhook" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=10;fontColor=#9673a6;fontStyle=1;" parent="1" vertex="1">
+          <mxGeometry x="1120" y="1320" width="90" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="arrow24" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeWidth=2;strokeColor=#9673a6;" parent="1" source="receipt-listen" target="receipt-validate" edge="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="arrow25" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeWidth=2;strokeColor=#9673a6;" parent="1" source="receipt-validate" target="receipt-store" edge="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <!-- ARROWS - AUDIT TRAIL -->
+        <mxCell id="arrow26" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeWidth=2;strokeColor=#d6b656;" parent="1" source="receipt-store" target="audit-log-event" edge="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="arrow27" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeWidth=2;strokeColor=#d6b656;" parent="1" source="audit-log-event" target="audit-store-files" edge="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="arrow28" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeWidth=2;strokeColor=#d6b656;" parent="1" source="audit-store-files" target="audit-retention" edge="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <!-- ARROWS - NOTIFICATIONS -->
+        <mxCell id="arrow29" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeWidth=2;strokeColor=#82b366;" parent="1" source="audit-log-event" target="notif-success" edge="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <!-- SECURITY MEASURES BOX -->
+        <mxCell id="security-measures" value="MEDIDAS DE SEGURIDAD&#xa;&#xa;ENCRIPTACION:&#xa;- PGP (RSA 4096-bit) end-to-end&#xa;- Public Key CONSAR (pre-shared)&#xa;- Private Key AFORE (HSM stored)&#xa;- Perfect Forward Secrecy&#xa;&#xa;FIRMA DIGITAL:&#xa;- Certificate AFORE (SHA-256 with RSA)&#xa;- Timestamp autoridad (RFC 3161)&#xa;- Non-repudiation&#xa;- Self-verification antes envio&#xa;&#xa;TRANSPORTE:&#xa;- SFTP over SSH (TLS 1.3)&#xa;- Certificate pinning&#xa;- Mutual authentication&#xa;- Connection timeout: 30s&#xa;&#xa;COMPRESION:&#xa;- ZIP con password AES-256&#xa;- Password pre-shared CONSAR&#xa;- Compression level 9 (max)&#xa;&#xa;VERIFICACION:&#xa;- Checksum MD5/SHA256 en cada paso&#xa;- Remote verification post-upload&#xa;- Integridad end-to-end&#xa;&#xa;REDUNDANCIA:&#xa;- Retry automatico: 3 intentos&#xa;- Backoff exponencial: 5, 10, 20 min&#xa;- Fallback manual si falla" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffe6cc;strokeColor=#d79b00;fontSize=9;fontStyle=1;align=left;verticalAlign=top;arcSize=6;" parent="1" vertex="1">
+          <mxGeometry x="40" y="1960" width="580" height="440" as="geometry" />
+        </mxCell>
+
+        <!-- COMPLIANCE BOX -->
+        <mxCell id="compliance-box" value="COMPLIANCE Y REGULATORIO&#xa;&#xa;NORMATIVA CONSAR:&#xa;- Circular 28-19 (Reporte mensual obligatorio)&#xa;- Formato regulatorio especifico&#xa;- Deadline: Dia 5 mes siguiente&#xa;- Penalizacion por retraso: $500K - $2M MXN&#xa;&#xa;AUDITORIA:&#xa;- Retention 7 años (requirement CONSAR)&#xa;- Inmutable storage (WORM)&#xa;- Evento log completo (quien, que, cuando)&#xa;- Receipt number CONSAR (evidencia entrega)&#xa;&#xa;SEGURIDAD:&#xa;- Encriptacion end-to-end obligatoria&#xa;- Firma digital autorizada CONSAR&#xa;- No transmision en claro (plain text)&#xa;- Canal seguro certificado&#xa;&#xa;DISPONIBILIDAD:&#xa;- SLA: 99.9 pct uptime&#xa;- Ventana transmision: Dia 1-5 mes&#xa;- Retry automatico si falla&#xa;- Notificacion On-Call si error critico&#xa;&#xa;VALIDACION:&#xa;- Schema XSD oficial CONSAR&#xa;- Checksum obligatorio en header&#xa;- Estructura fixed-width exacta&#xa;- Encoding ISO-8859-1 estricto&#xa;&#xa;EVIDENCIA:&#xa;- Receipt CONSAR con timestamp&#xa;- Archivo original + encriptado + firmado&#xa;- Log transmision completo&#xa;- Certificados y keys utilizados" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f8cecc;strokeColor=#b85450;fontSize=9;fontStyle=1;align=left;verticalAlign=top;arcSize=6;" parent="1" vertex="1">
+          <mxGeometry x="660" y="1960" width="580" height="480" as="geometry" />
+        </mxCell>
+
+        <!-- METRICS BOX -->
+        <mxCell id="metrics-transmission" value="METRICAS TRANSMISION&#xa;&#xa;TIEMPOS EJECUCION:&#xa;- Generacion reporte: 3-5 min&#xa;- Validacion formato: 30-60 seg&#xa;- Encriptacion PGP: 1-2 min&#xa;- Firma digital: 10-20 seg&#xa;- Compresion ZIP: 20-30 seg&#xa;- Upload SFTP: 2-5 min&#xa;- Verificacion remota: 30 seg&#xa;- Receipt CONSAR: 1-10 min&#xa;Total end-to-end: 10-25 minutos&#xa;&#xa;TAMAÑOS ARCHIVO:&#xa;- Reporte original TXT: 5-20 MB&#xa;- Encriptado PGP: +20 pct (6-24 MB)&#xa;- Con firma: +5 pct (6-25 MB)&#xa;- Comprimido ZIP: -60 pct (2-10 MB)&#xa;Final transmitido: 2-10 MB&#xa;&#xa;VOLUMENES:&#xa;- Frecuencia: 1 transmision/mes&#xa;- Archivos por transmision: 1&#xa;- Registros por archivo: 50K-500K&#xa;&#xa;RELIABILITY:&#xa;- Success rate: 99.5 pct&#xa;- Retry rate: 2 pct&#xa;- Manual intervention: menor 0.5 pct&#xa;- Avg retries to success: 1.1&#xa;&#xa;PERFORMANCE:&#xa;- Upload speed: 5-10 Mbps&#xa;- Network latency: menor 100ms&#xa;- SFTP connection time: menor 2 seg&#xa;- Receipt response time: 1-10 min&#xa;&#xa;ALERTAS:&#xa;- Validation error: CRITICO (immediate)&#xa;- Encryption error: CRITICO (immediate)&#xa;- SFTP connection fail: ALTO (retry)&#xa;- Upload timeout: ALTO (retry)&#xa;- Receipt timeout mayor 1h: MEDIO (monitor)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;fontSize=8;fontStyle=1;align=left;verticalAlign=top;arcSize=6;" parent="1" vertex="1">
+          <mxGeometry x="1280" y="1960" width="580" height="520" as="geometry" />
+        </mxCell>
+
+        <!-- TITLE -->
+        <mxCell id="title" value="WORKFLOW ENVIO SEGURO REPORTES OFICIALES A CONSAR - TRANSMISION ENCRIPTADA MENSUAL" style="text;html=1;strokeColor=#6c8ebf;fillColor=#dae8fc;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=1;fontSize=16;fontStyle=1;" parent="1" vertex="1">
+          <mxGeometry x="440" y="0" width="1120" height="30" as="geometry" />
+        </mxCell>
+
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>

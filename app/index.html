@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/png" href="/certus-logo.png" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+
+    <!-- Security Meta Tags -->
+    <meta name="description" content="Sistema de Validación CONSAR - Certus" />
+    <meta name="referrer" content="strict-origin-when-cross-origin" />
+
+    <!-- Content Security Policy (partial - full CSP should be in HTTP headers) -->
+    <meta http-equiv="Content-Security-Policy" content="
+      default-src 'self';
+      script-src 'self' 'unsafe-inline' 'unsafe-eval' http://localhost:* https://localhost:*;
+      style-src 'self' 'unsafe-inline' https://fonts.googleapis.com;
+      font-src 'self' https://fonts.gstatic.com data:;
+      img-src 'self' data: blob: https:;
+      connect-src 'self' http://localhost:* https://localhost:* ws://localhost:* wss://localhost:* https://api.consar.gob.mx https://*.azure.com;
+      base-uri 'self';
+      form-action 'self';
+    " />
+
+    <!-- Title -->
+    <title>Certus - Sistema de Validación</title>
+  </head>
+  <body>
+    <noscript>
+      <div style="
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        min-height: 100vh;
+        background: linear-gradient(135deg, #1e293b 0%, #334155 100%);
+        color: #f1f5f9;
+        font-family: system-ui, -apple-system, sans-serif;
+        padding: 2rem;
+        text-align: center;
+      ">
+        <div>
+          <h1 style="font-size: 2rem; margin-bottom: 1rem;">JavaScript Requerido</h1>
+          <p style="font-size: 1.125rem; color: #cbd5e1;">
+            Este sistema requiere JavaScript para funcionar correctamente.
+            <br />
+            Por favor, habilita JavaScript en tu navegador.
+          </p>
+        </div>
+      </div>
+    </noscript>
+    <div id="root"></div>
+    <script type="module" src="/src/main.tsx"></script>
+  </body>
+</html>

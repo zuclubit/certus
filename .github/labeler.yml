@@ -1,0 +1,125 @@
+# Pull Request Labeler Configuration
+# Automatically labels PRs based on the paths of changed files
+# See: https://github.com/actions/labeler
+
+# Application code
+app:
+  - changed-files:
+      - any-glob-to-any-file: 'app/src/**/*'
+
+# Components
+components:
+  - changed-files:
+      - any-glob-to-any-file: 'app/src/components/**/*'
+
+# UI Components
+ui:
+  - changed-files:
+      - any-glob-to-any-file: 'app/src/components/ui/**/*'
+
+# Features
+feature:
+  - changed-files:
+      - any-glob-to-any-file: 'app/src/features/**/*'
+
+# Pages
+pages:
+  - changed-files:
+      - any-glob-to-any-file: 'app/src/pages/**/*'
+
+# Hooks
+hooks:
+  - changed-files:
+      - any-glob-to-any-file: 'app/src/hooks/**/*'
+
+# State management
+state:
+  - changed-files:
+      - any-glob-to-any-file: 'app/src/stores/**/*'
+
+# API / Services
+api:
+  - changed-files:
+      - any-glob-to-any-file:
+          - 'app/src/lib/api/**/*'
+          - 'app/src/lib/services/**/*'
+
+# Authentication
+auth:
+  - changed-files:
+      - any-glob-to-any-file:
+          - 'app/src/lib/auth/**/*'
+          - 'app/src/features/auth/**/*'
+
+# Styling
+styling:
+  - changed-files:
+      - any-glob-to-any-file:
+          - 'app/src/**/*.css'
+          - 'app/tailwind.config.js'
+
+# Tests
+tests:
+  - changed-files:
+      - any-glob-to-any-file:
+          - 'app/tests/**/*'
+          - 'app/**/*.test.ts'
+          - 'app/**/*.test.tsx'
+          - 'app/**/*.spec.ts'
+          - 'app/**/*.spec.tsx'
+
+# Documentation
+documentation:
+  - changed-files:
+      - any-glob-to-any-file:
+          - '**/*.md'
+          - 'docs/**/*'
+
+# Configuration
+configuration:
+  - changed-files:
+      - any-glob-to-any-file:
+          - '**/*.config.js'
+          - '**/*.config.ts'
+          - '**/tsconfig.json'
+          - '**/package.json'
+          - '**/.env*'
+
+# CI/CD
+ci:
+  - changed-files:
+      - any-glob-to-any-file:
+          - '.github/**/*'
+
+# Infrastructure
+infrastructure:
+  - changed-files:
+      - any-glob-to-any-file:
+          - 'terraform/**/*'
+          - '**/Dockerfile*'
+          - '**/docker-compose*.yml'
+
+# Dependencies
+dependencies:
+  - changed-files:
+      - any-glob-to-any-file:
+          - '**/package.json'
+          - '**/package-lock.json'
+          - '**/pnpm-lock.yaml'
+          - '**/yarn.lock'
+
+# Types
+types:
+  - changed-files:
+      - any-glob-to-any-file:
+          - 'app/src/types/**/*'
+          - 'app/src/lib/types/**/*'
+          - '**/*.d.ts'
+
+# Security
+security:
+  - changed-files:
+      - any-glob-to-any-file:
+          - '**/security*'
+          - 'app/src/lib/utils/security.ts'
+          - 'app/src/lib/auth/**/*'

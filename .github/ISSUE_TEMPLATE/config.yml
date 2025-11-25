@@ -1,0 +1,11 @@
+blank_issues_enabled: false
+contact_links:
+  - name: Documentation
+    url: https://docs.certus.hergon.com
+    about: Check our documentation for guides and API references
+  - name: Discussions
+    url: https://github.com/oscarvalois/hergon-vector01/discussions
+    about: Ask questions and discuss ideas with the community
+  - name: Security Vulnerabilities
+    url: https://github.com/oscarvalois/hergon-vector01/security/advisories/new
+    about: Report security vulnerabilities privately

@@ -1,0 +1,626 @@
+/**
+ * Modal System - VisionOS Premium Design System
+ *
+ * Sistema unificado de estilos para modales, dialogs y drawers.
+ * Basado en Apple visionOS + Liquid Glass + WCAG 2.1 AA
+ *
+ * Arquitectura:
+ * - Z-index tokens organizados
+ * - Animaciones iOS-style con curvas premium
+ * - Soporte para reduced-motion
+ * - Breakpoints responsivos
+ * - Theme-aware (dark/light)
+ */
+
+/* ========================================
+   Z-INDEX TOKEN SYSTEM
+   Evita conflictos entre capas de UI
+   ======================================== */
+
+:root {
+  /* Base layers */
+  --z-base: 0;
+  --z-elevated: 10;
+
+  /* Interactive elements */
+  --z-dropdown: 100;
+  --z-sticky: 200;
+  --z-fixed: 300;
+
+  /* Overlay system */
+  --z-overlay-backdrop: 400;
+  --z-overlay: 450;
+
+  /* Modal system */
+  --z-modal-backdrop: 500;
+  --z-modal: 510;
+  --z-modal-content: 520;
+  --z-modal-close: 530;
+
+  /* Drawer system */
+  --z-drawer-backdrop: 500;
+  --z-drawer: 510;
+  --z-drawer-handle: 520;
+
+  /* Top layer elements */
+  --z-popover: 600;
+  --z-tooltip: 700;
+  --z-toast: 800;
+  --z-notification: 850;
+
+  /* Maximum priority */
+  --z-critical: 900;
+  --z-max: 9999;
+
+  /* Animation timings - iOS style */
+  --modal-duration-enter: 300ms;
+  --modal-duration-exit: 200ms;
+  --drawer-duration-enter: 500ms;
+  --drawer-duration-exit: 300ms;
+
+  /* iOS spring curve */
+  --ease-ios-spring: cubic-bezier(0.32, 0.72, 0, 1);
+  --ease-ios-out: cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  --ease-ios-in-out: cubic-bezier(0.45, 0, 0.55, 1);
+
+  /* Modal sizing */
+  --modal-padding-mobile: 16px;
+  --modal-padding-tablet: 24px;
+  --modal-padding-desktop: 32px;
+  --modal-border-radius: 24px;
+  --modal-border-radius-mobile: 20px;
+
+  /* Glass effects */
+  --glass-blur-light: 20px;
+  --glass-blur-medium: 32px;
+  --glass-blur-heavy: 48px;
+}
+
+/* ========================================
+   MODAL BACKDROP
+   ======================================== */
+
+.modal-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: var(--z-modal-backdrop);
+  background: rgba(0, 0, 0, 0.5);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+}
+
+.modal-backdrop[data-state='open'] {
+  animation: backdropFadeIn var(--modal-duration-enter) var(--ease-ios-out) forwards;
+}
+
+.modal-backdrop[data-state='closed'] {
+  animation: backdropFadeOut var(--modal-duration-exit) var(--ease-ios-out) forwards;
+}
+
+/* Dark mode backdrop */
+[data-theme='dark'] .modal-backdrop,
+.dark .modal-backdrop {
+  background: rgba(0, 0, 0, 0.7);
+}
+
+@keyframes backdropFadeIn {
+  from {
+    opacity: 0;
+    backdrop-filter: blur(0);
+    -webkit-backdrop-filter: blur(0);
+  }
+  to {
+    opacity: 1;
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+  }
+}
+
+@keyframes backdropFadeOut {
+  from {
+    opacity: 1;
+  }
+  to {
+    opacity: 0;
+  }
+}
+
+/* ========================================
+   MODAL CONTENT - DIALOG STYLE
+   ======================================== */
+
+.modal-content {
+  position: fixed;
+  left: 50%;
+  top: 50%;
+  z-index: var(--z-modal-content);
+  width: calc(100% - 32px);
+  max-width: 560px;
+  max-height: calc(100vh - 48px);
+  max-height: calc(100dvh - 48px);
+  transform: translate(-50%, -50%);
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+
+  /* Glass surface */
+  border-radius: var(--modal-border-radius-mobile);
+  border: 1.5px solid rgba(255, 255, 255, 0.15);
+}
+
+/* Size variants */
+.modal-content--sm {
+  max-width: 400px;
+}
+
+.modal-content--md {
+  max-width: 560px;
+}
+
+.modal-content--lg {
+  max-width: 720px;
+}
+
+.modal-content--xl {
+  max-width: 900px;
+}
+
+.modal-content--2xl {
+  max-width: 1100px;
+}
+
+.modal-content--full {
+  max-width: calc(100vw - 32px);
+  width: calc(100vw - 32px);
+  max-height: calc(100vh - 32px);
+  max-height: calc(100dvh - 32px);
+}
+
+/* Responsive sizing */
+@media (min-width: 640px) {
+  .modal-content {
+    width: 90vw;
+    border-radius: var(--modal-border-radius);
+  }
+}
+
+@media (min-width: 768px) {
+  .modal-content {
+    max-height: calc(90vh - 48px);
+    max-height: calc(90dvh - 48px);
+  }
+}
+
+/* Animation - Dialog style */
+.modal-content[data-state='open'] {
+  animation: modalEnter var(--modal-duration-enter) var(--ease-ios-spring) forwards;
+}
+
+.modal-content[data-state='closed'] {
+  animation: modalExit var(--modal-duration-exit) var(--ease-ios-out) forwards;
+}
+
+@keyframes modalEnter {
+  from {
+    opacity: 0;
+    transform: translate(-50%, -48%) scale(0.96);
+  }
+  to {
+    opacity: 1;
+    transform: translate(-50%, -50%) scale(1);
+  }
+}
+
+@keyframes modalExit {
+  from {
+    opacity: 1;
+    transform: translate(-50%, -50%) scale(1);
+  }
+  to {
+    opacity: 0;
+    transform: translate(-50%, -48%) scale(0.96);
+  }
+}
+
+/* ========================================
+   MODAL GLASS SURFACES - VISIONOS PREMIUM
+   ======================================== */
+
+/* Light mode glass */
+.modal-glass-light {
+  background: linear-gradient(
+    135deg,
+    rgba(255, 255, 255, 0.95) 0%,
+    rgba(250, 250, 255, 0.92) 50%,
+    rgba(255, 255, 255, 0.95) 100%
+  );
+  backdrop-filter: blur(var(--glass-blur-medium)) saturate(180%) brightness(1.05);
+  -webkit-backdrop-filter: blur(var(--glass-blur-medium)) saturate(180%) brightness(1.05);
+  border-color: rgba(255, 255, 255, 0.6);
+  box-shadow:
+    0 0 0 0.5px rgba(255, 255, 255, 0.8),
+    0 24px 80px rgba(0, 0, 0, 0.12),
+    0 12px 40px rgba(0, 0, 0, 0.08),
+    inset 0 1px 0 rgba(255, 255, 255, 0.8),
+    inset 0 -1px 0 rgba(0, 0, 0, 0.05);
+}
+
+/* Dark mode glass */
+.modal-glass-dark {
+  background: linear-gradient(
+    135deg,
+    rgba(20, 20, 25, 0.95) 0%,
+    rgba(25, 25, 32, 0.92) 50%,
+    rgba(20, 20, 25, 0.95) 100%
+  );
+  backdrop-filter: blur(var(--glass-blur-medium)) saturate(180%) brightness(0.95);
+  -webkit-backdrop-filter: blur(var(--glass-blur-medium)) saturate(180%) brightness(0.95);
+  border-color: rgba(255, 255, 255, 0.12);
+  box-shadow:
+    0 0 0 0.5px rgba(255, 255, 255, 0.08),
+    0 24px 80px rgba(0, 0, 0, 0.5),
+    0 12px 40px rgba(0, 0, 0, 0.35),
+    inset 0 1px 0 rgba(255, 255, 255, 0.08),
+    inset 0 -1px 0 rgba(0, 0, 0, 0.2);
+}
+
+/* Premium glass with caustics */
+.modal-glass-premium {
+  position: relative;
+}
+
+.modal-glass-premium::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 70%;
+  height: 1px;
+  background: linear-gradient(
+    90deg,
+    transparent 0%,
+    rgba(255, 255, 255, 0.5) 50%,
+    transparent 100%
+  );
+  pointer-events: none;
+}
+
+/* ========================================
+   DRAWER STYLES - MOBILE BOTTOM SHEET
+   ======================================== */
+
+.drawer-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: var(--z-drawer-backdrop);
+  background: rgba(0, 0, 0, 0.5);
+  backdrop-filter: blur(4px);
+  -webkit-backdrop-filter: blur(4px);
+}
+
+.drawer-content {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  z-index: var(--z-drawer);
+  max-height: 96vh;
+  max-height: 96dvh;
+  border-top-left-radius: 20px;
+  border-top-right-radius: 20px;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+
+  /* Safe area for iOS */
+  padding-bottom: env(safe-area-inset-bottom, 0);
+}
+
+/* Drawer handle */
+.drawer-handle {
+  width: 48px;
+  height: 5px;
+  margin: 12px auto;
+  border-radius: 3px;
+  background: rgba(128, 128, 128, 0.4);
+  flex-shrink: 0;
+}
+
+[data-theme='dark'] .drawer-handle,
+.dark .drawer-handle {
+  background: rgba(255, 255, 255, 0.25);
+}
+
+/* Drawer animation - iOS style */
+.drawer-content[data-state='open'] {
+  animation: drawerSlideUp var(--drawer-duration-enter) var(--ease-ios-spring) forwards;
+}
+
+.drawer-content[data-state='closed'] {
+  animation: drawerSlideDown var(--drawer-duration-exit) var(--ease-ios-out) forwards;
+}
+
+@keyframes drawerSlideUp {
+  from {
+    transform: translateY(100%);
+  }
+  to {
+    transform: translateY(0);
+  }
+}
+
+@keyframes drawerSlideDown {
+  from {
+    transform: translateY(0);
+  }
+  to {
+    transform: translateY(100%);
+  }
+}
+
+/* Direction variants */
+.drawer-content--left {
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: auto;
+  max-width: 90vw;
+  max-height: none;
+  border-radius: 0 20px 20px 0;
+}
+
+.drawer-content--right {
+  top: 0;
+  bottom: 0;
+  right: 0;
+  left: auto;
+  max-width: 90vw;
+  max-height: none;
+  border-radius: 20px 0 0 20px;
+}
+
+/* ========================================
+   MODAL HEADER
+   ======================================== */
+
+.modal-header {
+  flex-shrink: 0;
+  padding: 20px 24px 16px;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.08);
+}
+
+[data-theme='dark'] .modal-header,
+.dark .modal-header {
+  border-bottom-color: rgba(255, 255, 255, 0.1);
+}
+
+@media (max-width: 639px) {
+  .modal-header {
+    padding: 16px 16px 12px;
+  }
+}
+
+.modal-title {
+  font-size: 1.5rem;
+  font-weight: 700;
+  line-height: 1.25;
+  letter-spacing: -0.025em;
+  color: #1a1a1a;
+}
+
+[data-theme='dark'] .modal-title,
+.dark .modal-title {
+  color: #f5f5f5;
+}
+
+.modal-description {
+  font-size: 0.875rem;
+  color: #6b7280;
+  margin-top: 4px;
+  line-height: 1.5;
+}
+
+[data-theme='dark'] .modal-description,
+.dark .modal-description {
+  color: #9ca3af;
+}
+
+/* ========================================
+   MODAL BODY
+   ======================================== */
+
+.modal-body {
+  flex: 1;
+  overflow-y: auto;
+  overflow-x: hidden;
+  padding: 24px;
+  overscroll-behavior: contain;
+
+  /* Custom scrollbar */
+  scrollbar-width: thin;
+  scrollbar-color: rgba(128, 128, 128, 0.3) transparent;
+}
+
+.modal-body::-webkit-scrollbar {
+  width: 6px;
+}
+
+.modal-body::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.modal-body::-webkit-scrollbar-thumb {
+  background: rgba(128, 128, 128, 0.3);
+  border-radius: 3px;
+}
+
+.modal-body::-webkit-scrollbar-thumb:hover {
+  background: rgba(128, 128, 128, 0.5);
+}
+
+@media (max-width: 639px) {
+  .modal-body {
+    padding: 16px;
+  }
+}
+
+/* ========================================
+   MODAL FOOTER
+   ======================================== */
+
+.modal-footer {
+  flex-shrink: 0;
+  padding: 16px 24px 20px;
+  border-top: 1px solid rgba(0, 0, 0, 0.08);
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 12px;
+  background: rgba(0, 0, 0, 0.02);
+}
+
+[data-theme='dark'] .modal-footer,
+.dark .modal-footer {
+  border-top-color: rgba(255, 255, 255, 0.1);
+  background: rgba(255, 255, 255, 0.02);
+}
+
+@media (max-width: 639px) {
+  .modal-footer {
+    padding: 12px 16px 16px;
+    flex-direction: column-reverse;
+    gap: 8px;
+  }
+
+  .modal-footer > * {
+    width: 100%;
+  }
+}
+
+/* ========================================
+   CLOSE BUTTON
+   ======================================== */
+
+.modal-close {
+  position: absolute;
+  top: 16px;
+  right: 16px;
+  z-index: var(--z-modal-close);
+  width: 36px;
+  height: 36px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 12px;
+  border: none;
+  background: rgba(128, 128, 128, 0.1);
+  color: #6b7280;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.modal-close:hover {
+  background: rgba(128, 128, 128, 0.2);
+  color: #374151;
+  transform: scale(1.05);
+}
+
+.modal-close:active {
+  transform: scale(0.95);
+}
+
+[data-theme='dark'] .modal-close,
+.dark .modal-close {
+  background: rgba(255, 255, 255, 0.08);
+  color: #9ca3af;
+}
+
+[data-theme='dark'] .modal-close:hover,
+.dark .modal-close:hover {
+  background: rgba(255, 255, 255, 0.15);
+  color: #e5e7eb;
+}
+
+@media (max-width: 639px) {
+  .modal-close {
+    top: 12px;
+    right: 12px;
+    width: 32px;
+    height: 32px;
+  }
+}
+
+/* ========================================
+   REDUCED MOTION SUPPORT
+   ======================================== */
+
+@media (prefers-reduced-motion: reduce) {
+  .modal-backdrop,
+  .modal-content,
+  .drawer-content,
+  .modal-close {
+    animation: none !important;
+    transition: opacity 0.1s ease !important;
+  }
+
+  .modal-content[data-state='open'],
+  .drawer-content[data-state='open'] {
+    opacity: 1;
+    transform: translate(-50%, -50%);
+  }
+
+  .modal-content[data-state='closed'],
+  .drawer-content[data-state='closed'] {
+    opacity: 0;
+  }
+
+  .drawer-content[data-state='open'] {
+    transform: translateY(0);
+  }
+
+  .drawer-content[data-state='closed'] {
+    transform: translateY(100%);
+  }
+}
+
+/* ========================================
+   FOCUS TRAP INDICATOR
+   ======================================== */
+
+.modal-content:focus-visible,
+.drawer-content:focus-visible {
+  outline: 2px solid #3b82f6;
+  outline-offset: 2px;
+}
+
+/* ========================================
+   UTILITY CLASSES
+   ======================================== */
+
+/* Para forzar scroll snap en móvil */
+.modal-snap-points {
+  scroll-snap-type: y mandatory;
+}
+
+.modal-snap-points > * {
+  scroll-snap-align: start;
+}
+
+/* Para modales sin padding */
+.modal-body--flush {
+  padding: 0;
+}
+
+/* Para headers compactos */
+.modal-header--compact {
+  padding: 12px 16px;
+}
+
+/* Para footers sticky */
+.modal-footer--sticky {
+  position: sticky;
+  bottom: 0;
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+}

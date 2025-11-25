@@ -1,0 +1,51 @@
+version: '3.8'
+
+services:
+  sqlserver:
+    image: mcr.microsoft.com/mssql/server:2022-latest
+    container_name: hergon-sqlserver
+    hostname: sqlserver
+    environment:
+      - ACCEPT_EULA=Y
+      - SA_PASSWORD=Hergon2024!Pass
+      - MSSQL_PID=Developer
+      - MSSQL_AGENT_ENABLED=true
+    ports:
+      - "1433:1433"
+    volumes:
+      - sqlserver-data:/var/opt/mssql
+      - ./database/init:/docker-entrypoint-initdb.d
+      - ./database/scripts:/scripts
+      - ./docs:/backup
+    networks:
+      - hergon-network
+    restart: unless-stopped
+    healthcheck:
+      test: /opt/mssql-tools/bin/sqlcmd -S localhost -U sa -P Hergon2024!Pass -Q "SELECT 1" || exit 1
+      interval: 10s
+      timeout: 5s
+      retries: 10
+      start_period: 40s
+
+  # Opcional: Adminer para administración web de la base de datos
+  adminer:
+    image: adminer:latest
+    container_name: hergon-adminer
+    ports:
+      - "8080:8080"
+    environment:
+      - ADMINER_DEFAULT_SERVER=sqlserver
+    networks:
+      - hergon-network
+    restart: unless-stopped
+    depends_on:
+      sqlserver:
+        condition: service_healthy
+
+volumes:
+  sqlserver-data:
+    driver: local
+
+networks:
+  hergon-network:
+    driver: bridge

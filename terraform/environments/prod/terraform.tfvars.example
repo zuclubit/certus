@@ -1,0 +1,207 @@
+# ============================================================================
+# TERRAFORM VARIABLES - PRODUCTION ENVIRONMENT
+# Copiar este archivo a terraform.tfvars y completar los valores
+# ============================================================================
+
+# IMPORTANTE: Este archivo contiene valores de ejemplo
+# Copiar a terraform.tfvars y actualizar con valores reales:
+#
+#   cp terraform.tfvars.example terraform.tfvars
+#
+# NUNCA hacer commit de terraform.tfvars al repositorio (ya está en .gitignore)
+
+# ============================================================================
+# PROJECT CONFIGURATION
+# ============================================================================
+
+project_name = "hergon"
+environment  = "prod"
+region       = "us-east-1"  # Cambiar a "mx-central-1" cuando esté disponible
+
+# ============================================================================
+# NETWORKING
+# ============================================================================
+
+vpc_cidr           = "10.0.0.0/16"
+availability_zones = ["us-east-1a", "us-east-1b", "us-east-1c"]
+
+public_subnet_cidrs = [
+  "10.0.1.0/24",   # us-east-1a
+  "10.0.2.0/24",   # us-east-1b
+  "10.0.3.0/24"    # us-east-1c
+]
+
+private_app_subnet_cidrs = [
+  "10.0.11.0/24",  # us-east-1a
+  "10.0.12.0/24",  # us-east-1b
+  "10.0.13.0/24"   # us-east-1c
+]
+
+private_db_subnet_cidrs = [
+  "10.0.21.0/24",  # us-east-1a
+  "10.0.22.0/24",  # us-east-1b
+  "10.0.23.0/24"   # us-east-1c
+]
+
+# ============================================================================
+# AZURE AD CONFIGURATION
+# Obtener estos valores desde Azure Portal
+# ============================================================================
+
+# Azure AD Tenant ID
+# Ubicación: Azure Portal > Azure Active Directory > Overview > Tenant ID
+azure_tenant_id = "xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx"
+
+# Azure AD Client ID (Application ID)
+# Ubicación: Azure Portal > Azure AD > App registrations > [Tu App] > Application (client) ID
+azure_client_id = "xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx"
+
+# Azure AD Client Secret
+# Ubicación: Azure Portal > Azure AD > App registrations > [Tu App] > Certificates & secrets
+# IMPORTANTE: Crear un nuevo secret y guardarlo, no se puede recuperar después
+azure_client_secret = "tu-client-secret-aqui"
+
+# Azure AD Audience (API identifier URI)
+# Ubicación: Azure Portal > Azure AD > App registrations > [Tu App] > Expose an API
+azure_audience = "api://hergon-api-production"
+
+# ============================================================================
+# DATABASE CONFIGURATION
+# ============================================================================
+
+# RDS PostgreSQL Master Password
+# REQUISITOS:
+# - Mínimo 16 caracteres
+# - Incluir mayúsculas, minúsculas, números y símbolos
+# - NO usar caracteres especiales problemáticos: / " @ '
+#
+# Generar password seguro:
+#   openssl rand -base64 32 | tr -d "/@\"\'"
+#
+db_master_password = "CAMBIAR-POR-PASSWORD-SEGURO-MIN-16-CHARS"
+
+# ============================================================================
+# CONTAINER IMAGES (ECR)
+# Actualizar después de crear ECR repository y push de imágenes
+# ============================================================================
+
+# URL base del ECR repository
+# Formato: ACCOUNT_ID.dkr.ecr.REGION.amazonaws.com
+#
+# Obtener con:
+#   aws ecr describe-repositories --repository-names hergon-api-service --query 'repositories[0].repositoryUri' --output text | sed 's|/.*||'
+#
+ecr_repository_url = ""  # Dejar vacío inicialmente, actualizar después
+
+# ============================================================================
+# SSL/TLS CERTIFICATE
+# Crear certificado en AWS Certificate Manager (ACM) antes de deploy
+# ============================================================================
+
+# ARN del certificado SSL/TLS en ACM
+#
+# Crear certificado:
+#   1. AWS Console > Certificate Manager > Request certificate
+#   2. Request public certificate
+#   3. Dominio: api.hergon.com (o tu dominio)
+#   4. Validación DNS (recomendado) o Email
+#   5. Copiar el ARN aquí
+#
+# O via CLI:
+#   aws acm request-certificate \
+#     --domain-name api.hergon.com \
+#     --validation-method DNS \
+#     --region us-east-1
+#
+ssl_certificate_arn = ""  # Ejemplo: "arn:aws:acm:us-east-1:123456789012:certificate/xxxxx"
+
+# ============================================================================
+# MONITORING & ALERTS
+# ============================================================================
+
+# Email para recibir alertas de CloudWatch
+alert_email = "ops@hergon.com"
+
+# ============================================================================
+# TAGS ADICIONALES (opcional)
+# ============================================================================
+
+additional_tags = {
+  Terraform   = "true"
+  Repository  = "hergon-vector01"
+  Team        = "Engineering"
+  CostCenter  = "Engineering"
+  Owner       = "DevOps Team"
+  Compliance  = "CONSAR"
+  DataClass   = "Confidential"
+}
+
+# ============================================================================
+# CHECKLIST ANTES DE TERRAFORM APPLY
+# ============================================================================
+
+# [ ] 1. S3 bucket para state creado (hergon-terraform-state-prod)
+# [ ] 2. DynamoDB table para locking creada (hergon-terraform-lock)
+# [ ] 3. Azure AD App Registration configurado
+# [ ] 4. Azure AD Client Secret generado y copiado aquí
+# [ ] 5. Password de base de datos generado (mínimo 16 caracteres)
+# [ ] 6. Certificado SSL/TLS creado en ACM
+# [ ] 7. Email de alertas verificado y confirmado
+# [ ] 8. AWS credentials configuradas (aws configure)
+# [ ] 9. Terraform instalado (terraform --version)
+# [ ] 10. Este archivo copiado a terraform.tfvars
+# [ ] 11. Valores actualizados con información real
+# [ ] 12. terraform.tfvars agregado a .gitignore
+# [ ] 13. terraform init ejecutado exitosamente
+# [ ] 14. terraform plan revisado sin errores
+# [ ] 15. Presupuesto de AWS configurado (opcional pero recomendado)
+
+# ============================================================================
+# VALIDACIÓN DE VALORES
+# ============================================================================
+
+# Validar Azure AD configuration:
+#   curl https://login.microsoftonline.com/{TENANT_ID}/v2.0/.well-known/openid-configuration
+#
+# Validar que el password cumple requisitos:
+#   echo "TU_PASSWORD" | grep -E '^.{16,}$' && echo "Length OK" || echo "Too short"
+#
+# Validar certificado SSL:
+#   aws acm describe-certificate --certificate-arn "TU_ARN" --region us-east-1
+#
+# Validar AWS credentials:
+#   aws sts get-caller-identity
+
+# ============================================================================
+# COSTOS ESTIMADOS (con estos valores)
+# ============================================================================
+
+# Infraestructura mensual: ~$1,650/mes
+# Desglose:
+# - ECS Fargate (3 tasks): $520/mes
+# - RDS PostgreSQL Multi-AZ: $480/mes
+# - ElastiCache Redis: $220/mes
+# - NAT Gateways (3 AZs): $100/mes
+# - ALB: $25/mes
+# - S3 + DynamoDB: $50/mes (variable)
+# - Data Transfer: $100/mes (variable)
+# - CloudWatch Logs: $50/mes
+# - Otros: $105/mes
+#
+# Con Savings Plans (1 año): ~$1,266/mes (-23%)
+# Con Savings Plans (3 años): ~$1,058/mes (-36%)
+#
+# TOTAL ANUAL:
+# - Sin commitment: $19,800/año
+# - Savings Plans 1y: $15,192/año
+# - Savings Plans 3y: $12,696/año
+#
+# Azure AD B2C: $0/mes (gratis hasta 50,000 MAU)
+
+# ============================================================================
+# SOPORTE
+# ============================================================================
+
+# Documentación técnica: ../../../PLAN_IMPLEMENTACION_AWS_AZURE_AD.md
+# Arquitectura: ../../../ARQUITECTURA_OPTIMIZADA_REALISTA.md
+# Comparativa: ../../../COMPARATIVA_AZURE_VS_AWS_2025.md

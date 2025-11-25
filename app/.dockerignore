@@ -1,0 +1,56 @@
+# Dependencies
+node_modules
+.pnp
+.pnp.js
+
+# Build outputs
+dist
+build
+
+# Testing
+coverage
+playwright-report
+test-results
+
+# Development
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+*.log
+
+# IDE
+.idea
+.vscode
+*.swp
+*.swo
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Git
+.git
+.gitignore
+
+# Documentation
+*.md
+!README.md
+
+# Tests
+tests
+__tests__
+*.test.ts
+*.test.tsx
+*.spec.ts
+*.spec.tsx
+
+# Config files not needed in production
+.eslintrc*
+.prettierrc*
+tsconfig.json
+vite.config.ts
+playwright.config.ts
+vitest.config.ts
+commitlint.config.js
+lighthouserc.json

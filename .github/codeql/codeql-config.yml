@@ -1,0 +1,59 @@
+name: "Certus CodeQL Configuration"
+
+# Specify the languages to analyze
+languages:
+  - javascript-typescript
+
+# Specify query packs to run
+packs:
+  javascript-typescript:
+    - codeql/javascript-queries:AlertSuppression.ql
+    - codeql/javascript-queries:Security/CWE-079/ReflectedXss.ql
+    - codeql/javascript-queries:Security/CWE-078/CommandInjection.ql
+    - codeql/javascript-queries:Security/CWE-089/SqlInjection.ql
+    - codeql/javascript-queries:Security/CWE-094/CodeInjection.ql
+    - codeql/javascript-queries:Security/CWE-312/CleartextStorage.ql
+    - codeql/javascript-queries:Security/CWE-327/BrokenCryptoAlgorithm.ql
+    - codeql/javascript-queries:Security/CWE-022/TaintedPath.ql
+    - codeql/javascript-queries:Security/CWE-020/IncompleteUrlSchemeCheck.ql
+    - codeql/javascript-queries:Security/CWE-116/IncompleteSanitization.ql
+    - codeql/javascript-queries:Security/CWE-200/PrivateFileExposure.ql
+    - codeql/javascript-queries:Security/CWE-352/MissingCsrfMiddleware.ql
+    - codeql/javascript-queries:Security/CWE-601/ServerSideUrlRedirect.ql
+
+# Paths to exclude from analysis
+paths-ignore:
+  - node_modules
+  - '**/node_modules/**'
+  - dist
+  - '**/dist/**'
+  - build
+  - '**/build/**'
+  - coverage
+  - '**/coverage/**'
+  - '**/*.test.ts'
+  - '**/*.test.tsx'
+  - '**/*.spec.ts'
+  - '**/*.spec.tsx'
+  - '**/tests/**'
+  - '**/test/**'
+  - '**/__tests__/**'
+  - '**/__mocks__/**'
+  - '**/mocks/**'
+  - '**/mockData/**'
+  - '**/*.d.ts'
+  - '**/vendor/**'
+  - '.github/**'
+
+# Paths to include in analysis
+paths:
+  - app/src
+
+# Query filters
+query-filters:
+  - exclude:
+      tags contain: experimental
+  - include:
+      tags contain: security
+  - include:
+      tags contain: correctness

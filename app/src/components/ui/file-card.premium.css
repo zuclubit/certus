@@ -1,0 +1,33 @@
+/**
+ * FileCard Premium - CSS Utilities
+ *
+ * Custom styles to ensure text overflow handling works correctly
+ */
+
+/* Force overflow wrap anywhere */
+.overflow-wrap-anywhere {
+  overflow-wrap: anywhere;
+  word-wrap: anywhere;
+  word-break: break-word;
+}
+
+/* Ensure line-clamp works properly */
+.line-clamp-1,
+.line-clamp-2,
+.line-clamp-3 {
+  overflow: hidden;
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+}
+
+.line-clamp-1 {
+  -webkit-line-clamp: 1;
+}
+
+.line-clamp-2 {
+  -webkit-line-clamp: 2;
+}
+
+.line-clamp-3 {
+  -webkit-line-clamp: 3;
+}

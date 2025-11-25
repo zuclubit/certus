@@ -1,0 +1,198 @@
+<mxfile host="Electron" agent="Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) draw.io/29.0.3 Chrome/140.0.7339.249 Electron/38.7.0 Safari/537.36" version="29.0.3">
+  <diagram name="Catalog Update Flow" id="catalog-update-flow">
+    <mxGraphModel dx="1362" dy="918" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1600" pageHeight="1400" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="lane-consar" value="CONSAR (EXTERNO)" style="swimlane;horizontal=0;whiteSpace=wrap;html=1;fillColor=#f8cecc;strokeColor=#b85450;fontSize=14;fontStyle=1;startSize=40;" parent="1" vertex="1">
+          <mxGeometry x="40" y="40" width="1520" height="160" as="geometry" />
+        </mxCell>
+        <mxCell id="consar-publish" value="Publicar&lt;br&gt;Catalogo&lt;br&gt;Actualizado" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f8cecc;strokeColor=#b85450;fontSize=12;fontStyle=1;" parent="lane-consar" vertex="1">
+          <mxGeometry x="60" y="50" width="120" height="70" as="geometry" />
+        </mxCell>
+        <mxCell id="consar-url" value="URL:&#xa;consar.gob.mx&#xa;/catalogs/" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffe6cc;strokeColor=#d79b00;fontSize=11;" parent="lane-consar" vertex="1">
+          <mxGeometry x="220" y="60" width="120" height="50" as="geometry" />
+        </mxCell>
+        <mxCell id="label-scraper" value="Cron Job&#xa;Daily 6AM" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=10;fontColor=#82b366;fontStyle=1;" parent="lane-consar" vertex="1">
+          <mxGeometry x="340" y="90" width="80" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="lane-auto" value="SISTEMA AUTOMATICO" style="swimlane;horizontal=0;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;fontSize=14;fontStyle=1;startSize=40;" parent="1" vertex="1">
+          <mxGeometry x="40" y="200" width="1520" height="180" as="geometry" />
+        </mxCell>
+        <mxCell id="auto-detect" value="Web Scraper&#xa;Detecta&#xa;Nuevo Catalogo&#xa;(daily 6AM)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;fontSize=11;fontStyle=1;" parent="lane-auto" vertex="1">
+          <mxGeometry x="360" y="50" width="120" height="70" as="geometry" />
+        </mxCell>
+        <mxCell id="auto-download" value="Descargar&#xa;Archivo&#xa;(HTTPS)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;fontSize=12;" parent="lane-auto" vertex="1">
+          <mxGeometry x="500" y="50" width="100" height="70" as="geometry" />
+        </mxCell>
+        <mxCell id="auto-checksum" value="Verificar&#xa;Checksum&#xa;MD5/SHA256" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;fontSize=11;" parent="lane-auto" vertex="1">
+          <mxGeometry x="620" y="50" width="100" height="70" as="geometry" />
+        </mxCell>
+        <mxCell id="auto-notify" value="Notificar&#xa;Team&#xa;Compliance" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffe6cc;strokeColor=#d79b00;fontSize=11;" parent="lane-auto" vertex="1">
+          <mxGeometry x="740" y="50" width="100" height="70" as="geometry" />
+        </mxCell>
+        <mxCell id="lane-etl" value="ETL CATALOG PROCESSOR" style="swimlane;horizontal=0;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=14;fontStyle=1;startSize=40;" parent="1" vertex="1">
+          <mxGeometry x="40" y="380" width="1520" height="200" as="geometry" />
+        </mxCell>
+        <mxCell id="etl-parse" value="Parse&#xa;CSV/Excel&#xa;(encoding&#xa;validation)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=11;fontStyle=1;" parent="lane-etl" vertex="1">
+          <mxGeometry x="860" y="50" width="100" height="80" as="geometry" />
+        </mxCell>
+        <mxCell id="etl-validate" value="Validar&#xa;Estructura&#xa;Schema&#xa;(XSD/JSON)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=11;fontStyle=1;" parent="lane-etl" vertex="1">
+          <mxGeometry x="980" y="50" width="100" height="80" as="geometry" />
+        </mxCell>
+        <mxCell id="etl-diff" value="Comparar&#xa;Diferencias&#xa;vs Version&#xa;Anterior" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;fontSize=11;fontStyle=1;" parent="lane-etl" vertex="1">
+          <mxGeometry x="1100" y="50" width="100" height="80" as="geometry" />
+        </mxCell>
+        <mxCell id="etl-decision" value="Cambios&#xa;Detectados?" style="rhombus;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;fontSize=11;fontStyle=1;" parent="lane-etl" vertex="1">
+          <mxGeometry x="1220" y="50" width="100" height="80" as="geometry" />
+        </mxCell>
+        <mxCell id="label-no" value="NO&#xa;(sin cambios)" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=10;fontColor=#b85450;fontStyle=1;" parent="lane-etl" vertex="1">
+          <mxGeometry x="1320" y="90" width="80" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="lane-db" value="VALIDATION DB" style="swimlane;horizontal=0;whiteSpace=wrap;html=1;fillColor=#e1d5e7;strokeColor=#9673a6;fontSize=14;fontStyle=1;startSize=40;" parent="1" vertex="1">
+          <mxGeometry x="40" y="580" width="1520" height="180" as="geometry" />
+        </mxCell>
+        <mxCell id="db-version" value="Crear&#xa;Nueva Version&#xa;(v1, v2, v3...)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#e1d5e7;strokeColor=#9673a6;fontSize=11;fontStyle=1;" parent="lane-db" vertex="1">
+          <mxGeometry x="860" y="50" width="120" height="70" as="geometry" />
+        </mxCell>
+        <mxCell id="db-store" value="Almacenar&#xa;Catalogo&#xa;CatalogId&#xa;Version&#xa;EffectiveDate" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#e1d5e7;strokeColor=#9673a6;fontSize=10;fontStyle=1;" parent="lane-db" vertex="1">
+          <mxGeometry x="1000" y="50" width="120" height="70" as="geometry" />
+        </mxCell>
+        <mxCell id="db-activate" value="Activar&#xa;Nueva Version&#xa;(Feature Flag)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;fontSize=11;fontStyle=1;" parent="lane-db" vertex="1">
+          <mxGeometry x="1140" y="50" width="120" height="70" as="geometry" />
+        </mxCell>
+        <mxCell id="db-deprecate" value="Deprecar&#xa;Version&#xa;Anterior&#xa;(keep 3 vers)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f8cecc;strokeColor=#b85450;fontSize=10;" parent="lane-db" vertex="1">
+          <mxGeometry x="1280" y="50" width="120" height="70" as="geometry" />
+        </mxCell>
+        <mxCell id="label-event" value="Event:&#xa;CatalogUpdated" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=10;fontColor=#d6b656;fontStyle=1;" parent="lane-db" vertex="1">
+          <mxGeometry x="980" y="150" width="100" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="lane-validation" value="SISTEMA VALIDACION" style="swimlane;horizontal=0;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;fontSize=14;fontStyle=1;startSize=40;" parent="1" vertex="1">
+          <mxGeometry x="40" y="760" width="1520" height="180" as="geometry" />
+        </mxCell>
+        <mxCell id="val-detect-change" value="Detectar&#xa;CatalogUpdated&#xa;Event" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;fontSize=11;fontStyle=1;" parent="lane-validation" vertex="1">
+          <mxGeometry x="840" y="50" width="120" height="70" as="geometry" />
+        </mxCell>
+        <mxCell id="val-reload" value="Reload&#xa;Cache&#xa;Catalogos" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;fontSize=12;fontStyle=1;" parent="lane-validation" vertex="1">
+          <mxGeometry x="1000" y="50" width="120" height="70" as="geometry" />
+        </mxCell>
+        <mxCell id="val-test" value="Test&#xa;Validaciones&#xa;Afectadas&#xa;(10 samples)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=11;" parent="lane-validation" vertex="1">
+          <mxGeometry x="1140" y="50" width="120" height="70" as="geometry" />
+        </mxCell>
+        <mxCell id="val-monitor" value="Monitor&#xa;Error Rate&#xa;24h" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;fontSize=12;" parent="lane-validation" vertex="1">
+          <mxGeometry x="1280" y="50" width="100" height="70" as="geometry" />
+        </mxCell>
+        <mxCell id="lane-notif" value="NOTIFICACIONES" style="swimlane;horizontal=0;whiteSpace=wrap;html=1;fillColor=#ffe6cc;strokeColor=#d79b00;fontSize=14;fontStyle=1;startSize=40;" parent="1" vertex="1">
+          <mxGeometry x="40" y="940" width="1520" height="160" as="geometry" />
+        </mxCell>
+        <mxCell id="notif-slack" value="Slack&#xa;Webhook&#xa;canal catalogs" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffe6cc;strokeColor=#d79b00;fontSize=11;" parent="lane-notif" vertex="1">
+          <mxGeometry x="740" y="50" width="100" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="notif-email" value="Email&#xa;Team&#xa;Compliance&#xa;+&#xa;CTO" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffe6cc;strokeColor=#d79b00;fontSize=10;" parent="lane-notif" vertex="1">
+          <mxGeometry x="860" y="50" width="100" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="notif-dashboard" value="Dashboard&#xa;Update&#xa;Status" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffe6cc;strokeColor=#d79b00;fontSize=11;" parent="lane-notif" vertex="1">
+          <mxGeometry x="1010" y="50" width="100" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="arrow1" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeWidth=2;strokeColor=#b85450;" parent="1" source="consar-publish" target="consar-url" edge="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="arrow2" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeWidth=2;strokeColor=#82b366;" parent="1" source="consar-url" target="auto-detect" edge="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="arrow3" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeWidth=2;strokeColor=#82b366;" parent="1" source="auto-detect" target="auto-download" edge="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="arrow4" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeWidth=2;strokeColor=#82b366;" parent="1" source="auto-download" target="auto-checksum" edge="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="arrow5" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeWidth=2;strokeColor=#82b366;" parent="1" source="auto-checksum" target="auto-notify" edge="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="arrow6" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeWidth=2;strokeColor=#d79b00;" parent="1" source="auto-notify" target="notif-slack" edge="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="arrow7" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeWidth=2;strokeColor=#d79b00;" parent="1" source="auto-notify" target="notif-email" edge="1">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="850" y="970" />
+              <mxPoint x="950" y="970" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="arrow8" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeWidth=2;strokeColor=#6c8ebf;" parent="1" source="auto-notify" target="etl-parse" edge="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="arrow9" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeWidth=2;strokeColor=#6c8ebf;" parent="1" source="etl-parse" target="etl-validate" edge="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="arrow10" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeWidth=2;strokeColor=#6c8ebf;" parent="1" source="etl-validate" target="etl-diff" edge="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="arrow11" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeWidth=2;strokeColor=#d6b656;" parent="1" source="etl-diff" target="etl-decision" edge="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="arrow12" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeWidth=2;strokeColor=#9673a6;" parent="1" source="etl-decision" target="db-version" edge="1">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="1310" y="570" />
+              <mxPoint x="960" y="570" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="label-yes" value="SI" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=11;fontColor=#82b366;fontStyle=1;" parent="1" vertex="1">
+          <mxGeometry x="1200" y="550" width="40" height="20" as="geometry" />
+        </mxCell>
+        <mxCell id="arrow13" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeWidth=2;strokeColor=#9673a6;" parent="1" source="db-version" target="db-store" edge="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="arrow14" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeWidth=2;strokeColor=#9673a6;" parent="1" source="db-store" target="db-activate" edge="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="arrow15" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeWidth=2;strokeColor=#9673a6;" parent="1" source="db-activate" target="db-deprecate" edge="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="arrow16" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeWidth=2;strokeColor=#d6b656;dashed=1;" parent="1" source="db-activate" target="val-detect-change" edge="1">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="1240" y="730" />
+              <mxPoint x="940" y="730" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="arrow17" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeWidth=2;strokeColor=#d6b656;" parent="1" source="val-detect-change" target="val-reload" edge="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="arrow18" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeWidth=2;strokeColor=#6c8ebf;" parent="1" source="val-reload" target="val-test" edge="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="arrow19" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeWidth=2;strokeColor=#82b366;" parent="1" source="val-test" target="val-monitor" edge="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="arrow20" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeWidth=1;strokeColor=#d79b00;dashed=1;" parent="1" source="val-reload" target="notif-dashboard" edge="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="arrow-no-change" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeWidth=2;strokeColor=#b85450;dashed=1;exitX=1;exitY=0.5;exitDx=0;exitDy=0;" parent="1" source="etl-decision" target="notif-dashboard" edge="1">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="1450" y="470" />
+              <mxPoint x="1450" y="1010" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="catalog-types" value="CATALOGOS CONSAR&#xa;&#xa;1. CuentasConsar (Plan de cuentas oficial)&#xa;2. TiposCambio (USD, EUR, JPY diario)&#xa;3. AFOREs (Listado oficial AFOREs autorizadas)&#xa;4. Regimenes (RCV, Obligatorio, Voluntario)&#xa;5. TiposMovimiento (Aportacion, Traspaso, Retiro)&#xa;6. Estados (32 estados Mexico)&#xa;7. CodigosPostales (validacion CP por estado)&#xa;8. InstitucionesFinancieras (CLABE validation)&#xa;&#xa;Frecuencia actualizacion:&#xa;- TiposCambio: Diario&#xa;- CuentasConsar: Trimestral&#xa;- Otros: Mensual o ad-hoc" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=15;fontStyle=1;align=left;verticalAlign=top;arcSize=6;" parent="1" vertex="1">
+          <mxGeometry x="40" y="1140" width="480" height="300" as="geometry" />
+        </mxCell>
+        <mxCell id="versioning-strategy" value="ESTRATEGIA VERSIONADO&#xa;&#xa;Semantic Versioning: MAJOR.MINOR.PATCH&#xa;- MAJOR: Breaking changes (estructura)&#xa;- MINOR: Nuevos campos (backward compatible)&#xa;- PATCH: Correcciones datos&#xa;&#xa;Ejemplo: CuentasConsar v2.3.1&#xa;&#xa;Retention Policy:&#xa;- Mantener ultimas 3 versiones (rollback)&#xa;- Historial completo 7 años (audit)&#xa;- Almacenamiento: Azure Blob (cold storage)&#xa;&#xa;Feature Flags por catalogo:&#xa;- Canary: 10 pct trafico&#xa;- Gradual: 25, 50, 100 pct&#xa;- Rollback: menor 1 minuto" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#e1d5e7;strokeColor=#9673a6;fontSize=15;fontStyle=1;align=left;verticalAlign=top;arcSize=6;" parent="1" vertex="1">
+          <mxGeometry x="560" y="1140" width="480" height="340" as="geometry" />
+        </mxCell>
+        <mxCell id="metrics-catalog" value="METRICAS CATALOG UPDATE&#xa;&#xa;Tiempo deteccion: menor 30 minutos&#xa;Tiempo procesamiento ETL: menor 5 minutos&#xa;Tiempo activacion: menor 2 minutos&#xa;Total end-to-end: menor 40 minutos&#xa;&#xa;Availability: 99.95 pct&#xa;Error rate: menor 0.5 pct&#xa;Cache hit rate: mayor 95 pct&#xa;&#xa;Alertas:&#xa;- Checksum mismatch: CRITICO&#xa;- Schema validation fail: CRITICO&#xa;- Update delay mayor 1h: WARNING&#xa;- Cache reload fail: CRITICO" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;fontSize=15;fontStyle=1;align=left;verticalAlign=top;arcSize=6;" parent="1" vertex="1">
+          <mxGeometry x="1080" y="1140" width="480" height="320" as="geometry" />
+        </mxCell>
+        <mxCell id="title" value="FLUJO CATALOG UPDATE - ACTUALIZACION CATALOGOS CONSAR" style="text;html=1;strokeColor=#6c8ebf;fillColor=#dae8fc;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=1;fontSize=16;fontStyle=1;" parent="1" vertex="1">
+          <mxGeometry x="500" width="800" height="30" as="geometry" />
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>

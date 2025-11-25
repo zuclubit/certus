@@ -1,0 +1,294 @@
+<mxfile host="app.diagrams.net">
+  <diagram name="ETL Workflow Process" id="etl-workflow">
+    <mxGraphModel dx="1434" dy="844" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1800" pageHeight="1600" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+
+        <!-- SWIMLANE 1: FUENTES DE DATOS -->
+        <mxCell id="lane-sources" value="FUENTES DE DATOS" style="swimlane;horizontal=0;whiteSpace=wrap;html=1;fillColor=#f8cecc;strokeColor=#b85450;fontSize=14;fontStyle=1;startSize=40;" parent="1" vertex="1">
+          <mxGeometry x="40" y="40" width="1720" height="200" as="geometry" />
+        </mxCell>
+        <mxCell id="source-sap" value="SAP&#xa;ECC/S4HANA&#xa;&#xa;BAPI/RFC&#xa;Movimientos&#xa;Contables" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f8cecc;strokeColor=#b85450;fontSize=10;fontStyle=1;" parent="lane-sources" vertex="1">
+          <mxGeometry x="60" y="50" width="100" height="90" as="geometry" />
+        </mxCell>
+        <mxCell id="source-oracle" value="Oracle&#xa;Financial&#xa;&#xa;JDBC&#xa;Transacciones&#xa;AFORE" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f8cecc;strokeColor=#b85450;fontSize=10;fontStyle=1;" parent="lane-sources" vertex="1">
+          <mxGeometry x="180" y="50" width="100" height="90" as="geometry" />
+        </mxCell>
+        <mxCell id="source-aladdin" value="Aladdin&#xa;BlackRock&#xa;&#xa;REST API&#xa;Posiciones&#xa;Inversiones" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f8cecc;strokeColor=#b85450;fontSize=10;fontStyle=1;" parent="lane-sources" vertex="1">
+          <mxGeometry x="300" y="50" width="100" height="90" as="geometry" />
+        </mxCell>
+        <mxCell id="source-sftp" value="SFTP&#xa;Archivos&#xa;&#xa;CSV/TXT&#xa;Cargas&#xa;Manuales" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f8cecc;strokeColor=#b85450;fontSize=10;fontStyle=1;" parent="lane-sources" vertex="1">
+          <mxGeometry x="420" y="50" width="100" height="90" as="geometry" />
+        </mxCell>
+
+        <!-- SWIMLANE 2: ETL EXTRACTOR -->
+        <mxCell id="lane-extractor" value="ETL EXTRACTOR" style="swimlane;horizontal=0;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=14;fontStyle=1;startSize=40;" parent="1" vertex="1">
+          <mxGeometry x="40" y="240" width="1720" height="220" as="geometry" />
+        </mxCell>
+        <mxCell id="ext-schedule" value="Scheduler&#xa;Trigger&#xa;&#xa;Cron:&#xa;Daily 11PM&#xa;&#xa;Incremental&#xa;desde&#xa;LastRunDate" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=9;fontStyle=1;" parent="lane-extractor" vertex="1">
+          <mxGeometry x="560" y="50" width="100" height="110" as="geometry" />
+        </mxCell>
+        <mxCell id="ext-connect" value="Establecer&#xa;Conexiones&#xa;&#xa;Retry: 3x&#xa;Timeout: 30s&#xa;&#xa;Circuit&#xa;Breaker" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=9;fontStyle=1;" parent="lane-extractor" vertex="1">
+          <mxGeometry x="680" y="50" width="100" height="110" as="geometry" />
+        </mxCell>
+        <mxCell id="ext-query" value="Ejecutar&#xa;Queries&#xa;&#xa;Parametros:&#xa;FechaInicio&#xa;FechaFin&#xa;&#xa;Batch: 1000&#xa;registros" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=9;fontStyle=1;" parent="lane-extractor" vertex="1">
+          <mxGeometry x="800" y="50" width="100" height="110" as="geometry" />
+        </mxCell>
+        <mxCell id="ext-extract" value="EXTRAER&#xa;Datos&#xa;&#xa;Streaming&#xa;mode&#xa;&#xa;Compression:&#xa;gzip" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=9;fontStyle=1;" parent="lane-extractor" vertex="1">
+          <mxGeometry x="920" y="50" width="100" height="110" as="geometry" />
+        </mxCell>
+        <mxCell id="ext-validate-basic" value="Validacion&#xa;Basica&#xa;&#xa;Schema&#xa;Not Null&#xa;Data Types" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;fontSize=9;fontStyle=1;" parent="lane-extractor" vertex="1">
+          <mxGeometry x="1040" y="50" width="100" height="110" as="geometry" />
+        </mxCell>
+
+        <!-- SWIMLANE 3: ETL TRANSFORMER -->
+        <mxCell id="lane-transformer" value="ETL TRANSFORMER" style="swimlane;horizontal=0;whiteSpace=wrap;html=1;fillColor=#e1d5e7;strokeColor=#9673a6;fontSize=14;fontStyle=1;startSize=40;" parent="1" vertex="1">
+          <mxGeometry x="40" y="460" width="1720" height="240" as="geometry" />
+        </mxCell>
+        <mxCell id="trans-map" value="MAPEO&#xa;Campos&#xa;&#xa;Source to&#xa;Target&#xa;Mapping&#xa;&#xa;JSON Config" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#e1d5e7;strokeColor=#9673a6;fontSize=9;fontStyle=1;" parent="lane-transformer" vertex="1">
+          <mxGeometry x="1160" y="50" width="100" height="120" as="geometry" />
+        </mxCell>
+        <mxCell id="trans-enrich" value="Enriquecer&#xa;con&#xa;Catalogos&#xa;&#xa;Join:&#xa;CuentasConsar&#xa;TiposCambio&#xa;AFOREs" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#e1d5e7;strokeColor=#9673a6;fontSize=9;fontStyle=1;" parent="lane-transformer" vertex="1">
+          <mxGeometry x="1280" y="50" width="100" height="120" as="geometry" />
+        </mxCell>
+        <mxCell id="trans-business-rules" value="Aplicar&#xa;Reglas&#xa;Negocio&#xa;&#xa;Calculos&#xa;Formulas&#xa;Derivados&#xa;Agregados" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#e1d5e7;strokeColor=#9673a6;fontSize=9;fontStyle=1;" parent="lane-transformer" vertex="1">
+          <mxGeometry x="1400" y="50" width="100" height="120" as="geometry" />
+        </mxCell>
+        <mxCell id="trans-format" value="Formatear&#xa;CONSAR&#xa;&#xa;Fixed-Width&#xa;77 chars&#xa;&#xa;Padding&#xa;Encoding:&#xa;ISO-8859-1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#e1d5e7;strokeColor=#9673a6;fontSize=9;fontStyle=1;" parent="lane-transformer" vertex="1">
+          <mxGeometry x="1520" y="50" width="100" height="120" as="geometry" />
+        </mxCell>
+
+        <!-- SWIMLANE 4: STAGING AREA -->
+        <mxCell id="lane-staging" value="STAGING AREA" style="swimlane;horizontal=0;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;fontSize=14;fontStyle=1;startSize=40;" parent="1" vertex="1">
+          <mxGeometry x="40" y="700" width="1720" height="180" as="geometry" />
+        </mxCell>
+        <mxCell id="stage-write" value="Escribir&#xa;Azure Blob&#xa;&#xa;Container:&#xa;staging&#xa;&#xa;Partition:&#xa;YYYY/MM/DD" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;fontSize=9;fontStyle=1;" parent="lane-staging" vertex="1">
+          <mxGeometry x="1520" y="50" width="100" height="90" as="geometry" />
+        </mxCell>
+        <mxCell id="stage-checksum" value="Generar&#xa;Checksum&#xa;&#xa;SHA256&#xa;&#xa;Metadata:&#xa;rows, size,&#xa;timestamp" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;fontSize=9;" parent="lane-staging" vertex="1">
+          <mxGeometry x="1640" y="50" width="100" height="90" as="geometry" />
+        </mxCell>
+
+        <!-- SWIMLANE 5: ETL LOADER -->
+        <mxCell id="lane-loader" value="ETL LOADER" style="swimlane;horizontal=0;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;fontSize=14;fontStyle=1;startSize=40;" parent="1" vertex="1">
+          <mxGeometry x="40" y="880" width="1720" height="200" as="geometry" />
+        </mxCell>
+        <mxCell id="load-read" value="Leer&#xa;desde&#xa;Staging&#xa;&#xa;Stream&#xa;Processing" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;fontSize=10;fontStyle=1;" parent="lane-loader" vertex="1">
+          <mxGeometry x="900" y="50" width="100" height="90" as="geometry" />
+        </mxCell>
+        <mxCell id="load-validate-integrity" value="Validar&#xa;Integridad&#xa;&#xa;Checksum&#xa;Row Count&#xa;Duplicados" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;fontSize=10;fontStyle=1;" parent="lane-loader" vertex="1">
+          <mxGeometry x="1020" y="50" width="100" height="90" as="geometry" />
+        </mxCell>
+        <mxCell id="load-decision" value="Integridad&#xa;OK?" style="rhombus;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;fontSize=11;fontStyle=1;" parent="lane-loader" vertex="1">
+          <mxGeometry x="1140" y="50" width="100" height="90" as="geometry" />
+        </mxCell>
+        <mxCell id="load-bulk-insert" value="BULK&#xa;INSERT&#xa;ValidationDB&#xa;&#xa;Batch: 5000&#xa;Parallel: 4&#xa;threads" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;fontSize=9;fontStyle=1;" parent="lane-loader" vertex="1">
+          <mxGeometry x="1260" y="50" width="100" height="90" as="geometry" />
+        </mxCell>
+
+        <!-- SWIMLANE 6: PARSER SERVICE -->
+        <mxCell id="lane-parser" value="PARSER SERVICE" style="swimlane;horizontal=0;whiteSpace=wrap;html=1;fillColor=#ffe6cc;strokeColor=#d79b00;fontSize=14;fontStyle=1;startSize=40;" parent="1" vertex="1">
+          <mxGeometry x="40" y="1080" width="1720" height="200" as="geometry" />
+        </mxCell>
+        <mxCell id="parse-trigger" value="Detectar&#xa;LoadCompleted&#xa;Event" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffe6cc;strokeColor=#d79b00;fontSize=11;fontStyle=1;" parent="lane-parser" vertex="1">
+          <mxGeometry x="1380" y="50" width="100" height="80" as="geometry" />
+        </mxCell>
+        <mxCell id="parse-fixed-width" value="Parse&#xa;Fixed-Width&#xa;77 chars&#xa;&#xa;Position&#xa;Mapping" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffe6cc;strokeColor=#d79b00;fontSize=10;fontStyle=1;" parent="lane-parser" vertex="1">
+          <mxGeometry x="1500" y="50" width="100" height="80" as="geometry" />
+        </mxCell>
+        <mxCell id="parse-validate-basic" value="Validaciones&#xa;Basicas&#xa;&#xa;Length&#xa;Encoding&#xa;Format" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffe6cc;strokeColor=#d79b00;fontSize=10;fontStyle=1;" parent="lane-parser" vertex="1">
+          <mxGeometry x="1620" y="50" width="100" height="80" as="geometry" />
+        </mxCell>
+
+        <!-- SWIMLANE 7: EVENT BUS -->
+        <mxCell id="lane-events" value="EVENT BUS / MENSAJERIA" style="swimlane;horizontal=0;whiteSpace=wrap;html=1;fillColor=#f5f5f5;strokeColor=#666666;fontSize=14;fontStyle=1;startSize=40;" parent="1" vertex="1">
+          <mxGeometry x="40" y="1280" width="1720" height="180" as="geometry" />
+        </mxCell>
+        <mxCell id="event-publish-parsed" value="Publicar&#xa;FileParsed&#xa;Event&#xa;&#xa;Queue:&#xa;validation-queue&#xa;&#xa;Payload:&#xa;FileId,&#xa;RowCount,&#xa;Metadata" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f5f5f5;strokeColor=#666666;fontSize=9;fontStyle=1;" parent="lane-events" vertex="1">
+          <mxGeometry x="920" y="50" width="120" height="100" as="geometry" />
+        </mxCell>
+        <mxCell id="event-notify" value="Notificar&#xa;Dashboard&#xa;&#xa;Status:&#xa;SUCCESS/FAIL&#xa;&#xa;Metricas:&#xa;Duration,&#xa;RowCount,&#xa;Size" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f5f5f5;strokeColor=#666666;fontSize=9;" parent="lane-events" vertex="1">
+          <mxGeometry x="1060" y="50" width="120" height="100" as="geometry" />
+        </mxCell>
+
+        <!-- SWIMLANE 8: ERROR HANDLING -->
+        <mxCell id="lane-errors" value="ERROR HANDLING" style="swimlane;horizontal=0;whiteSpace=wrap;html=1;fillColor=#f8cecc;strokeColor=#b85450;fontSize=14;fontStyle=1;startSize=40;" parent="1" vertex="1">
+          <mxGeometry x="40" y="1460" width="1720" height="160" as="geometry" />
+        </mxCell>
+        <mxCell id="error-log" value="Log Error&#xa;&#xa;Azure App&#xa;Insights&#xa;&#xa;Severity:&#xa;ERROR/WARN" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f8cecc;strokeColor=#b85450;fontSize=10;fontStyle=1;" parent="lane-errors" vertex="1">
+          <mxGeometry x="680" y="40" width="100" height="80" as="geometry" />
+        </mxCell>
+        <mxCell id="error-retry" value="Retry Logic&#xa;&#xa;Max: 3x&#xa;Backoff:&#xa;Exponential&#xa;2,4,8 min" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f8cecc;strokeColor=#b85450;fontSize=10;fontStyle=1;" parent="lane-errors" vertex="1">
+          <mxGeometry x="800" y="40" width="100" height="80" as="geometry" />
+        </mxCell>
+        <mxCell id="error-dead-letter" value="Dead Letter&#xa;Queue&#xa;&#xa;Manual&#xa;Intervention&#xa;Required" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f8cecc;strokeColor=#b85450;fontSize=10;fontStyle=1;" parent="lane-errors" vertex="1">
+          <mxGeometry x="920" y="40" width="100" height="80" as="geometry" />
+        </mxCell>
+        <mxCell id="error-alert" value="Alert&#xa;&#xa;Email + Slack&#xa;&#xa;On-Call&#xa;Engineer" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f8cecc;strokeColor=#b85450;fontSize=10;fontStyle=1;" parent="lane-errors" vertex="1">
+          <mxGeometry x="1040" y="40" width="100" height="80" as="geometry" />
+        </mxCell>
+
+        <!-- ARROWS / FLOW - EXTRACT PHASE -->
+        <mxCell id="arrow1" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeWidth=2;strokeColor=#6c8ebf;" parent="1" source="source-sap" target="ext-schedule" edge="1">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="150" y="180" />
+              <mxPoint x="650" y="180" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="arrow2" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeWidth=2;strokeColor=#6c8ebf;" parent="1" source="source-oracle" target="ext-schedule" edge="1">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="270" y="180" />
+              <mxPoint x="650" y="180" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="arrow3" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeWidth=2;strokeColor=#6c8ebf;" parent="1" source="source-aladdin" target="ext-schedule" edge="1">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="390" y="180" />
+              <mxPoint x="650" y="180" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="arrow4" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeWidth=2;strokeColor=#6c8ebf;" parent="1" source="source-sftp" target="ext-schedule" edge="1">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="510" y="180" />
+              <mxPoint x="650" y="180" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="label-parallel" value="Extraccion Paralela&#xa;4 threads" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=10;fontColor=#6c8ebf;fontStyle=1;" parent="1" vertex="1">
+          <mxGeometry x="300" y="190" width="120" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="arrow5" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeWidth=2;strokeColor=#6c8ebf;" parent="1" source="ext-schedule" target="ext-connect" edge="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="arrow6" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeWidth=2;strokeColor=#6c8ebf;" parent="1" source="ext-connect" target="ext-query" edge="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="arrow7" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeWidth=2;strokeColor=#6c8ebf;" parent="1" source="ext-query" target="ext-extract" edge="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="arrow8" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeWidth=2;strokeColor=#6c8ebf;" parent="1" source="ext-extract" target="ext-validate-basic" edge="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <!-- ARROWS - TRANSFORM PHASE -->
+        <mxCell id="arrow9" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeWidth=2;strokeColor=#9673a6;" parent="1" source="ext-validate-basic" target="trans-map" edge="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="arrow10" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeWidth=2;strokeColor=#9673a6;" parent="1" source="trans-map" target="trans-enrich" edge="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="arrow11" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeWidth=2;strokeColor=#9673a6;" parent="1" source="trans-enrich" target="trans-business-rules" edge="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="arrow12" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeWidth=2;strokeColor=#9673a6;" parent="1" source="trans-business-rules" target="trans-format" edge="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <!-- ARROWS - STAGING -->
+        <mxCell id="arrow13" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeWidth=2;strokeColor=#82b366;" parent="1" source="trans-format" target="stage-write" edge="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="arrow14" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeWidth=2;strokeColor=#82b366;" parent="1" source="stage-write" target="stage-checksum" edge="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <!-- ARROWS - LOAD PHASE -->
+        <mxCell id="arrow15" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeWidth=2;strokeColor=#d6b656;" parent="1" source="stage-checksum" target="load-read" edge="1">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="1730" y="820" />
+              <mxPoint x="990" y="820" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="arrow16" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeWidth=2;strokeColor=#d6b656;" parent="1" source="load-read" target="load-validate-integrity" edge="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="arrow17" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeWidth=2;strokeColor=#d6b656;" parent="1" source="load-validate-integrity" target="load-decision" edge="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="arrow18" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeWidth=2;strokeColor=#82b366;" parent="1" source="load-decision" target="load-bulk-insert" edge="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="label-ok" value="OK" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=11;fontColor=#82b366;fontStyle=1;" parent="1" vertex="1">
+          <mxGeometry x="1240" y="920" width="40" height="20" as="geometry" />
+        </mxCell>
+
+        <!-- ERROR PATH from load-decision -->
+        <mxCell id="arrow-error1" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeWidth=2;strokeColor=#b85450;dashed=1;" parent="1" source="load-decision" target="error-log" edge="1">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="1230" y="1030" />
+              <mxPoint x="770" y="1030" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="label-error" value="ERROR" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=11;fontColor=#b85450;fontStyle=1;" parent="1" vertex="1">
+          <mxGeometry x="1000" y="1010" width="60" height="20" as="geometry" />
+        </mxCell>
+        <mxCell id="arrow-error2" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeWidth=2;strokeColor=#b85450;" parent="1" source="error-log" target="error-retry" edge="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="arrow-error3" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeWidth=2;strokeColor=#b85450;" parent="1" source="error-retry" target="error-dead-letter" edge="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="arrow-error4" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeWidth=2;strokeColor=#b85450;" parent="1" source="error-dead-letter" target="error-alert" edge="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <!-- ARROWS - PARSER -->
+        <mxCell id="arrow19" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeWidth=2;strokeColor=#d79b00;" parent="1" source="load-bulk-insert" target="parse-trigger" edge="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="arrow20" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeWidth=2;strokeColor=#d79b00;" parent="1" source="parse-trigger" target="parse-fixed-width" edge="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="arrow21" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeWidth=2;strokeColor=#d79b00;" parent="1" source="parse-fixed-width" target="parse-validate-basic" edge="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <!-- ARROWS - EVENT BUS -->
+        <mxCell id="arrow22" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeWidth=2;strokeColor=#666666;" parent="1" source="parse-validate-basic" target="event-publish-parsed" edge="1">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="1710" y="1200" />
+              <mxPoint x="1020" y="1200" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="arrow23" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeWidth=2;strokeColor=#666666;" parent="1" source="event-publish-parsed" target="event-notify" edge="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <!-- ETL METRICS BOX -->
+        <mxCell id="metrics-etl" value="METRICAS ETL PROCESS&#xa;&#xa;Tiempo EXTRACT: 15-20 min (4 fuentes paralelo)&#xa;Tiempo TRANSFORM: 10-15 min (1M registros)&#xa;Tiempo LOAD: 5-10 min (bulk insert)&#xa;Tiempo PARSE: 2-5 min&#xa;Total end-to-end: 35-50 minutos&#xa;&#xa;Throughput: 20,000 registros/segundo&#xa;Batch size: 1,000 (extract), 5,000 (load)&#xa;Parallel threads: 4 (extract), 4 (load)&#xa;&#xa;Volumenes:&#xa;- Promedio diario: 500K-1M registros&#xa;- Pico mensual: 3M-5M registros&#xa;- Tamaño archivo staging: 50-100 MB&#xa;&#xa;Availability: 99.5 pct&#xa;Error rate: menor 1 pct&#xa;Retry success: 85 pct" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=10;fontStyle=1;align=left;verticalAlign=top;arcSize=6;" parent="1" vertex="1">
+          <mxGeometry x="40" y="1660" width="520" height="300" as="geometry" />
+        </mxCell>
+
+        <!-- DATA QUALITY BOX -->
+        <mxCell id="quality-checks" value="DATA QUALITY CHECKS&#xa;&#xa;Validaciones EXTRACT:&#xa;- Connection timeout menor 30s&#xa;- Schema validation (columnas esperadas)&#xa;- Not null en campos criticos&#xa;- Data type validation&#xa;&#xa;Validaciones TRANSFORM:&#xa;- Mapeo completo (0 registros sin mapear)&#xa;- Enriquecimiento exitoso (mayor 98 pct join)&#xa;- Formato CONSAR correcto (77 chars exacto)&#xa;- Encoding ISO-8859-1 valido&#xa;- Reglas negocio aplicadas (calculos)&#xa;&#xa;Validaciones LOAD:&#xa;- Checksum match (staging vs loaded)&#xa;- Row count match (0 registros perdidos)&#xa;- No duplicados (PK violation)&#xa;- Integridad referencial&#xa;&#xa;Validaciones PARSE:&#xa;- Fixed-width parsing exitoso (mayor 99 pct)&#xa;- Campos no vacios en posiciones criticas&#xa;- Caracteres especiales validos" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#e1d5e7;strokeColor=#9673a6;fontSize=10;fontStyle=1;align=left;verticalAlign=top;arcSize=6;" parent="1" vertex="1">
+          <mxGeometry x="600" y="1660" width="520" height="340" as="geometry" />
+        </mxCell>
+
+        <!-- ERROR HANDLING STRATEGY BOX -->
+        <mxCell id="error-strategy" value="ESTRATEGIA ERROR HANDLING&#xa;&#xa;Errores TRANSITORIOS (retry):&#xa;- Connection timeout&#xa;- Network errors&#xa;- Temporary unavailability&#xa;- Throttling (429)&#xa;Retry: 3x con backoff exponencial (2, 4, 8 min)&#xa;&#xa;Errores PERMANENTES (no retry):&#xa;- Authentication failure (401)&#xa;- Authorization failure (403)&#xa;- Invalid schema (400)&#xa;- Data corruption&#xa;Accion: Log + Dead Letter Queue + Alert&#xa;&#xa;Circuit Breaker:&#xa;- Threshold: 5 errores consecutivos&#xa;- Open: 5 minutos (no intentar conexion)&#xa;- Half-open: 1 intento de prueba&#xa;- Closed: Normalizado&#xa;&#xa;Dead Letter Queue:&#xa;- Retention: 7 dias&#xa;- Manual review + reprocess&#xa;- Alertas a equipo On-Call&#xa;&#xa;Monitoring:&#xa;- Azure App Insights (logs, traces)&#xa;- Alertas tiempo real (mayor 5 pct error rate)&#xa;- Dashboard ETL status" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f8cecc;strokeColor=#b85450;fontSize=10;fontStyle=1;align=left;verticalAlign=top;arcSize=6;" parent="1" vertex="1">
+          <mxGeometry x="1160" y="1660" width="600" height="360" as="geometry" />
+        </mxCell>
+
+        <!-- TITLE -->
+        <mxCell id="title" value="WORKFLOW ETL PROCESS - EXTRACT TRANSFORM LOAD PIPELINE" style="text;html=1;strokeColor=#6c8ebf;fillColor=#dae8fc;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=1;fontSize=16;fontStyle=1;" parent="1" vertex="1">
+          <mxGeometry x="560" y="0" width="800" height="30" as="geometry" />
+        </mxCell>
+
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>

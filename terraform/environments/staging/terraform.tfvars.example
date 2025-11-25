@@ -1,0 +1,79 @@
+# ============================================================================
+# TERRAFORM VARIABLES - STAGING ENVIRONMENT
+# Versión simplificada para pruebas y desarrollo
+# ============================================================================
+
+project_name = "hergon"
+environment  = "staging"
+region       = "us-east-1"
+
+# ============================================================================
+# NETWORKING (1 AZ para reducir costos)
+# ============================================================================
+
+vpc_cidr           = "10.1.0.0/16"
+availability_zones = ["us-east-1a"]  # Solo 1 AZ en staging
+
+public_subnet_cidrs      = ["10.1.1.0/24"]
+private_app_subnet_cidrs = ["10.1.11.0/24"]
+private_db_subnet_cidrs  = ["10.1.21.0/24"]
+
+# ============================================================================
+# AZURE AD (mismo tenant que producción)
+# ============================================================================
+
+azure_tenant_id     = "xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx"
+azure_client_id     = "xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx"  # Puede ser diferente al de prod
+azure_client_secret = "staging-client-secret"
+azure_audience      = "api://hergon-api-staging"
+
+# ============================================================================
+# DATABASE
+# ============================================================================
+
+db_master_password = "STAGING-PASSWORD-MIN-16-CHARS"
+
+# ============================================================================
+# CONTAINER IMAGES
+# ============================================================================
+
+ecr_repository_url = ""  # Mismo ECR que prod, diferentes tags
+
+# ============================================================================
+# SSL/TLS
+# ============================================================================
+
+ssl_certificate_arn = ""  # Certificado para staging.api.hergon.com
+
+# ============================================================================
+# MONITORING
+# ============================================================================
+
+alert_email = "dev@hergon.com"
+
+# ============================================================================
+# TAGS
+# ============================================================================
+
+additional_tags = {
+  Terraform  = "true"
+  Repository = "hergon-vector01"
+  Team       = "Engineering"
+  CostCenter = "Engineering"
+  Owner      = "DevOps Team"
+}
+
+# ============================================================================
+# COSTOS ESTIMADOS STAGING
+# ============================================================================
+
+# Infraestructura mensual: ~$450/mes
+# - ECS Fargate (1 task): $75/mes
+# - RDS PostgreSQL t4g.medium: $120/mes
+# - ElastiCache Redis t4g.micro: $15/mes
+# - NAT Gateway (1 AZ): $35/mes
+# - ALB: $25/mes
+# - S3 + DynamoDB: $20/mes
+# - Otros: $160/mes
+#
+# Total anual staging: ~$5,400/año

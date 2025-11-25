@@ -1,0 +1,211 @@
+<mxfile host="app.diagrams.net">
+  <diagram name="Componentes Infraestructura" id="infrastructure-components">
+    <mxGraphModel dx="1434" dy="844" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="2200" pageHeight="2000" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+
+        <!-- LAYER 1: USUARIOS / CLIENTS -->
+        <mxCell id="layer-users" value="CAPA USUARIOS / CLIENTES" style="swimlane;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=16;fontStyle=1;startSize=40;" parent="1" vertex="1">
+          <mxGeometry x="40" y="40" width="2120" height="180" as="geometry" />
+        </mxCell>
+        <mxCell id="user-web" value="Web Browser&#xa;&#xa;Chrome/Firefox/Edge&#xa;&#xa;React SPA&#xa;Dashboard" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=11;fontStyle=1;" parent="layer-users" vertex="1">
+          <mxGeometry x="60" y="60" width="140" height="90" as="geometry" />
+        </mxCell>
+        <mxCell id="user-mobile" value="Mobile App&#xa;&#xa;iOS/Android&#xa;&#xa;React Native&#xa;Validaciones" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=11;fontStyle=1;" parent="layer-users" vertex="1">
+          <mxGeometry x="230" y="60" width="140" height="90" as="geometry" />
+        </mxCell>
+        <mxCell id="user-api-client" value="API Clients&#xa;&#xa;Postman/cURL&#xa;&#xa;External Systems&#xa;Integration" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=11;fontStyle=1;" parent="layer-users" vertex="1">
+          <mxGeometry x="400" y="60" width="140" height="90" as="geometry" />
+        </mxCell>
+        <mxCell id="user-consar" value="CONSAR&#xa;&#xa;SFTP Client&#xa;&#xa;Recepcion&#xa;Reportes" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f8cecc;strokeColor=#b85450;fontSize=11;fontStyle=1;" parent="layer-users" vertex="1">
+          <mxGeometry x="1920" y="60" width="140" height="90" as="geometry" />
+        </mxCell>
+
+        <!-- LAYER 2: SECURITY & CDN -->
+        <mxCell id="layer-security" value="CAPA SEGURIDAD Y CDN" style="swimlane;whiteSpace=wrap;html=1;fillColor=#ffe6cc;strokeColor=#d79b00;fontSize=16;fontStyle=1;startSize=40;" parent="1" vertex="1">
+          <mxGeometry x="40" y="240" width="2120" height="180" as="geometry" />
+        </mxCell>
+        <mxCell id="sec-cloudflare" value="Cloudflare CDN&#xa;&#xa;- DDoS Protection&#xa;- WAF&#xa;- SSL/TLS 1.3&#xa;- Rate Limiting&#xa;- Cache Static" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffe6cc;strokeColor=#d79b00;fontSize=10;fontStyle=1;" parent="layer-security" vertex="1">
+          <mxGeometry x="60" y="60" width="160" height="90" as="geometry" />
+        </mxCell>
+        <mxCell id="sec-azure-ad" value="Azure AD&#xa;&#xa;- Authentication&#xa;- Authorization&#xa;- SSO&#xa;- MFA&#xa;- OAuth 2.0/OIDC" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffe6cc;strokeColor=#d79b00;fontSize=10;fontStyle=1;" parent="layer-security" vertex="1">
+          <mxGeometry x="250" y="60" width="160" height="90" as="geometry" />
+        </mxCell>
+        <mxCell id="sec-apim" value="Azure API&#xa;Management&#xa;&#xa;- Gateway&#xa;- Throttling&#xa;- JWT Validation&#xa;- Logging" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffe6cc;strokeColor=#d79b00;fontSize=10;fontStyle=1;" parent="layer-security" vertex="1">
+          <mxGeometry x="440" y="60" width="160" height="90" as="geometry" />
+        </mxCell>
+        <mxCell id="sec-keyvault" value="Azure Key Vault&#xa;&#xa;- Secrets&#xa;- Certificates&#xa;- PGP Keys&#xa;- Connection Strings&#xa;- HSM backed" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffe6cc;strokeColor=#d79b00;fontSize=9;fontStyle=1;" parent="layer-security" vertex="1">
+          <mxGeometry x="1760" y="60" width="150" height="90" as="geometry" />
+        </mxCell>
+
+        <!-- LAYER 3: FRONTEND / PRESENTATION -->
+        <mxCell id="layer-frontend" value="CAPA FRONTEND / PRESENTACION" style="swimlane;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;fontSize=16;fontStyle=1;startSize=40;" parent="1" vertex="1">
+          <mxGeometry x="40" y="440" width="2120" height="200" as="geometry" />
+        </mxCell>
+        <mxCell id="fe-web-app" value="Web Application&#xa;&#xa;React 18&#xa;TypeScript&#xa;Redux Toolkit&#xa;&#xa;Features:&#xa;- Dashboard&#xa;- File Upload&#xa;- Validation Results&#xa;- Reports Download&#xa;- User Management" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;fontSize=9;fontStyle=1;" parent="layer-frontend" vertex="1">
+          <mxGeometry x="60" y="60" width="180" height="110" as="geometry" />
+        </mxCell>
+        <mxCell id="fe-static-hosting" value="Azure Static&#xa;Web Apps&#xa;&#xa;- Global CDN&#xa;- Auto-scaling&#xa;- Custom domains&#xa;- SSL included" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;fontSize=9;fontStyle=1;" parent="layer-frontend" vertex="1">
+          <mxGeometry x="270" y="60" width="150" height="110" as="geometry" />
+        </mxCell>
+        <mxCell id="fe-signalr" value="SignalR Hub&#xa;&#xa;WebSockets&#xa;&#xa;Real-time:&#xa;- Validation progress&#xa;- Notifications&#xa;- Live dashboard" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;fontSize=9;fontStyle=1;" parent="layer-frontend" vertex="1">
+          <mxGeometry x="450" y="60" width="150" height="110" as="geometry" />
+        </mxCell>
+
+        <!-- LAYER 4: API GATEWAY -->
+        <mxCell id="layer-api" value="CAPA API GATEWAY" style="swimlane;whiteSpace=wrap;html=1;fillColor=#e1d5e7;strokeColor=#9673a6;fontSize=16;fontStyle=1;startSize=40;" parent="1" vertex="1">
+          <mxGeometry x="40" y="660" width="2120" height="180" as="geometry" />
+        </mxCell>
+        <mxCell id="api-gateway" value="API Gateway&#xa;(ASP.NET Core 8)&#xa;&#xa;Endpoints:&#xa;/api/files&#xa;/api/validations&#xa;/api/reports&#xa;/api/users&#xa;/api/catalogs&#xa;&#xa;Features:&#xa;- REST API&#xa;- GraphQL&#xa;- Rate limiting&#xa;- Request logging&#xa;- Response caching" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#e1d5e7;strokeColor=#9673a6;fontSize=9;fontStyle=1;" parent="layer-api" vertex="1">
+          <mxGeometry x="60" y="50" width="200" height="110" as="geometry" />
+        </mxCell>
+        <mxCell id="api-health" value="Health Checks&#xa;&#xa;/health/live&#xa;/health/ready&#xa;&#xa;Monitor:&#xa;- DB connections&#xa;- External APIs&#xa;- Queue status" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#e1d5e7;strokeColor=#9673a6;fontSize=9;fontStyle=1;" parent="layer-api" vertex="1">
+          <mxGeometry x="290" y="50" width="140" height="110" as="geometry" />
+        </mxCell>
+        <mxCell id="api-swagger" value="Swagger/OpenAPI&#xa;&#xa;API Documentation&#xa;&#xa;Interactive:&#xa;- Try it out&#xa;- Schema explorer&#xa;- Code samples" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#e1d5e7;strokeColor=#9673a6;fontSize=9;fontStyle=1;" parent="layer-api" vertex="1">
+          <mxGeometry x="460" y="50" width="140" height="110" as="geometry" />
+        </mxCell>
+
+        <!-- LAYER 5: MICROSERVICES -->
+        <mxCell id="layer-microservices" value="CAPA MICROSERVICIOS / BACKEND" style="swimlane;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;fontSize=16;fontStyle=1;startSize=40;" parent="1" vertex="1">
+          <mxGeometry x="40" y="860" width="2120" height="280" as="geometry" />
+        </mxCell>
+        <mxCell id="ms-validation" value="Validation Service&#xa;&#xa;.NET 8&#xa;&#xa;Responsibilities:&#xa;- Execute 37 validators&#xa;- Rules engine&#xa;- Catalog lookups&#xa;- Parallel execution&#xa;- Result aggregation&#xa;&#xa;Scale: 10 instances&#xa;CPU: 4 vCPU&#xa;RAM: 8 GB" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;fontSize=8;fontStyle=1;" parent="layer-microservices" vertex="1">
+          <mxGeometry x="60" y="60" width="150" height="180" as="geometry" />
+        </mxCell>
+        <mxCell id="ms-etl" value="ETL Service&#xa;&#xa;.NET 8&#xa;&#xa;Responsibilities:&#xa;- Extract from SAP/Oracle&#xa;- Transform to CONSAR&#xa;- Load to DB&#xa;- Parse fixed-width&#xa;- Staging management&#xa;&#xa;Scale: 5 instances&#xa;CPU: 8 vCPU&#xa;RAM: 16 GB" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;fontSize=8;fontStyle=1;" parent="layer-microservices" vertex="1">
+          <mxGeometry x="230" y="60" width="150" height="180" as="geometry" />
+        </mxCell>
+        <mxCell id="ms-report" value="Report Service&#xa;&#xa;.NET 8&#xa;&#xa;Responsibilities:&#xa;- Generate PDF/Excel&#xa;- CONSAR format&#xa;- Encryption PGP&#xa;- Digital signature&#xa;- SFTP transmission&#xa;&#xa;Scale: 3 instances&#xa;CPU: 4 vCPU&#xa;RAM: 8 GB" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;fontSize=8;fontStyle=1;" parent="layer-microservices" vertex="1">
+          <mxGeometry x="400" y="60" width="150" height="180" as="geometry" />
+        </mxCell>
+        <mxCell id="ms-catalog" value="Catalog Service&#xa;&#xa;.NET 8&#xa;&#xa;Responsibilities:&#xa;- Catalog updates&#xa;- Versioning&#xa;- Cache management&#xa;- CONSAR scraper&#xa;&#xa;Scale: 2 instances&#xa;CPU: 2 vCPU&#xa;RAM: 4 GB" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;fontSize=8;fontStyle=1;" parent="layer-microservices" vertex="1">
+          <mxGeometry x="570" y="60" width="150" height="180" as="geometry" />
+        </mxCell>
+        <mxCell id="ms-user" value="User Service&#xa;&#xa;.NET 8&#xa;&#xa;Responsibilities:&#xa;- User management&#xa;- Roles/Permissions&#xa;- Audit log&#xa;- Session management&#xa;&#xa;Scale: 2 instances&#xa;CPU: 2 vCPU&#xa;RAM: 4 GB" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;fontSize=8;fontStyle=1;" parent="layer-microservices" vertex="1">
+          <mxGeometry x="740" y="60" width="150" height="180" as="geometry" />
+        </mxCell>
+        <mxCell id="ms-notification" value="Notification Service&#xa;&#xa;.NET 8&#xa;&#xa;Responsibilities:&#xa;- Email (SendGrid)&#xa;- SMS (Twilio)&#xa;- Slack webhooks&#xa;- PagerDuty&#xa;&#xa;Scale: 2 instances&#xa;CPU: 2 vCPU&#xa;RAM: 4 GB" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;fontSize=8;fontStyle=1;" parent="layer-microservices" vertex="1">
+          <mxGeometry x="910" y="60" width="150" height="180" as="geometry" />
+        </mxCell>
+
+        <!-- LAYER 6: SERVERLESS / FUNCTIONS -->
+        <mxCell id="layer-functions" value="CAPA SERVERLESS / AZURE FUNCTIONS" style="swimlane;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=16;fontStyle=1;startSize=40;" parent="1" vertex="1">
+          <mxGeometry x="40" y="1160" width="2120" height="200" as="geometry" />
+        </mxCell>
+        <mxCell id="func-validators" value="Validator Functions&#xa;&#xa;37 Azure Functions&#xa;&#xa;Trigger: Queue&#xa;Runtime: .NET 8 Isolated&#xa;&#xa;Execute in parallel&#xa;Max concurrent: 10&#xa;Timeout: 5 min&#xa;&#xa;Consumption Plan" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=9;fontStyle=1;" parent="layer-functions" vertex="1">
+          <mxGeometry x="60" y="60" width="180" height="110" as="geometry" />
+        </mxCell>
+        <mxCell id="func-scheduler" value="Scheduler Functions&#xa;&#xa;Timer Triggers&#xa;&#xa;- ETL Daily (11 PM)&#xa;- Report Monthly (Day 1)&#xa;- Catalog Update (Daily 6 AM)&#xa;- Cleanup (Weekly)&#xa;&#xa;CRON expressions" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=9;fontStyle=1;" parent="layer-functions" vertex="1">
+          <mxGeometry x="270" y="60" width="180" height="110" as="geometry" />
+        </mxCell>
+        <mxCell id="func-webhook" value="Webhook Functions&#xa;&#xa;HTTP Triggers&#xa;&#xa;- CONSAR Receipt&#xa;- External callbacks&#xa;- API integrations&#xa;&#xa;Auth: API Key&#xa;Timeout: 30 sec" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=9;fontStyle=1;" parent="layer-functions" vertex="1">
+          <mxGeometry x="480" y="60" width="180" height="110" as="geometry" />
+        </mxCell>
+
+        <!-- LAYER 7: MESSAGING & EVENTS -->
+        <mxCell id="layer-messaging" value="CAPA MENSAJERIA Y EVENTOS" style="swimlane;whiteSpace=wrap;html=1;fillColor=#f8cecc;strokeColor=#b85450;fontSize=16;fontStyle=1;startSize=40;" parent="1" vertex="1">
+          <mxGeometry x="40" y="1380" width="2120" height="200" as="geometry" />
+        </mxCell>
+        <mxCell id="msg-servicebus" value="Azure Service Bus&#xa;&#xa;Queues:&#xa;- validation-queue&#xa;- accounting-queue&#xa;- notification-queue&#xa;- dead-letter-queue&#xa;&#xa;Topics:&#xa;- file-events&#xa;- system-events&#xa;&#xa;Features:&#xa;- At-least-once delivery&#xa;- FIFO ordering&#xa;- Message sessions&#xa;- Duplicate detection&#xa;- TTL: 14 days" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f8cecc;strokeColor=#b85450;fontSize=8;fontStyle=1;" parent="layer-messaging" vertex="1">
+          <mxGeometry x="60" y="50" width="220" height="130" as="geometry" />
+        </mxCell>
+        <mxCell id="msg-eventhub" value="Azure Event Hub&#xa;&#xa;Streams:&#xa;- audit-events&#xa;- metrics-events&#xa;- telemetry&#xa;&#xa;Partitions: 32&#xa;Retention: 7 days&#xa;Throughput: 1000 msg/sec&#xa;&#xa;Consumers:&#xa;- Analytics&#xa;- Monitoring&#xa;- Event Sourcing" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f8cecc;strokeColor=#b85450;fontSize=8;fontStyle=1;" parent="layer-messaging" vertex="1">
+          <mxGeometry x="310" y="50" width="200" height="130" as="geometry" />
+        </mxCell>
+        <mxCell id="msg-redis" value="Redis Cache&#xa;&#xa;Azure Cache for Redis&#xa;&#xa;Premium Tier&#xa;Size: 6 GB&#xa;Cluster: 3 nodes&#xa;&#xa;Use cases:&#xa;- Rules cache (1h TTL)&#xa;- Catalog cache (1h TTL)&#xa;- Session store&#xa;- Rate limiting&#xa;- Distributed lock&#xa;&#xa;Hit rate target: 95 pct" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f8cecc;strokeColor=#b85450;fontSize=8;fontStyle=1;" parent="layer-messaging" vertex="1">
+          <mxGeometry x="540" y="50" width="180" height="130" as="geometry" />
+        </mxCell>
+
+        <!-- LAYER 8: DATA LAYER -->
+        <mxCell id="layer-data" value="CAPA DATOS / PERSISTENCIA" style="swimlane;whiteSpace=wrap;html=1;fillColor=#e1d5e7;strokeColor=#9673a6;fontSize=16;fontStyle=1;startSize=40;" parent="1" vertex="1">
+          <mxGeometry x="40" y="1600" width="2120" height="240" as="geometry" />
+        </mxCell>
+        <mxCell id="db-validation" value="ValidationDB&#xa;&#xa;Azure SQL Database&#xa;&#xa;Tier: Business Critical&#xa;vCores: 8&#xa;Storage: 500 GB&#xa;Backup: Geo-redundant&#xa;&#xa;Tables:&#xa;- Files&#xa;- ValidationResults&#xa;- Rules&#xa;- Catalogs&#xa;- RulesHistory&#xa;&#xa;Indexes: Optimized&#xa;Retention: 7 years" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#e1d5e7;strokeColor=#9673a6;fontSize=8;fontStyle=1;" parent="layer-data" vertex="1">
+          <mxGeometry x="60" y="50" width="180" height="160" as="geometry" />
+        </mxCell>
+        <mxCell id="db-accounting" value="AccountingDB&#xa;&#xa;Azure SQL Database&#xa;&#xa;Tier: General Purpose&#xa;vCores: 4&#xa;Storage: 1 TB&#xa;Backup: Local-redundant&#xa;&#xa;Tables:&#xa;- Transactions&#xa;- Ledger&#xa;- Balances&#xa;- Reconciliation&#xa;&#xa;Read replicas: 2&#xa;Partitioned by month" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#e1d5e7;strokeColor=#9673a6;fontSize=8;fontStyle=1;" parent="layer-data" vertex="1">
+          <mxGeometry x="260" y="50" width="180" height="160" as="geometry" />
+        </mxCell>
+        <mxCell id="db-blob" value="Azure Blob Storage&#xa;&#xa;Containers:&#xa;- staging (Hot)&#xa;- reports (Cool)&#xa;- consar-official (Archive)&#xa;- backups (Archive)&#xa;&#xa;Features:&#xa;- Lifecycle policies&#xa;- Immutable storage&#xa;- Soft delete (90 days)&#xa;- Versioning&#xa;&#xa;Encryption: AES-256&#xa;Redundancy: GRS&#xa;Total: 5 TB" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#e1d5e7;strokeColor=#9673a6;fontSize=8;fontStyle=1;" parent="layer-data" vertex="1">
+          <mxGeometry x="460" y="50" width="200" height="160" as="geometry" />
+        </mxCell>
+        <mxCell id="db-cosmos" value="Azure Cosmos DB&#xa;&#xa;API: NoSQL&#xa;&#xa;Containers:&#xa;- audit-events&#xa;- telemetry&#xa;- sessions&#xa;&#xa;Partition key: userId&#xa;RU/s: 4000 (autoscale)&#xa;&#xa;Multi-region:&#xa;- Mexico Central (primary)&#xa;- Mexico North (replica)&#xa;&#xa;Consistency: Session" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#e1d5e7;strokeColor=#9673a6;fontSize=8;fontStyle=1;" parent="layer-data" vertex="1">
+          <mxGeometry x="680" y="50" width="180" height="160" as="geometry" />
+        </mxCell>
+
+        <!-- LAYER 9: MONITORING & OBSERVABILITY -->
+        <mxCell id="layer-monitoring" value="CAPA MONITOREO Y OBSERVABILIDAD" style="swimlane;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;fontSize=16;fontStyle=1;startSize=40;" parent="1" vertex="1">
+          <mxGeometry x="40" y="1860" width="2120" height="200" as="geometry" />
+        </mxCell>
+        <mxCell id="mon-appinsights" value="Application Insights&#xa;&#xa;Telemetry:&#xa;- Requests&#xa;- Dependencies&#xa;- Exceptions&#xa;- Custom events&#xa;- Metrics&#xa;&#xa;Features:&#xa;- Live Metrics&#xa;- Smart Detection&#xa;- Application Map&#xa;- Profiler&#xa;- Snapshot Debugger&#xa;&#xa;Retention: 90 days" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;fontSize=8;fontStyle=1;" parent="layer-monitoring" vertex="1">
+          <mxGeometry x="60" y="50" width="180" height="130" as="geometry" />
+        </mxCell>
+        <mxCell id="mon-log-analytics" value="Log Analytics&#xa;&#xa;Workspace&#xa;&#xa;Logs:&#xa;- Container logs&#xa;- SQL audit logs&#xa;- Security logs&#xa;- Activity logs&#xa;&#xa;Kusto queries (KQL)&#xa;Alerts: 50 rules&#xa;Retention: 1 year" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;fontSize=8;fontStyle=1;" parent="layer-monitoring" vertex="1">
+          <mxGeometry x="270" y="50" width="160" height="130" as="geometry" />
+        </mxCell>
+        <mxCell id="mon-grafana" value="Grafana&#xa;&#xa;Dashboards:&#xa;- System health&#xa;- Validation metrics&#xa;- Business KPIs&#xa;- Error tracking&#xa;&#xa;Data sources:&#xa;- Prometheus&#xa;- App Insights&#xa;- SQL&#xa;&#xa;Auto-refresh: 30s" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;fontSize=8;fontStyle=1;" parent="layer-monitoring" vertex="1">
+          <mxGeometry x="460" y="50" width="160" height="130" as="geometry" />
+        </mxCell>
+        <mxCell id="mon-pagerduty" value="PagerDuty&#xa;&#xa;On-Call:&#xa;- CTO&#xa;- DevOps Lead&#xa;- Backend Lead&#xa;&#xa;Escalation:&#xa;Tier 1 (5 min)&#xa;Tier 2 (15 min)&#xa;Tier 3 (30 min)&#xa;&#xa;Integrations:&#xa;- App Insights&#xa;- Grafana alerts" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;fontSize=8;fontStyle=1;" parent="layer-monitoring" vertex="1">
+          <mxGeometry x="650" y="50" width="160" height="130" as="geometry" />
+        </mxCell>
+
+        <!-- LAYER 10: EXTERNAL INTEGRATIONS -->
+        <mxCell id="layer-external" value="INTEGRACIONES EXTERNAS" style="swimlane;whiteSpace=wrap;html=1;fillColor=#ffe6cc;strokeColor=#d79b00;fontSize=16;fontStyle=1;startSize=40;" parent="1" vertex="1">
+          <mxGeometry x="1400" y="660" width="760" height="480" as="geometry" />
+        </mxCell>
+        <mxCell id="ext-sap" value="SAP ECC/S4HANA&#xa;&#xa;Protocol: RFC/BAPI&#xa;Auth: Service Account&#xa;&#xa;Endpoints:&#xa;- BAPI_GL_ACC_GETLIST&#xa;- BAPI_TRANSACTION_GET&#xa;&#xa;Connection pool: 5&#xa;Timeout: 60s" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffe6cc;strokeColor=#d79b00;fontSize=9;fontStyle=1;" parent="layer-external" vertex="1">
+          <mxGeometry x="40" y="60" width="160" height="110" as="geometry" />
+        </mxCell>
+        <mxCell id="ext-oracle" value="Oracle Financials&#xa;&#xa;Protocol: JDBC&#xa;Auth: DB credentials&#xa;&#xa;Endpoints:&#xa;- TRANSACTIONS table&#xa;- BALANCES view&#xa;&#xa;Connection pool: 10&#xa;Timeout: 30s" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffe6cc;strokeColor=#d79b00;fontSize=9;fontStyle=1;" parent="layer-external" vertex="1">
+          <mxGeometry x="40" y="190" width="160" height="110" as="geometry" />
+        </mxCell>
+        <mxCell id="ext-aladdin" value="Aladdin (BlackRock)&#xa;&#xa;Protocol: REST API&#xa;Auth: API Key&#xa;&#xa;Endpoints:&#xa;- /positions&#xa;- /transactions&#xa;- /valuations&#xa;&#xa;Rate limit: 100 req/min&#xa;Timeout: 45s" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffe6cc;strokeColor=#d79b00;fontSize=9;fontStyle=1;" parent="layer-external" vertex="1">
+          <mxGeometry x="40" y="320" width="160" height="130" as="geometry" />
+        </mxCell>
+        <mxCell id="ext-consar-sftp" value="CONSAR SFTP&#xa;&#xa;Protocol: SFTP/SSH&#xa;Auth: SSH Key&#xa;TLS: 1.3&#xa;&#xa;Upload path:&#xa;/reportes/AFORE_ID/&#xa;&#xa;Connection: On-demand&#xa;Timeout: 5 min&#xa;&#xa;Webhook callback:&#xa;Receipt confirmation" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffe6cc;strokeColor=#d79b00;fontSize=9;fontStyle=1;" parent="layer-external" vertex="1">
+          <mxGeometry x="560" y="60" width="160" height="130" as="geometry" />
+        </mxCell>
+        <mxCell id="ext-sendgrid" value="SendGrid&#xa;&#xa;Email delivery&#xa;&#xa;API Key auth&#xa;&#xa;Templates:&#xa;- Error notification&#xa;- Success summary&#xa;- Monthly report&#xa;&#xa;Volume: 10K emails/month" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffe6cc;strokeColor=#d79b00;fontSize=9;fontStyle=1;" parent="layer-external" vertex="1">
+          <mxGeometry x="560" y="210" width="160" height="110" as="geometry" />
+        </mxCell>
+        <mxCell id="ext-twilio" value="Twilio&#xa;&#xa;SMS delivery&#xa;&#xa;API Key auth&#xa;&#xa;Use case:&#xa;- Critical alerts&#xa;- MFA codes&#xa;&#xa;Volume: 500 SMS/month" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffe6cc;strokeColor=#d79b00;fontSize=9;fontStyle=1;" parent="layer-external" vertex="1">
+          <mxGeometry x="560" y="340" width="160" height="110" as="geometry" />
+        </mxCell>
+
+        <!-- INFRASTRUCTURE BOXES -->
+        <mxCell id="infra-kubernetes" value="AZURE KUBERNETES SERVICE (AKS)&#xa;&#xa;Cluster: Production&#xa;Version: 1.28&#xa;Nodes: 3-20 (autoscale)&#xa;Node size: Standard_D4s_v3 (4 vCPU, 16 GB RAM)&#xa;&#xa;Namespaces:&#xa;- production&#xa;- staging&#xa;- monitoring&#xa;&#xa;Features:&#xa;- Auto-scaling (HPA + Cluster Autoscaler)&#xa;- Rolling updates (zero downtime)&#xa;- Health checks (liveness + readiness)&#xa;- Resource limits (CPU/Memory quotas)&#xa;- Network policies (Calico)&#xa;- Ingress: NGINX Ingress Controller&#xa;- Service Mesh: Istio (optional)&#xa;&#xa;Helm Charts: 15 microservices" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=9;fontStyle=1;align=left;verticalAlign=top;" parent="1" vertex="1">
+          <mxGeometry x="1400" y="240" width="760" height="200" as="geometry" />
+        </mxCell>
+
+        <!-- CICD BOX -->
+        <mxCell id="cicd-pipeline" value="CI/CD PIPELINE&#xa;&#xa;GitHub Actions:&#xa;&#xa;Workflows:&#xa;1. Build and Test&#xa;   - Compile .NET 8&#xa;   - Run unit tests (xUnit)&#xa;   - Code coverage (Coverlet) mayor 80 pct&#xa;   - SonarQube analysis&#xa;&#xa;2. Docker Build&#xa;   - Build Docker images&#xa;   - Scan vulnerabilities (Trivy)&#xa;   - Push to Azure Container Registry&#xa;&#xa;3. Deploy to AKS&#xa;   - DEV (auto)&#xa;   - QA (auto after tests)&#xa;   - STAGING (manual approval)&#xa;   - PRODUCTION (manual approval + CTO)&#xa;&#xa;4. Database Migration&#xa;   - EF Core migrations&#xa;   - Rollback plan&#xa;&#xa;Deployment strategy:&#xa;- Blue/Green deployment&#xa;- Canary releases (10 pct, 50 pct, 100 pct)&#xa;- Instant rollback (menor 1 min)&#xa;&#xa;Average deploy time: 8-12 minutes" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;fontSize=8;fontStyle=1;align=left;verticalAlign=top;" parent="1" vertex="1">
+          <mxGeometry x="1400" y="1160" width="760" height="300" as="geometry" />
+        </mxCell>
+
+        <!-- DISASTER RECOVERY BOX -->
+        <mxCell id="dr-strategy" value="DISASTER RECOVERY Y BACKUP&#xa;&#xa;RTO (Recovery Time Objective): 4 horas&#xa;RPO (Recovery Point Objective): 1 hora&#xa;&#xa;BACKUPS:&#xa;Databases:&#xa;- Azure SQL: Automated backups (Point-in-time restore 35 days)&#xa;- Manual backups: Weekly (retained 1 year)&#xa;- Geo-replicated: Mexico North region&#xa;&#xa;Blob Storage:&#xa;- Soft delete: 90 days&#xa;- Versioning enabled&#xa;- GRS (Geo-Redundant Storage)&#xa;&#xa;FAILOVER:&#xa;- SQL: Auto-failover groups (1-2 min)&#xa;- AKS: Multi-region deployment (active-passive)&#xa;- Traffic Manager: Auto-routing to healthy region&#xa;&#xa;MONITORING:&#xa;- Health checks every 30 segundos&#xa;- Auto-failover triggers:&#xa;  * Primary region down mayor 5 min&#xa;  * Error rate mayor 50 pct sustained 2 min&#xa;  * Manual failover (CTO approval)&#xa;&#xa;TESTING:&#xa;- DR drills: Quarterly&#xa;- Failover test: Monthly&#xa;- Backup restore test: Weekly" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f8cecc;strokeColor=#b85450;fontSize=8;fontStyle=1;align=left;verticalAlign=top;" parent="1" vertex="1">
+          <mxGeometry x="1400" y="1480" width="760" height="300" as="geometry" />
+        </mxCell>
+
+        <!-- COST ESTIMATION BOX -->
+        <mxCell id="cost-estimation" value="ESTIMACION COSTOS AZURE (MENSUAL)&#xa;&#xa;COMPUTE:&#xa;- AKS nodes (3-20 D4s): $500-$3,000&#xa;- Azure Functions (Consumption): $150&#xa;- App Service Plan (Premium): $300&#xa;Total Compute: $950-$3,450/mes&#xa;&#xa;DATABASES:&#xa;- Azure SQL (2 DBs Business Critical): $1,200&#xa;- Cosmos DB (4000 RU/s): $250&#xa;- Redis Cache (6 GB Premium): $180&#xa;Total Databases: $1,630/mes&#xa;&#xa;STORAGE:&#xa;- Blob Storage (5 TB): $100&#xa;- File shares: $50&#xa;Total Storage: $150/mes&#xa;&#xa;NETWORKING:&#xa;- Bandwidth egress: $200&#xa;- VPN Gateway: $150&#xa;- Load Balancer: $50&#xa;Total Networking: $400/mes&#xa;&#xa;MESSAGING:&#xa;- Service Bus (Premium): $700&#xa;- Event Hub (Standard): $100&#xa;Total Messaging: $800/mes&#xa;&#xa;SECURITY:&#xa;- Key Vault: $10&#xa;- Azure AD Premium: $60&#xa;Total Security: $70/mes&#xa;&#xa;MONITORING:&#xa;- Application Insights: $200&#xa;- Log Analytics: $150&#xa;Total Monitoring: $350/mes&#xa;&#xa;EXTERNAL SERVICES:&#xa;- SendGrid: $80&#xa;- Twilio: $50&#xa;- Cloudflare: $200&#xa;Total External: $330/mes&#xa;&#xa;TOTAL ESTIMADO: $4,680-$7,180/mes&#xa;TOTAL ANUAL: $56,160-$86,160/año" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;fontSize=8;fontStyle=1;align=left;verticalAlign=top;" parent="1" vertex="1">
+          <mxGeometry x="1400" y="1800" width="760" height="440" as="geometry" />
+        </mxCell>
+
+        <!-- TITLE -->
+        <mxCell id="title" value="DIAGRAMA DE COMPONENTES E INFRAESTRUCTURA - SISTEMA VALIDACION CONSAR" style="text;html=1;strokeColor=#6c8ebf;fillColor=#dae8fc;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=1;fontSize=18;fontStyle=1;" parent="1" vertex="1">
+          <mxGeometry x="640" y="0" width="1000" height="30" as="geometry" />
+        </mxCell>
+
+        <!-- REGION BOX -->
+        <mxCell id="region-info" value="REGION AZURE: Mexico Central&#xa;Failover: Mexico North&#xa;Multi-region: Active-Passive" style="text;html=1;strokeColor=#82b366;fillColor=#d5e8d4;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=1;fontSize=11;fontStyle=1;" parent="1" vertex="1">
+          <mxGeometry x="40" y="0" width="300" height="30" as="geometry" />
+        </mxCell>
+
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>

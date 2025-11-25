@@ -1,0 +1,127 @@
+IdCatValidacion,IdArchivoConsar,IdDetalleArchivo,TipoValidacion,DetalleVallidacion,NombreValidacion,DescripcionValidacion,OrdenValidacion,ScriptValidacion,MensajeError,Activo,
+2,1,1,Longitud,0,Longitud,Valida la longitud del encabezado,1,"
+SELECT
+	 IdAforeResultado = A.IdAfore
+	,IdFondoResultado = ARC.IdFondo
+	,FechaOperacionArchivoResultado = ARC.FechaArchivo
+	,IdArchivoRegulatorioConsarResultado = DARC.[IdArchivoRegulatorioConsar]
+	,IdDetalleArchivoResultado = DARC.IdDetalleArchivo
+	,IdCatValidacionResultado = B.IdCatValidacion
+	,IdDetalleArchivoConsarResultado = DARC.[IdDetalleArchivoConsar]
+	,DetalleArchivoResultado = B.IdDetalleArchivo
+	,NumLineaResultado = DARC.NumLinea
+	,MensajeValidacionResultado = B.NombreValidacion +  ' - ' + CASE WHEN DATALENGTH(RegistroArchivo) = 77 THEN 'Correcto' ELSE B.MensajeError END
+	,ValidadoOKResultado = CASE WHEN DATALENGTH(DARC.RegistroArchivo) = 77 THEN 1 ELSE 0 END
+FROM [ControlProcesoUsuarioAforeFondo] A
+INNER JOIN CatValidacionArchivoConsar B ON A.[IdCatProcesoAfore] = B.IdArchivoConsar
+INNER JOIN CatArchivoConsar C ON C.IdArchivoConsar = B.IdArchivoConsar
+INNER JOIN CatDetalleArchivoConsar D ON D.IdArchivoConsar = B.IdArchivoConsar
+									AND D.IdDetalleArchivo = B.IdDetalleArchivo
+INNER JOIN [ArchivoRegulatorioConsar] ARC ON	ARC.IdArchivoConsar = B.IdArchivoConsar
+											AND ARC.FechaArchivo = A.FechaProceso
+											AND ARC.IdFondo = A.IdFondo
+INNER JOIN DetalleArchivoConsar DARC ON	DARC.IdDetalleArchivo = B.IdDetalleArchivo 
+									AND DARC.IdArchivoRegulatorioConsar = ARC.IdArchivoRegulatorioConsar
+WHERE B.Activo = 1
+AND B.IdCatValidacion = @IdCatValidacion
+AND A.IdUsuarioAfore = @vcUsuarioAfore",La longitud no cumple con el tamaño de 77 caracteres,1,
+3,1,1,Tipo Dato,0,Tipo de Dato para Número de Registros,Valida si el Número de Registros corresponde a un dato numérico,2,"
+SELECT
+   IdAforeResultado = A.IdAfore
+  ,IdFondoResultado = ARC.IdFondo
+  ,FechaOperacionArchivoResultado = ARC.FechaArchivo
+  ,IdArchivoRegulatorioConsarResultado = DARC.[IdArchivoRegulatorioConsar]
+  ,IdDetalleArchivoResultado = DARC.IdDetalleArchivo
+  ,IdCatValidacionResultado = B.IdCatValidacion
+  ,IdDetalleArchivoConsarResultado = DARC.[IdDetalleArchivoConsar]
+  ,DetalleArchivoResultado = B.IdDetalleArchivo
+  ,NumLineaResultado = DARC.NumLinea
+  ,MensajeValidacionResultado = B.NombreValidacion +  ' - ' + CASE WHEN ISNUMERIC(SUBSTRING([RegistroArchivo], 5, 4)) = 1 THEN 'Correcto' ELSE B.MensajeError END
+  ,ValidadoOKResultado = CASE WHEN ISNUMERIC(SUBSTRING([RegistroArchivo], 5, 4)) = 1 THEN 1 ELSE 0 END
+FROM [ControlProcesoUsuarioAforeFondo] A
+INNER JOIN CatValidacionArchivoConsar B ON A.[IdCatProcesoAfore] = B.IdArchivoConsar
+INNER JOIN CatArchivoConsar C ON C.IdArchivoConsar = B.IdArchivoConsar
+INNER JOIN CatDetalleArchivoConsar D ON D.IdArchivoConsar = B.IdArchivoConsar
+        AND D.IdDetalleArchivo = B.IdDetalleArchivo
+INNER JOIN [ArchivoRegulatorioConsar] ARC ON ARC.IdArchivoConsar = B.IdArchivoConsar
+        AND ARC.FechaArchivo = A.FechaProceso
+        AND ARC.IdFondo = A.IdFondo
+INNER JOIN DetalleArchivoConsar DARC ON DARC.IdDetalleArchivo = B.IdDetalleArchivo 
+        AND DARC.IdArchivoRegulatorioConsar = ARC.IdArchivoRegulatorioConsar
+WHERE B.Activo = 1
+AND B.IdCatValidacion = @IdCatValidacion
+AND A.IdUsuarioAfore = @vcUsuarioAfore",El Dato no es Numérico,1,
+4,1,1,Tipo Dato,0,Tipo de Dato para Tamaño del Registro,Valida si el Tamaño del Registro corresponde a un dato numérico,3,,El Dato no es Numérico,1,
+5,1,1,Tipo Dato,0,Tipo de Dato para Tipo de Archivo,Valida si el Tipo de Archivo corresponde a un dato numérico,4,,El Dato no es Numérico,1,
+6,1,1,Tipo Dato,0,Tipo de Dato para Tipo de Entidad,Valida si el Tipo de Entidad corresponde a un dato numérico,5,,El Dato no es Numérico,1,
+7,1,1,Tipo Dato,0,Tipo de Dato para Entidad,Valida si la Entidad corresponde a un dato numérico,6,,El Dato no es Numérico,1,
+8,1,1,Tipo Dato,0,Tipo de Dato para Subtipo de Entidad,Valida si el Subtipo de Entidad corresponde a un dato numérico,7,,El Dato no es Numérico,1,
+10,1,2,Tipo Dato,1,Tipo de Dato para Tipo de Registro,Valida si el Tipo de Registro corresponde a un dato numérico,8,,El Dato no es Numérico,1,
+11,1,2,Tipo Dato,1,Tipo de Dato para Clave de Cuenta,Valida si la Clave de Cuenta corresponde a un dato numérico,9,,El Dato no es Numérico,1,
+12,1,2,Tipo Dato,1,Tipo de Dato para Clave de Subcuenta,Valida si la Clave de Subcuenta corresponde a un dato numérico,10,,El Dato no es Numérico,1,
+13,1,2,Tipo Dato,1,Tipo de Dato para Saldo Inicial,Valida si el Saldo Inicial corresponde a un dato numérico,11,,El Dato no es Numérico,1,
+15,1,2,Carácter no válido,1,Carácter no válido (.) para Saldo Inicial,Valida si exisate un carácter no válido (.) para Saldo Inicial,12,,Contiene punto decimal,1,
+16,1,2,Carácter no válido,1,Carácter no válido (-) para Saldo Inicial,Valida si exisate un carácter no válido (-) para Saldo Inicial,13,,El dato contiene el signo de negativo en una posición erronea,1,
+17,1,2,Tipo Dato,1,Tipo de Dato para Cargos,Valida si el Cargo corresponde a un dato numérico,14,,El Dato no es Numérico,1,
+18,1,2,Carácter no válido,1,Carácter no válido (.) para Cargos,Valida si exisate un carácter no válido (.) para Cargos,15,,Contiene punto decimal,1,
+19,1,2,Carácter no válido,1,Carácter no válido (-) para Cargos,Valida si exisate un carácter no válido (-) para Cargos,16,,El dato contiene el signo de negativo en una posición erronea,1,
+21,1,2,Tipo Dato,1,Tipo de Dato para Abonos,Valida si el Abono corresponde a un dato numérico,17,,El Dato no es Numérico,1,
+22,1,2,Carácter no válido,1,Carácter no válido (.) para Abonos,Valida si exisate un carácter no válido (.) para Abonos,18,,Contiene punto decimal,1,
+23,1,2,Carácter no válido,1,Carácter no válido (-) para Abonos,Valida si exisate un carácter no válido (-) para Abonos,19,,El dato contiene el signo de negativo en una posición erronea,1,
+24,1,2,Tipo Dato,1,Tipo de Dato para Saldo Final,Valida si el Saldo Final corresponde a un dato numérico,20,,El Dato no es Numérico,1,
+25,1,2,Carácter no válido,1,Carácter no válido (.) para Saldo Final,Valida si exisate un carácter no válido (.) para Saldo Final,21,,Contiene punto decimal,1,
+26,1,2,Carácter no válido,1,Carácter no válido (-) para Saldo Final,Valida si exisate un carácter no válido (-) para Saldo Final,22,,El dato contiene el signo de negativo en una posición erronea,1,
+27,1,2,Monto Positivo,1,Cuenta con Monto Positivo,Valida si la naturaleza de las cuentas deudoras,23,,El importe en la cuenta se encuentra negativo,1,
+28,1,2,Monto Negativo,1,Cuenta con Monto Negativo,Valida si la naturaleza de las cuentas acreedoras,24,,El importe en la cuenta se encuentra positivo,1,
+29,1,2,Contracuentas 71 vs 72,1,Contracuentas iguales,Valida si el importe de la cuenta  y su contracuentas son iguales,25,,El importe de las cuentas no coincide,1,
+30,1,2,Contracuentas Plus Minus,1,Contracuentas iguales,Valida si el importe de la cuenta  y su contracuentas son iguales,26,,El importe de las cuentas no coincide,1,
+31,1,2,Divisas vs Pesos,1,Conversión de divisas a pesos 7115,Valida la conversión de divisas en pesos 7115,27,"SELECT
+  IdAforeResultado = A.IdAfore
+ ,IdFondoResultado = ARC.IdFondo
+ ,FechaOperacionArchivoResultado = ARC.FechaArchivo
+ ,IdArchivoRegulatorioConsarResultado = DARC.[IdArchivoRegulatorioConsar]
+ ,IdDetalleArchivoResultado = DARC.IdDetalleArchivo
+ ,IdCatValidacionResultado = B.IdCatValidacion
+ ,IdDetalleArchivoConsarResultado = DARC.[IdDetalleArchivoConsar]
+ ,DetalleArchivoResultado = B.IdDetalleArchivo
+ ,NumLineaResultado = DARC.NumLinea
+ ,MensajeValidacionResultado = B.NombreValidacion +  ': No. Linea ' + CONVERT(VARCHAR(10), DARC.NumLinea) + '; Cuenta ' + SUBSTRING(DARC.[RegistroArchivo], 4, 4) + ' - ' + SUBSTRING(DARC.[RegistroArchivo], 8, 6) + ' y ' + SUBSTRING(DARC2.[RegistroArchivo], 4, 4) + ' - ' + SUBSTRING(DARC.[RegistroArchivo], 8, 6) + '; ' + ' - ' + 
+								CASE WHEN CONVERT(DECIMAL(30, 2), (ABS(CONVERT(DECIMAL(30, 2), SUBSTRING(DARC.[RegistroArchivo], 62, 16)) * 0.01) * (TC.CatTipoCambioMonto))) = ABS(CONVERT(DECIMAL(30, 2), SUBSTRING(DARC2.[RegistroArchivo], 62, 16)) * 0.01)
+									THEN 'Correcto' 
+									ELSE B.MensajeError + ' ' + 'Diferencia de: ' + FORMAT((CONVERT(DECIMAL(30, 2), (ABS(CONVERT(DECIMAL(30, 2), SUBSTRING(DARC.[RegistroArchivo], 62, 16)) * 0.01) * (TC.CatTipoCambioMonto))) - ABS(CONVERT(DECIMAL(30, 2), SUBSTRING(DARC2.[RegistroArchivo], 62, 16)) * 0.01)), 'N')
+								END
+        
+ ,ValidadoOKResultado = CASE WHEN CONVERT(DECIMAL(30, 2), (ABS(CONVERT(DECIMAL(30, 2), SUBSTRING(DARC.[RegistroArchivo], 62, 16)) * 0.01) * (TC.CatTipoCambioMonto))) = ABS(CONVERT(DECIMAL(30, 2), SUBSTRING(DARC2.[RegistroArchivo], 62, 16)) * 0.01)
+							THEN 1
+							ELSE 0
+						END
+FROM [ControlProcesoUsuarioAforeFondo] A
+INNER JOIN CatValidacionArchivoConsar B ON A.[IdCatProcesoAfore] = B.IdArchivoConsar
+INNER JOIN CatArchivoConsar C ON C.IdArchivoConsar = B.IdArchivoConsar
+INNER JOIN CatDetalleArchivoConsar D ON D.IdArchivoConsar = B.IdArchivoConsar
+									AND D.IdDetalleArchivo = B.IdDetalleArchivo
+INNER JOIN [ArchivoRegulatorioConsar] ARC ON	ARC.IdArchivoConsar = B.IdArchivoConsar
+											AND ARC.FechaArchivo = A.FechaProceso
+											AND ARC.IdFondo = A.IdFondo
+INNER JOIN DetalleArchivoConsar DARC ON DARC.IdArchivoRegulatorioConsar = ARC.IdArchivoRegulatorioConsar
+									AND DARC.IdDetalleArchivo = 2
+									AND CONVERT(INT, SUBSTRING(DARC.[RegistroArchivo], 4, 4)) IN (7115)
+INNER JOIN DetalleArchivoConsar DARC2 ON	DARC2.IdArchivoRegulatorioConsar = ARC.IdArchivoRegulatorioConsar
+										AND DARC2.IdDetalleArchivo = 2
+										AND CONVERT(INT, SUBSTRING(DARC2.[RegistroArchivo], 4, 4)) IN (1103)
+										AND CONVERT(INT, SUBSTRING(DARC.[RegistroArchivo], 8, 6)) = CONVERT(INT, SUBSTRING(DARC2.[RegistroArchivo], 8, 6))
+INNER JOIN CatConsarDivisa DIV ON DIV.SubCuentaDivisaConsarN2 = CONVERT(INT, SUBSTRING(DARC.[RegistroArchivo], 8, 6))
+INNER JOIN CatTipoCambio TC ON  TC.CatTipoCambioFecha = A.FechaProceso
+							AND DIV.IdDivisa = TC.IdDivisa
+WHERE B.Activo = 1
+AND DIV.SubCuentaDivisaConsarN2 NOT IN (90)
+AND CONVERT(INT, SUBSTRING(DARC.[RegistroArchivo], 8, 6)) > 0
+AND CONVERT(INT, SUBSTRING(DARC2.[RegistroArchivo], 8, 6)) > 0
+AND B.IdCatValidacion = @IdCatValidacion
+AND A.IdUsuarioAfore = @vcUsuarioAfore",Diferencias entre las cuentas 7115 vs 1103,1,
+32,1,2,Divisas vs Pesos,1,Conversión de divisas a pesos 7116,Valida la conversión de divisas en pesos 7116,28,,Diferencias entre las cuentas 7116 vs 1104,1,
+33,1,2,Divisas vs Pesos,1,Conversión de divisas a pesos 7117,Valida la conversión de divisas en pesos 7117,29,,Diferencias entre las cuentas 7117 vs 1105,1,
+34,1,2,Divisas vs Pesos,1,Conversión de divisas a pesos 7118,Valida la conversión de divisas en pesos 7118,30,,Diferencias entre las cuentas 7118 vs 2108,1,
+35,1,2,Cuentas contable válidas,1,Cuentas contable válidas,Valida si las cuentas conables dentro del archivo 1101 son válidas ,31,,Cuentas contables inválidas ,1,
+36,1,2,Balanza cuadrada,1,Balanza cuadrada,"Valida si el balance cuadra entre saldo inicial, cargos y abonos",32,,Cuentas contables con inconsistencia entre movimientos,1,
+37,1,2,Balanza cuadrada,1,Balanza cuadrada,Valida si el cuadra la suma de los cargos vs la suma de abonos,33,,Existe inconsistencia entre cargos y abonos de la balanza,1,

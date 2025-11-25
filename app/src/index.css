@@ -1,0 +1,105 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Apple 2025 Glassmorphic Design System */
+@import './styles/glassmorphic.css';
+
+/* visionOS 2025 Ultra Refined System */
+@import './styles/ultra-refined.css';
+
+/* iOS 2025 Liquid Glass Effects (WWDC 2025) */
+@import './styles/ios-liquid-glass.css';
+
+/* iOS 2025 Typography System - SF Pro Display/Text */
+@import './styles/ios-typography.css';
+
+/* Lottie Icon Visibility Fix - 2025 */
+@import './styles/lottie-icon-fix.css';
+
+/* Modal System - VisionOS Premium Design System */
+@import './styles/modal-system.css';
+
+@layer base {
+  :root {
+    --radius: 0.5rem;
+  }
+
+  * {
+    @apply border-neutral-200;
+  }
+
+  body {
+    /* Fondo con gradiente sutil - Apple style */
+    background: linear-gradient(
+      180deg,
+      #F5F7FA 0%,
+      #E8EDF3 50%,
+      #F5F7FA 100%
+    );
+    background-attachment: fixed;
+    @apply text-neutral-900 antialiased;
+    font-feature-settings: 'rlig' 1, 'calt' 1;
+
+    /* Noise texture para profundidad */
+    position: relative;
+  }
+
+  /* Dark mode background */
+  .dark body {
+    background: linear-gradient(
+      180deg,
+      #0F1014 0%,
+      #1A1B20 50%,
+      #0F1014 100%
+    );
+    @apply text-neutral-100;
+  }
+
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    opacity: 0.02;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 400 400' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' /%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E");
+    pointer-events: none;
+    z-index: 0;
+  }
+}
+
+@layer utilities {
+  .text-balance {
+    text-wrap: balance;
+  }
+
+  /* Collapsible Animations */
+  @keyframes slideDown {
+    from {
+      height: 0;
+      opacity: 0;
+    }
+    to {
+      height: var(--radix-collapsible-content-height);
+      opacity: 1;
+    }
+  }
+
+  @keyframes slideUp {
+    from {
+      height: var(--radix-collapsible-content-height);
+      opacity: 1;
+    }
+    to {
+      height: 0;
+      opacity: 0;
+    }
+  }
+
+  .animate-slideDown {
+    animation: slideDown 200ms ease-out;
+  }
+
+  .animate-slideUp {
+    animation: slideUp 200ms ease-out;
+  }
+}

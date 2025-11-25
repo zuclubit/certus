@@ -1,0 +1,228 @@
+COMPARATIVA DE ESCENARIOS MVP - HERGON (PESOS MEXICANOS)
+
+=== RESUMEN EJECUTIVO ===
+Escenario,Inversión Total,Ahorro vs Premium,Timeline,Equipo,Calidad,Riesgo,Go-Live,Recomendado
+MVP Premium (Baseline),"$2,272,813",0%,12 semanas,5 Full-time,100%,Bajo,Marzo 2026,Para VC-backed
+MVP Optimizado,"$1,487,500",35% ($785K),14 semanas,3 FT + 2 PT,90%,Medio,Abril 2026,SÍ - RECOMENDADO ✅
+MVP Lean,"$987,200",57% ($1.29M),16 semanas,2 FT + 3 Freelance,70%,Alto,Mayo 2026,Solo validación
+MVP Bootstrapped,"$623,400",73% ($1.65M),20 semanas,2 Fundadores,40%,Muy Alto,Julio 2026,Solo si fundadores = devs
+
+=== DESGLOSE DETALLADO POR CATEGORÍA ===
+Categoría,Premium,Optimizado,Lean,Bootstrapped,Estrategia Optimización
+Personal,"$915,000","$637,500","$665,000","$60,000","3 FT + 2 PT | Juniors + AI | Nearshore"
+AI Tools,"$20,700","$4,500","$0","$0","Free tiers + 2 licencias pro"
+AWS Infraestructura,"$60,000","$35,000","$29,000","$0","Staging tardío + Spot instances"
+Herramientas SaaS,"$66,000","$12,000","$0","$0","OSS (Grafana, SonarQube Community)"
+Office & Hardware,"$225,000","$65,000","$50,000","$30,000","100% remoto + BYOD"
+Capacitación,"$30,000","$5,000","$0","$0","Online gratis (YouTube, docs)"
+Legal,"$40,000","$20,000","$15,000","$15,000","Templates + consultor PT"
+Compliance CONSAR,"$50,000","$25,000","$10,000","$0","DIY + consultor PT"
+Marketing,"$140,000","$25,000","$5,000","$10,000","Orgánico + LinkedIn"
+Contingencia,"$129,070","$54,400","$40,000","$40,000","5% vs 10% original"
+IVA 16%,"$270,043","$141,344","$121,440","$18,400",N/A
+Reserva Operacional,"$312,000","$156,000","$80,000","$50,000","2 meses vs 3 meses"
+Otros,"$15,000","$6,756","$2,760","$0",Varios
+TOTAL,"$2,272,813","$1,188,500","$1,018,200","$223,400",
+Ajustado con contingencia real,"$2,272,813","$1,487,500","$987,200","$623,400",
+
+=== DESGLOSE DE PERSONAL ===
+Rol,Premium (3 meses),Optimizado (3.5 meses),Lean (4 meses),Bootstrapped (5 meses)
+Tech Lead / Architect,"$210,000 (FT)","$245,000 (FT)","$280,000 (FT)","$0 (Fundador)"
+Backend Senior,"$300,000 (2 FT)","$175,000 (1 FT)","$200,000 (1 FT)","$0 (Fundador)"
+Backend Mid,"-","$140,000 (1 FT)","-","-"
+Frontend Senior,"$135,000 (FT)","$78,750 (PT 50%)","-","-"
+Frontend Freelance,"-","-","$105,000 (3 meses)","$60,000 (2 meses)"
+DevOps,"$150,000 (FT)","$105,000 (PT 60%)","-","-"
+DevOps Freelance,"-","-","$50,000 (2 meses)","-"
+QA Engineer,"$120,000 (FT)","-","-","-"
+QA Freelance,"-","-","$30,000 (1 mes)","-"
+TOTAL PERSONAL,"$915,000","$743,750","$665,000","$60,000"
+
+=== ESTRUCTURA DE EQUIPO ===
+Posición,Premium,Optimizado,Lean,Bootstrapped
+Full-time,5 personas,3 personas,2 personas,2 fundadores
+Part-time,0,2 personas (50% y 60%),0,0
+Freelancers,0,0,3 personas,1 persona
+Total headcount,5,5 (3 FT + 2 PT),5 (2 FT + 3 FL),3 (2 fundadores + 1 FL)
+Costo promedio/persona/mes,"$61,000","$42,411","$33,250","$4,000"
+
+=== AI TOOLS DETALLADO ===
+Herramienta,Premium (5 lic),Optimizado (3 lic),Lean,Bootstrapped
+Claude Code Pro,"$3,000/mes × 3 = $9,000","$600/mes × 3 = $1,800 (2 lic free + 1 pro)","-","-"
+GitHub Copilot Enterprise,"$1,900/mes × 3 = $5,700","-","-","-"
+GitHub Copilot Individual,"-","$900/mes × 3 = $2,700 (3 lic × $300)","-","-"
+Cursor AI,"$2,000/mes × 3 = $6,000","-","-","-"
+Alternativas gratuitas,"-","-","Tabnine Free, CodeWhisperer","Tabnine Free"
+TOTAL AI TOOLS,"$20,700","$4,500","$0","$0"
+Productividad con IA,100%,95%,80%,70%
+
+=== AWS INFRAESTRUCTURA ===
+Componente,Premium,Optimizado,Lean,Bootstrapped
+Staging (Mes 1-2),"$18,000 (2 meses)","$0 (LocalStack gratis)","$0 (LocalStack)","$0 (Supabase free)"
+Staging (Mes 3),"$9,000 (1 mes)","$9,000 (1 mes)","$9,000 (1 mes)","-"
+Producción Multi-AZ,"$33,000 (1 mes)","$26,000 (Spot instances)","$20,000 (Single AZ + Spot)","-"
+Alternativa cloud,"-","-","-","Vercel Free + Railway Free"
+TOTAL AWS,"$60,000","$35,000","$29,000","$0"
+Configuración,Multi-AZ + Reserved,Multi-AZ + Spot,Single AZ + Spot,Serverless free tier
+
+=== HERRAMIENTAS SAAS ===
+Herramienta,Premium,Optimizado,Lean,Bootstrapped
+GitHub,"Enterprise $5.6K/mes","Team $2K/mes","Free $0","Free $0"
+Monitoring,"Datadog $8K/mes","CloudWatch $2K/mes","CloudWatch + Grafana OSS $0","Grafana Cloud Free $0"
+Security,"SonarQube Cloud $6K/mes","SonarQube Community $0","Trivy + OSS $0","Básico $0"
+Diseño,"Figma Pro $2.4K/mes","Figma Free $0","Penpot $0","Figma Free $0"
+TOTAL HERRAMIENTAS,"$66,000 (3 meses)","$12,000 (3.5 meses)","$0","$0"
+
+=== OTROS COSTOS ===
+Concepto,Premium,Optimizado,Lean,Bootstrapped
+Office/Coworking,"$75,000","$15,000 (remoto)","$0 (remoto)","$0 (remoto)"
+Hardware (laptops),"$150,000","$50,000 (BYOD subsidio)","$50,000 (BYOD)","$30,000 (1 laptop)"
+Internet & Servicios,"$15,000","$15,000","$10,000","$5,000"
+Capacitación,"$30,000","$5,000 (online)","$0 (self-learning)","$0"
+Legal,"$40,000","$20,000 (básico)","$15,000 (templates)","$15,000"
+TOTAL OTROS,"$310,000","$105,000","$75,000","$50,000"
+
+=== COMPLIANCE & CERTIFICACIONES ===
+Certificación,Premium,Optimizado,Lean,Bootstrapped
+CONSAR Compliance,"$50,000 (consultor FT)","$25,000 (consultor PT)","$10,000 (mínimo)","$0 (DIY)"
+SOC 2 Audit,"-","-","-","-"
+ISO 27001,"-","-","-","-"
+Pentesting,"-","-","-","-"
+TOTAL COMPLIANCE,"$50,000","$25,000","$10,000","$0"
+Nota,Básico para MVP,Básico para MVP,Mínimo viable,Post-validación
+
+=== MARKETING & PRE-VENTA ===
+Actividad,Premium,Optimizado,Lean,Bootstrapped
+Website,"$40,000 (custom)","$5,000 (template)","$2,000 (template)","$1,000 (Vercel free)"
+Materiales de venta,"$30,000 (diseñador)","$5,000 (Canva)","$1,000 (Canva)","$1,000"
+Eventos & Networking,"$50,000 (presenciales)","$10,000 (virtuales)","$2,000 (LinkedIn)","$3,000"
+Videos & Contenido,"$20,000 (producción)","$5,000 (in-house)","$0 (iPhone)","$5,000"
+TOTAL MARKETING,"$140,000","$25,000","$5,000","$10,000"
+
+=== ALCANCE FUNCIONAL ===
+Feature,Premium,Optimizado,Lean,Bootstrapped
+Infraestructura AWS,Completa,Completa,Básica,Sin AWS
+Azure AD Auth,✓,✓,✓,✓ (Supabase Auth)
+File Upload Service,✓,✓,✓,✓ (R2/S3)
+Validators CONSAR,10 validators,10 validators,7 validators,3 validators
+Validation Engine,Completo,Completo,Básico,Mínimo
+Results Aggregator,✓,✓,✓ (básico),✗
+Report Generator (PDF),✓,✓,✗,✗
+Notification Service,✓,✗ (manual),✗,✗
+Event Processor,✓,✗ (logs),✗,✗
+Audit Service,✓,✗ (queries SQL),✗,✗
+Frontend Dashboard,Completo + charts,Completo,Básico (tabla),Mínimo
+Reports Viewer,✓,✓,✗,✗
+Audit Trail UI,✓,✗,✗,✗
+Admin Panel,✓ (opcional post-MVP),✗,✗,✗
+Testing Coverage,>85%,>75%,>60%,>40%
+Cobertura funcional,100%,90%,70%,40%
+
+=== TIMELINE DETALLADO ===
+Semana,Premium,Optimizado,Lean,Bootstrapped
+Semana 1-2,Infraestructura + DBs,Infraestructura + DBs,Infraestructura,Setup básico
+Semana 3-4,Core Services,Core Services,Core Services,Auth + Upload
+Semana 5-6,Validation Engine + 5 validators,Validation Engine + 5 validators,Validation + 4 validators,3 validators
+Semana 7-8,5 validators + Reports,5 validators + Reports,3 validators,Dashboard mínimo
+Semana 9-10,Frontend completo,Frontend completo,Frontend básico,Testing
+Semana 11-12,Testing + Launch,Testing,Testing,Ajustes
+Semana 13-14,-,Launch,Frontend polish,Launch beta
+Semana 15-16,-,-,Launch,-
+Semana 17-20,-,-,-,Iteraciones
+Go-Live,Semana 12,Semana 14,Semana 16,Semana 20
+Fecha estimada,31 Marzo 2026,14 Abril 2026,28 Abril 2026,26 Mayo 2026
+
+=== PROYECCIÓN FINANCIERA AÑO 1 ===
+Métrica,Premium,Optimizado,Lean,Bootstrapped
+Inversión Inicial,"$2,272,813","$1,487,500","$987,200","$623,400"
+Go-Live,Marzo 2026,Abril 2026,Mayo 2026,Julio 2026
+Meses de operación,10 meses,9 meses,8 meses,6 meses
+AFOREs fin año 1,4,4,3,1
+Revenue Año 1,"$5,600,000","$5,200,000","$3,600,000","$1,200,000"
+Costos Operación Año 1,"$1,758,900","$1,583,010","$1,407,120","$1,055,340"
+Utilidad Neta Año 1,"$3,841,100","$3,616,990","$2,192,880","$544,660"
+Margen Neto,69%,70%,61%,45%
+ROI Año 1,169%,243%,222%,87%
+Punto de Equilibrio,Mes 7 (Sep 2026),Mes 6 (Sep 2026),Mes 7 (Nov 2026),Mes 11 (May 2027)
+
+=== PROYECCIÓN AÑO 2 ===
+Métrica,Premium,Optimizado,Lean,Bootstrapped
+AFOREs Año 2,10,10,8,4
+Revenue Año 2,"$18,480,000","$18,480,000","$14,784,000","$7,392,000"
+Costos Operación,"$2,977,680","$2,977,680","$2,977,680","$2,977,680"
+Utilidad Año 2,"$15,502,320","$15,502,320","$11,806,320","$4,414,320"
+ROI Acumulado 2 años,441%,683%,799%,552%
+Valuación estimada (10× revenue),"$184.8M","$184.8M","$147.8M","$73.9M"
+
+=== RIESGOS POR ESCENARIO ===
+Riesgo,Premium,Optimizado,Lean,Bootstrapped
+Personal (rotación),Bajo,Medio (PT),Alto (Freelance),Muy Alto (fundadores burn)
+Técnico (calidad),Bajo,Bajo-Medio,Medio-Alto,Muy Alto
+Infraestructura (uptime),Bajo (Multi-AZ),Bajo (Multi-AZ),Alto (Single AZ),Muy Alto (free tiers)
+Timeline (retraso),10% probabilidad,20% probabilidad,40% probabilidad,70% probabilidad
+Adopción (AFOREs),Medio,Medio,Alto,Muy Alto
+Financiero (cash),Bajo (reserva 3m),Medio (reserva 2m),Alto (reserva 1m),Muy Alto (sin reserva)
+Riesgo Global,BAJO ✅,MEDIO ✅,ALTO ⚠️,MUY ALTO ⚠️
+
+=== OPCIONES DE FINANCIAMIENTO POR ESCENARIO ===
+Fuente,Premium,Optimizado,Lean,Bootstrapped
+Equity (15-20%),"$454,563 (20%)","$223,125 (15%)","$148,080 (15%)","$0"
+Deuda bancaria (25-30%),"$681,844 (30%)","$371,875 (25%)","$246,800 (25%)","$0"
+Pre-ventas (30-50%),"$681,844 (30%)","$743,750 (50%)","$493,600 (50%)","$623,400 (100%)"
+Aporte propio (10-25%),"$454,562 (20%)","$148,750 (10%)","$98,720 (10%)","$0"
+TOTAL FINANCIADO,"$2,272,813","$1,487,500","$987,200","$623,400"
+
+=== ESTRATEGIAS DE OPTIMIZACIÓN APLICADAS ===
+Estrategia,Premium,Optimizado,Lean,Bootstrapped,Ahorro
+Equipo Part-time,No,"Sí (2 PT)",No,No,"$192,500"
+Nearshoring,No,No,"Opcional",No,"-"
+AI Tools Free Tier,No (5 pro),"Sí (2 free + 3 basic)","Sí (100% free)","Sí","$16,200"
+AWS Staging Tardío,No,"Sí (LocalStack M1-2)","Sí","N/A (sin AWS)","$18,000"
+Spot Instances,No,Sí,Sí,N/A,"$7,000"
+Herramientas OSS,No,Sí,Sí,Sí,"$54,000"
+Remoto 100%,No,Sí,Sí,Sí,"$60,000"
+BYOD (sin laptops),No,Sí (subsidio),Sí,Sí,"$100,000"
+Marketing Orgánico,No,Sí,Sí,Sí,"$115,000"
+Reserva Reducida,3 meses,2 meses,1 mes,Mínima,"$156,000"
+Compliance DIY,No,Parcial,Sí,Sí,"$25,000"
+QA con IA,No (QA FT),Sí,Sí,Sí,"$120,000"
+AHORRO TOTAL OPTIMIZADO,"-","$785,313 (35%)","$1,285,613 (57%)","$1,649,413 (73%)"
+
+=== MÉTRICAS CLAVE DE DECISIÓN ===
+Métrica,Premium,Optimizado ✅,Lean,Bootstrapped
+Mejor para,VC-backed startups,Bootstrappers inteligentes,Validación ultra-rápida,Solo fundadores dev
+Riesgo/Retorno,Bajo riesgo / Alto retorno,Medio riesgo / Muy alto retorno,Alto riesgo / Alto retorno,Muy alto riesgo / Medio retorno
+Recomendación,Si tienes $2M+ funding,SÍ - ÓPTIMO para mayoría,Solo si presupuesto <$1M,Solo si fundadores = devs
+Probabilidad éxito,85%,75%,60%,35%
+LTV/CAC proyectado,8.7x,11.2x,7.3x,4.8x
+Meses hasta break-even,7 meses,6 meses,7 meses,11 meses
+Capital eficiencia,Baja,ALTA ✅,Media,Muy Alta
+
+=== RECOMENDACIÓN FINAL ===
+Criterio,Ganador,Justificación
+Mejor ROI Año 1,Optimizado (243%),Menor inversión + mismo revenue
+Menor riesgo,Premium,Equipo completo + reserva 3 meses
+Más rápido al mercado,Premium,12 semanas
+Mejor costo/beneficio,Optimizado ✅,35% ahorro con 90% calidad
+Más capital-eficiente,Bootstrapped,73% ahorro pero 60% probabilidad fracaso
+ELECCIÓN RECOMENDADA,MVP OPTIMIZADO ($1.49M),"Balance óptimo: ahorro 35%, calidad 90%, riesgo medio"
+
+=== CONTACTO ===
+Para más información o personalización del plan
+Email: contacto@hergon.com
+Teléfono: +52 55 XXXX XXXX
+Website: https://hergon.com
+
+NOTAS IMPORTANTES:
+1. Todos los montos en PESOS MEXICANOS (MXN)
+2. Tipo de cambio: 1 USD = 20 MXN
+3. Salarios: Mercado México 2025 (CDMX/GDL/MTY)
+4. IVA 16% incluido
+5. Proyecciones asumen $200K MXN/AFORE/mes
+6. Crecimiento: 1-2 AFOREs nuevas por trimestre
+7. Churn <5% anual
+8. AI productivity boost: 40-60% según herramienta
+
+ÚLTIMA ACTUALIZACIÓN: 2025-01-20
+VERSIÓN: 1.0 - Análisis Comparativo Completo
+CONFIDENCIAL: Documento de planeación financiera

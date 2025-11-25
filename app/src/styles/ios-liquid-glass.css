@@ -1,0 +1,421 @@
+/**
+ * iOS 2025 Liquid Glass Design System
+ * Based on Apple's Liquid Glass language (iOS 26, visionOS 26)
+ * Announced: WWDC 2025 (June 9, 2025)
+ *
+ * Features:
+ * - Fluid glass-like interface with reflection/refraction
+ * - Real-time lensing effects
+ * - Material thickness levels (.thin, .regular, .thick)
+ * - Specular highlights (crystal effect)
+ * - Optimized shadows (3-4 layers max per Apple HIG)
+ */
+
+/* ========================================
+   MATERIAL THICKNESS LEVELS
+   ======================================== */
+
+/**
+ * .thin material - For buttons, chips, small interactive elements
+ * Shadow depth: 2-8px | Blur: 8-24px | Opacity: 0.25-0.3
+ */
+.ios-glass-thin {
+  backdrop-filter: blur(16px) saturate(180%) brightness(1.02);
+  -webkit-backdrop-filter: blur(16px) saturate(180%) brightness(1.02);
+  box-shadow:
+    0 2px 8px rgba(0, 0, 0, 0.1),
+    0 1px 4px rgba(0, 0, 0, 0.06),
+    inset 0 1px 0 rgba(255, 255, 255, 0.5),
+    inset 0 -1px 1px rgba(0, 0, 0, 0.1);
+}
+
+.ios-glass-thin-dark {
+  backdrop-filter: blur(16px) saturate(180%) brightness(0.95);
+  -webkit-backdrop-filter: blur(16px) saturate(180%) brightness(0.95);
+  box-shadow:
+    0 2px 8px rgba(0, 0, 0, 0.3),
+    0 1px 4px rgba(0, 0, 0, 0.2),
+    inset 0 1px 0 rgba(255, 255, 255, 0.12),
+    inset 0 -1px 1px rgba(0, 0, 0, 0.25);
+}
+
+/**
+ * .regular material - For cards, sections, navigation containers
+ * Shadow depth: 4-12px | Blur: 16-32px | Opacity: 0.3-0.4
+ */
+.ios-glass-regular {
+  backdrop-filter: blur(20px) saturate(180%) brightness(1.02);
+  -webkit-backdrop-filter: blur(20px) saturate(180%) brightness(1.02);
+  box-shadow:
+    0 4px 12px rgba(0, 0, 0, 0.08),
+    0 2px 6px rgba(0, 0, 0, 0.05),
+    inset 0 1px 0 rgba(255, 255, 255, 0.5),
+    inset 0 -1px 2px rgba(0, 0, 0, 0.08);
+}
+
+.ios-glass-regular-dark {
+  backdrop-filter: blur(20px) saturate(180%) brightness(0.95);
+  -webkit-backdrop-filter: blur(20px) saturate(180%) brightness(0.95);
+  box-shadow:
+    0 4px 12px rgba(0, 0, 0, 0.35),
+    0 2px 6px rgba(0, 0, 0, 0.25),
+    inset 0 1px 0 rgba(255, 255, 255, 0.1),
+    inset 0 -1px 2px rgba(0, 0, 0, 0.3);
+}
+
+/**
+ * .thick material - For modals, sheets, recessed backgrounds
+ * Shadow depth: 8-24px | Blur: 32-48px | Opacity: 0.4-0.5
+ */
+.ios-glass-thick {
+  backdrop-filter: blur(24px) saturate(180%) brightness(1.02);
+  -webkit-backdrop-filter: blur(24px) saturate(180%) brightness(1.02);
+  box-shadow:
+    0 8px 24px rgba(0, 0, 0, 0.12),
+    0 4px 12px rgba(0, 0, 0, 0.08),
+    inset 0 1px 0 rgba(255, 255, 255, 0.5),
+    inset 0 -1px 2px rgba(0, 0, 0, 0.1);
+}
+
+.ios-glass-thick-dark {
+  backdrop-filter: blur(24px) saturate(180%) brightness(0.95);
+  -webkit-backdrop-filter: blur(24px) saturate(180%) brightness(0.95);
+  box-shadow:
+    0 8px 24px rgba(0, 0, 0, 0.4),
+    0 4px 12px rgba(0, 0, 0, 0.3),
+    inset 0 1px 0 rgba(255, 255, 255, 0.08),
+    inset 0 -1px 2px rgba(0, 0, 0, 0.35);
+}
+
+/* ========================================
+   SPECULAR HIGHLIGHTS - CRYSTAL EFFECT
+   ======================================== */
+
+/**
+ * Specular highlight - Creates crystal-like light reflection
+ * Applied to buttons, active states, interactive elements
+ */
+.ios-crystal-highlight::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 80%;
+  height: 2px;
+  background: linear-gradient(
+    90deg,
+    rgba(255, 255, 255, 0) 0%,
+    rgba(255, 255, 255, 0.8) 50%,
+    rgba(255, 255, 255, 0) 100%
+  );
+  border-radius: 2px;
+  z-index: 1;
+  pointer-events: none;
+}
+
+/**
+ * Specular highlight - Subtle version for cards
+ */
+.ios-crystal-highlight-subtle::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 60%;
+  height: 1px;
+  background: linear-gradient(
+    90deg,
+    rgba(255, 255, 255, 0) 0%,
+    rgba(255, 255, 255, 0.5) 50%,
+    rgba(255, 255, 255, 0) 100%
+  );
+  border-radius: 1px;
+  z-index: 1;
+  pointer-events: none;
+}
+
+/**
+ * Specular reflection - Bottom edge highlight (crystal facet)
+ */
+.ios-crystal-reflection::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 70%;
+  height: 1.5px;
+  background: linear-gradient(
+    90deg,
+    rgba(255, 255, 255, 0) 0%,
+    rgba(255, 255, 255, 0.3) 50%,
+    rgba(255, 255, 255, 0) 100%
+  );
+  border-radius: 1.5px;
+  z-index: 0;
+  pointer-events: none;
+}
+
+/* ========================================
+   REAL-TIME LENSING EFFECT
+   ======================================== */
+
+/**
+ * Subtle lensing distortion - Applied on hover/active states
+ * Creates subtle refraction effect like real glass
+ */
+.ios-lensing {
+  position: relative;
+  overflow: hidden;
+}
+
+.ios-lensing::after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 100%;
+  height: 100%;
+  transform: translate(-50%, -50%) scale(1.05);
+  background: radial-gradient(
+    circle at center,
+    rgba(255, 255, 255, 0.1) 0%,
+    rgba(255, 255, 255, 0) 70%
+  );
+  opacity: 0;
+  transition: opacity 0.3s ease-in-out;
+  pointer-events: none;
+  z-index: 0;
+}
+
+.ios-lensing:hover::after {
+  opacity: 1;
+}
+
+/* ========================================
+   ACTIVE STATE GLOW (iOS STYLE)
+   ======================================== */
+
+/**
+ * iOS-style glow for active/selected elements
+ * Uses 4-layer shadow system with optimized blur
+ */
+.ios-active-glow {
+  box-shadow:
+    0 2px 8px rgba(0, 102, 255, 0.3),
+    0 8px 24px rgba(88, 86, 214, 0.25),
+    inset 0 1px 0 rgba(255, 255, 255, 0.6),
+    inset 0 -1px 2px rgba(0, 0, 0, 0.15);
+}
+
+.ios-active-glow-danger {
+  box-shadow:
+    0 2px 8px rgba(239, 68, 68, 0.3),
+    0 8px 24px rgba(220, 38, 38, 0.25),
+    inset 0 1px 0 rgba(255, 255, 255, 0.5),
+    inset 0 -1px 2px rgba(0, 0, 0, 0.15);
+}
+
+.ios-active-glow-success {
+  box-shadow:
+    0 2px 8px rgba(52, 211, 153, 0.3),
+    0 8px 24px rgba(16, 185, 129, 0.25),
+    inset 0 1px 0 rgba(255, 255, 255, 0.5),
+    inset 0 -1px 2px rgba(0, 0, 0, 0.15);
+}
+
+/* ========================================
+   HOVER STATE ELEVATION
+   ======================================== */
+
+/**
+ * Hover state with increased elevation (iOS standard)
+ * Adds subtle lift effect with shadow enhancement
+ */
+.ios-hover-elevation {
+  transition:
+    box-shadow 0.25s cubic-bezier(0.4, 0, 0.2, 1),
+    transform 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.ios-hover-elevation:hover {
+  transform: translateY(-1px);
+  box-shadow:
+    0 4px 12px rgba(0, 0, 0, 0.12),
+    0 2px 6px rgba(0, 0, 0, 0.08),
+    inset 0 1px 0 rgba(255, 255, 255, 0.6),
+    inset 0 -1px 2px rgba(0, 0, 0, 0.1);
+}
+
+.ios-hover-elevation-dark:hover {
+  transform: translateY(-1px);
+  box-shadow:
+    0 4px 12px rgba(0, 0, 0, 0.4),
+    0 2px 6px rgba(0, 0, 0, 0.3),
+    inset 0 1px 0 rgba(255, 255, 255, 0.12),
+    inset 0 -1px 2px rgba(0, 0, 0, 0.3);
+}
+
+/* ========================================
+   BORDER LUMINANCE (CRYSTAL EDGE)
+   ======================================== */
+
+/**
+ * Luminous borders for glass materials
+ * Creates crystal-like edge definition
+ */
+.ios-border-light {
+  border: 1.5px solid rgba(255, 255, 255, 0.6);
+}
+
+.ios-border-light-subtle {
+  border: 1px solid rgba(255, 255, 255, 0.35);
+}
+
+.ios-border-dark {
+  border: 1.5px solid rgba(255, 255, 255, 0.12);
+}
+
+.ios-border-dark-subtle {
+  border: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+/* ========================================
+   COMBINED CRYSTAL GLASS COMPONENT
+   ======================================== */
+
+/**
+ * Full iOS 2025 Liquid Glass component
+ * Combines all effects: material, specular, lensing, borders
+ */
+.ios-liquid-glass-button {
+  position: relative;
+  backdrop-filter: blur(16px) saturate(180%) brightness(1.02);
+  -webkit-backdrop-filter: blur(16px) saturate(180%) brightness(1.02);
+  border: 1.5px solid rgba(255, 255, 255, 0.4);
+  box-shadow:
+    0 2px 8px rgba(0, 0, 0, 0.1),
+    0 1px 4px rgba(0, 0, 0, 0.06),
+    inset 0 1px 0 rgba(255, 255, 255, 0.5),
+    inset 0 -1px 1px rgba(0, 0, 0, 0.1);
+  transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.ios-liquid-glass-button::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 80%;
+  height: 2px;
+  background: linear-gradient(
+    90deg,
+    rgba(255, 255, 255, 0) 0%,
+    rgba(255, 255, 255, 0.8) 50%,
+    rgba(255, 255, 255, 0) 100%
+  );
+  border-radius: 2px;
+  z-index: 1;
+  pointer-events: none;
+}
+
+.ios-liquid-glass-button:hover {
+  transform: translateY(-1px);
+  box-shadow:
+    0 4px 12px rgba(0, 0, 0, 0.12),
+    0 2px 6px rgba(0, 0, 0, 0.08),
+    inset 0 1px 0 rgba(255, 255, 255, 0.6),
+    inset 0 -1px 2px rgba(0, 0, 0, 0.1);
+}
+
+/* Dark mode variant */
+.ios-liquid-glass-button-dark {
+  backdrop-filter: blur(16px) saturate(180%) brightness(0.95);
+  -webkit-backdrop-filter: blur(16px) saturate(180%) brightness(0.95);
+  border: 1.5px solid rgba(255, 255, 255, 0.12);
+  box-shadow:
+    0 2px 8px rgba(0, 0, 0, 0.3),
+    0 1px 4px rgba(0, 0, 0, 0.2),
+    inset 0 1px 0 rgba(255, 255, 255, 0.12),
+    inset 0 -1px 1px rgba(0, 0, 0, 0.25);
+}
+
+.ios-liquid-glass-button-dark:hover {
+  transform: translateY(-1px);
+  box-shadow:
+    0 4px 12px rgba(0, 0, 0, 0.4),
+    0 2px 6px rgba(0, 0, 0, 0.3),
+    inset 0 1px 0 rgba(255, 255, 255, 0.15),
+    inset 0 -1px 2px rgba(0, 0, 0, 0.3);
+}
+
+/* ========================================
+   UTILITY ANIMATIONS
+   ======================================== */
+
+/**
+ * Smooth glass transition for theme changes
+ */
+.ios-glass-transition {
+  transition:
+    backdrop-filter 0.3s cubic-bezier(0.4, 0, 0.2, 1),
+    box-shadow 0.3s cubic-bezier(0.4, 0, 0.2, 1),
+    border 0.3s cubic-bezier(0.4, 0, 0.2, 1),
+    background 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/**
+ * Subtle shimmer animation for active glass elements
+ */
+@keyframes ios-glass-shimmer {
+  0% {
+    background-position: -200% center;
+  }
+  100% {
+    background-position: 200% center;
+  }
+}
+
+.ios-glass-shimmer {
+  background-image: linear-gradient(
+    90deg,
+    rgba(255, 255, 255, 0) 0%,
+    rgba(255, 255, 255, 0.1) 50%,
+    rgba(255, 255, 255, 0) 100%
+  );
+  background-size: 200% 100%;
+  animation: ios-glass-shimmer 3s ease-in-out infinite;
+}
+
+/* ========================================
+   PERFORMANCE OPTIMIZATIONS
+   ======================================== */
+
+/**
+ * Hardware acceleration for smooth glass effects
+ */
+.ios-glass-accelerated {
+  will-change: transform, box-shadow, backdrop-filter;
+  transform: translateZ(0);
+  -webkit-transform: translateZ(0);
+}
+
+/**
+ * Reduced motion support (accessibility)
+ */
+@media (prefers-reduced-motion: reduce) {
+  .ios-glass-transition,
+  .ios-hover-elevation,
+  .ios-glass-shimmer,
+  .ios-liquid-glass-button {
+    transition: none !important;
+    animation: none !important;
+  }
+
+  .ios-lensing::after {
+    display: none;
+  }
+}

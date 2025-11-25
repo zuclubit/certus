@@ -1,0 +1,246 @@
+<mxfile host="Electron" agent="Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) draw.io/29.0.3 Chrome/140.0.7339.249 Electron/38.7.0 Safari/537.36" version="29.0.3">
+  <diagram id="rules-engine-architecture" name="Arquitectura Rules Engine">
+    <mxGraphModel dx="4698" dy="1010" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="3200" pageHeight="2800" background="#ffffff" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="title" value="ARQUITECTURA COMPLETA: SISTEMA DE VALIDACION" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;fontSize=22;fontStyle=1;fontColor=#1a1a1a;" parent="1" vertex="1">
+          <mxGeometry x="400" y="40" width="2400" height="50" as="geometry" />
+        </mxCell>
+        <mxCell id="zone1-bg" value="" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#e1f5e1;strokeColor=#4caf50;strokeWidth=3;arcSize=6;" parent="1" vertex="1">
+          <mxGeometry x="100" y="120" width="650" height="840" as="geometry" />
+        </mxCell>
+        <mxCell id="zone1-title" value="ZONA 1: FUENTES DE DATOS" style="text;html=1;align=left;verticalAlign=top;fontSize=25;fontStyle=1;fontColor=#2e7d32;" parent="1" vertex="1">
+          <mxGeometry x="120" y="140" width="300" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="sap" value="SAP ERP&#xa;&#xa;Sistema Financiero&#xa;RFC/BAPI connector" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fff3e0;strokeColor=#f57c00;strokeWidth=3;fontSize=15;align=center;" parent="1" vertex="1">
+          <mxGeometry x="140" y="190" width="220" height="120" as="geometry" />
+        </mxCell>
+        <mxCell id="oracle" value="Contabilidad&lt;br&gt;&lt;br&gt;API" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fff3e0;strokeColor=#f57c00;strokeWidth=3;fontSize=15;align=center;" parent="1" vertex="1">
+          <mxGeometry x="400" y="190" width="220" height="120" as="geometry" />
+        </mxCell>
+        <mxCell id="aladdin" value="Aladdin Platform&#xa;&#xa;Gestion de Inversiones&#xa;REST API" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fff3e0;strokeColor=#f57c00;strokeWidth=3;fontSize=15;align=center;" parent="1" vertex="1">
+          <mxGeometry x="140" y="350" width="220" height="120" as="geometry" />
+        </mxCell>
+        <mxCell id="sftp-source" value="SFTP&lt;br&gt;&lt;br&gt;Archivos CSV/TXT&lt;br&gt;Scheduled pulls" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fff3e0;strokeColor=#f57c00;strokeWidth=3;fontSize=15;align=center;" parent="1" vertex="1">
+          <mxGeometry x="400" y="350" width="220" height="120" as="geometry" />
+        </mxCell>
+        <mxCell id="consar-web" value="CONSAR.gob.mx&#xa;&#xa;Circulares Regulatorias&#xa;Web Scraper automatico&#xa;Monitoreo diario" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#e3f2fd;strokeColor=#1976d2;strokeWidth=3;fontSize=15;align=center;" parent="1" vertex="1">
+          <mxGeometry x="140" y="510" width="480" height="140" as="geometry" />
+        </mxCell>
+        <mxCell id="banxico-api" value="Banxico API&#xa;&#xa;Tipos de Cambio FIX&#xa;REST API oficial" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#e3f2fd;strokeColor=#1976d2;strokeWidth=3;fontSize=15;align=center;" parent="1" vertex="1">
+          <mxGeometry x="140" y="690" width="220" height="120" as="geometry" />
+        </mxCell>
+        <mxCell id="catalog-consar" value="Catalogos CONSAR&#xa;&#xa;Cuentas/Subcuentas validas&#xa;Actualizacion mensual" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#e3f2fd;strokeColor=#1976d2;strokeWidth=3;fontSize=15;align=center;" parent="1" vertex="1">
+          <mxGeometry x="400" y="690" width="220" height="120" as="geometry" />
+        </mxCell>
+        <mxCell id="zone2-bg" value="" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fff9e1;strokeColor=#ff9800;strokeWidth=3;arcSize=6;" parent="1" vertex="1">
+          <mxGeometry x="800" y="120" width="600" height="840" as="geometry" />
+        </mxCell>
+        <mxCell id="zone2-title" value="ZONA 2: ETL - PARSING" style="text;html=1;align=left;verticalAlign=top;fontSize=25;fontStyle=1;fontColor=#e65100;" parent="1" vertex="1">
+          <mxGeometry x="820" y="140" width="300" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="etl-service" value="ETL SERVICE&lt;br&gt;&lt;br&gt;Azure Data Factory / AWS Glue&lt;br&gt;&lt;br&gt;EXTRACT&lt;br&gt;- SAP RFC connector&lt;br&gt;- Aladdin REST API&lt;br&gt;- SFTP client&lt;br&gt;&lt;br&gt;TRANSFORM&lt;br&gt;- Data mapping&lt;br&gt;- Field extraction&lt;br&gt;&lt;br&gt;LOAD&lt;br&gt;- Blob Storage&lt;br&gt;- Event Bus" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fff3e0;strokeColor=#f57c00;strokeWidth=4;fontSize=15;align=left;spacingLeft=15;" parent="1" vertex="1">
+          <mxGeometry x="840" y="190" width="520" height="380" as="geometry" />
+        </mxCell>
+        <mxCell id="parser-service" value="PARSER SERVICE&#xa;&#xa;.NET 8 Worker Service&#xa;&#xa;PARSING&#xa;- Fixed-width (77 chars)&#xa;- Field extraction&#xa;- Basic validation&#xa;&#xa;OUTPUT&#xa;- Parsed records (JSON)&#xa;- Event: FileParsed&#xa;- Metadata" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fff3e0;strokeColor=#f57c00;strokeWidth=4;fontSize=15;align=left;spacingLeft=15;" parent="1" vertex="1">
+          <mxGeometry x="840" y="640" width="520" height="300" as="geometry" />
+        </mxCell>
+        <mxCell id="zone3-bg" value="" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#e3f2fd;strokeColor=#1976d2;strokeWidth=4;arcSize=6;" parent="1" vertex="1">
+          <mxGeometry x="1460" y="115" width="720" height="1685" as="geometry" />
+        </mxCell>
+        <mxCell id="zone3-title" value="ZONA 3: VALIDATION SERVICE (INDEPENDIENTE)" style="text;html=1;align=left;verticalAlign=top;fontSize=25;fontStyle=1;fontColor=#0d47a1;" parent="1" vertex="1">
+          <mxGeometry x="1480" y="140" width="500" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="validation-api" value="VALIDATION API&#xa;&#xa;.NET 8 Web API&#xa;Azure API Management&#xa;&#xa;POST /api/files/upload&#xa;POST /api/files/validate&#xa;GET  /api/files/results&#xa;GET  /api/files/report&#xa;&#xa;OAuth 2.0 + Azure AD&#xa;Rate limit: 1000 req/min" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#bbdefb;strokeColor=#1976d2;strokeWidth=3;fontSize=15;align=left;spacingLeft=15;arcSize=6;" parent="1" vertex="1">
+          <mxGeometry x="1500" y="190" width="640" height="250" as="geometry" />
+        </mxCell>
+        <mxCell id="rules-engine" value="DYNAMIC RULES ENGINE&#xa;&#xa;NRules / Drools.NET&#xa;&#xa;COMPONENTES&#xa;- Rules Repository (RulesDB)&#xa;- Rule Compiler (Roslyn JIT)&#xa;- Rule Executor (parallel)&#xa;- Results Aggregator&#xa;&#xa;TIPOS DE REGLAS&#xa;- FieldLength, DataType, Regex&#xa;- CustomExpression (C# compiled)&#xa;- LookupExists (catalogs)&#xa;- CrossFileValidation&#xa;- Aggregation (sum, avg)&#xa;&#xa;PERFORMANCE&#xa;- 37 validators en paralelo&#xa;- Cache de reglas compiladas&#xa;- Timeout: 3 min (p99)&#xa;&#xa;DYNAMIC LOADING&#xa;- Carga reglas desde DB&#xa;- Hot reload sin redeploy&#xa;- Versionado de reglas" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#1976d2;strokeColor=#0d47a1;strokeWidth=5;fontSize=15;fontColor=#ffffff;align=left;spacingLeft=20;fontStyle=1;arcSize=6;" parent="1" vertex="1">
+          <mxGeometry x="1500" y="520" width="640" height="500" as="geometry" />
+        </mxCell>
+        <mxCell id="rules-management" value="RULES MANAGEMENT&#xa;&#xa;React + Monaco Editor&#xa;&#xa;CRUD DE REGLAS&#xa;- Visual Designer&#xa;- Code Editor (JSON/YAML)&#xa;- Sandbox Testing&#xa;- Version Control&#xa;- Approval Workflow&#xa;&#xa;API ENDPOINTS&#xa;- GET/POST/PUT /api/rules&#xa;- POST /api/rules/test&#xa;- POST /api/rules/activate&#xa;- POST /api/rules/rollback" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#bbdefb;strokeColor=#1976d2;strokeWidth=3;fontSize=15;align=left;spacingLeft=15;arcSize=6;" parent="1" vertex="1">
+          <mxGeometry x="1500" y="1060" width="640" height="290" as="geometry" />
+        </mxCell>
+        <mxCell id="regulatory-monitoring" value="REGULATORY MONITORING&#xa;&#xa;Azure Functions (Scheduled)&#xa;&#xa;MONITOREO CONSAR&#xa;- Web Scraper (Playwright)&#xa;- Email monitoring&#xa;- RSS feed&#xa;- Cron: Daily 9:00 AM&#xa;&#xa;ANALISIS CON IA&#xa;- Azure OpenAI (GPT-4)&#xa;- Impact analysis&#xa;- Rule suggestion&#xa;&#xa;NOTIFICACIONES&#xa;- Email / Slack / Teams&#xa;- Jira ticket creation" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#bbdefb;strokeColor=#1976d2;strokeWidth=3;fontSize=17;align=left;spacingLeft=15;" parent="1" vertex="1">
+          <mxGeometry x="940" y="1120" width="320" height="410" as="geometry" />
+        </mxCell>
+        <mxCell id="validationdb" value="VALIDATIONDB&#xa;&#xa;Azure SQL Database S1&#xa;&#xa;TABLAS&#xa;- FileMetadata&#xa;- FileRecords&#xa;- ValidationResults&#xa;- ValidationEvents (Event Store)&#xa;- Rules (definiciones dinamicas)&#xa;- RuleVersions (historial)&#xa;- RuleExecutionLog&#xa;&#xa;FEATURES&#xa;- Row-Level Security (RLS)&#xa;- Temporal Tables&#xa;- Full-Text Search&#xa;- Backup: 7 años" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#90caf9;strokeColor=#1976d2;strokeWidth=3;fontSize=15;align=left;spacingLeft=15;arcSize=6;" parent="1" vertex="1">
+          <mxGeometry x="1500" y="1425" width="640" height="340" as="geometry" />
+        </mxCell>
+        <mxCell id="zone4-bg" value="" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f3e5f5;strokeColor=#7b1fa2;strokeWidth=3;arcSize=6;" parent="1" vertex="1">
+          <mxGeometry x="2240" y="120" width="600" height="690" as="geometry" />
+        </mxCell>
+        <mxCell id="zone4-title" value="ZONA 4: SISTEMA CONTABLE" style="text;html=1;align=left;verticalAlign=top;fontSize=25;fontStyle=1;fontColor=#4a148c;" parent="1" vertex="1">
+          <mxGeometry x="2260" y="140" width="350" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="contable-service" value="CONTABLE SERVICE&#xa;&#xa;SQL Server (Legacy)&#xa;&#xa;INPUT&#xa;- Event: FileValidated (status=OK)&#xa;- API call: GET /api/files/records&#xa;&#xa;PROCESAMIENTO&#xa;- Guardar solo archivos OK&#xa;- Rechazar archivos ERROR&#xa;- Transaccional (rollback on fail)&#xa;&#xa;OUTPUT&#xa;- Event: AccountingCompleted&#xa;- Notificacion a usuario" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#e1bee7;strokeColor=#7b1fa2;strokeWidth=3;fontSize=15;align=left;spacingLeft=15;" parent="1" vertex="1">
+          <mxGeometry x="2280" y="190" width="500" height="320" as="geometry" />
+        </mxCell>
+        <mxCell id="contabledb" value="CONTABLEDB&#xa;&#xa;SQL Server 2022&#xa;&#xa;SCHEMA ACTUAL&#xa;- AccountingRecords&#xa;- AccountingJournal&#xa;- GeneralLedger&#xa;&#xa;TECNOLOGIA ACTUAL&#xa;- No cambios necesarios&#xa;- Consume eventos&#xa;- Independiente de Validation" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ce93d8;strokeColor=#7b1fa2;strokeWidth=3;fontSize=15;align=left;spacingLeft=15;" parent="1" vertex="1">
+          <mxGeometry x="2280" y="550" width="500" height="240" as="geometry" />
+        </mxCell>
+        <mxCell id="reporting-service" value="REPORTING SERVICE&#xa;&#xa;.NET 8 + iText7 + EPPlus&#xa;&#xa;REPORTES CONSAR&#xa;- PDF firmado digitalmente&#xa;- Excel con validaciones&#xa;- Comprobante de envio&#xa;&#xa;ALMACENAMIENTO&#xa;- Blob Storage (7 años)&#xa;- Event: ReportGenerated" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#e1bee7;strokeColor=#7b1fa2;strokeWidth=3;fontSize=15;align=left;spacingLeft=15;" parent="1" vertex="1">
+          <mxGeometry x="2280" y="830" width="500" height="220" as="geometry" />
+        </mxCell>
+        <mxCell id="zone5-bg" value="" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fce4ec;strokeColor=#c2185b;strokeWidth=3;arcSize=6;" parent="1" vertex="1">
+          <mxGeometry x="2240" y="1180" width="600" height="460" as="geometry" />
+        </mxCell>
+        <mxCell id="zone5-title" value="ZONA 5: CONSAR (DESTINO)" style="text;html=1;align=left;verticalAlign=top;fontSize=16;fontStyle=1;fontColor=#880e4f;" parent="1" vertex="1">
+          <mxGeometry x="2260" y="1200" width="350" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="sftp-gateway" value="SFTP GATEWAY&#xa;&#xa;Azure FTP / AWS Transfer Family&#xa;&#xa;PROCESO DE ENVIO&#xa;1. Encrypt file (PGP)&#xa;2. SFTP connection (TLS 1.3)&#xa;3. Upload encrypted file&#xa;4. Wait acknowledgment&#xa;5. Store proof&#xa;6. Notify user&#xa;&#xa;SEGURIDAD&#xa;- PGP 4096-bit encryption&#xa;- TLS 1.3 transport&#xa;- IP whitelist&#xa;- Audit log (7 años)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f48fb1;strokeColor=#c2185b;strokeWidth=4;fontSize=15;align=left;spacingLeft=15;" parent="1" vertex="1">
+          <mxGeometry x="2280" y="1250" width="500" height="340" as="geometry" />
+        </mxCell>
+        <mxCell id="zone6-bg" value="" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f1f8e9;strokeColor=#558b2f;strokeWidth=3;arcSize=6;" parent="1" vertex="1">
+          <mxGeometry x="-1400" y="1030" width="2130" height="715" as="geometry" />
+        </mxCell>
+        <mxCell id="zone6-title" value="ZONA 6: SERVICIOS TRANSVERSALES" style="text;html=1;align=left;verticalAlign=top;fontSize=25;fontStyle=1;fontColor=#33691e;" parent="1" vertex="1">
+          <mxGeometry x="-1380" y="1050" width="450" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="event-bus" value="EVENT BUS&#xa;&#xa;Azure Service Bus Premium&#xa;&#xa;EVENTOS&#xa;- DataExtracted&#xa;- FileParsed&#xa;- FileValidated&#xa;- AccountingCompleted&#xa;- ReportGenerated&#xa;&#xa;FEATURES&#xa;- Geo-replication&#xa;- Dead letter queue&#xa;- At-least-once delivery" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#c5e1a5;strokeColor=#558b2f;strokeWidth=3;fontSize=16;align=left;spacingLeft=15;" parent="1" vertex="1">
+          <mxGeometry x="-1360" y="1100" width="280" height="305" as="geometry" />
+        </mxCell>
+        <mxCell id="secrets-manager" value="SECRETS MANAGER&#xa;&#xa;Azure Key Vault&#xa;&#xa;SECRETS&#xa;- API keys (Banxico)&#xa;- PGP keys (CONSAR)&#xa;- DB connection strings&#xa;- OAuth tokens&#xa;&#xa;FEATURES&#xa;- HSM-backed&#xa;- Rotation automatica&#xa;- Audit trail" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#c5e1a5;strokeColor=#558b2f;strokeWidth=3;fontSize=16;align=left;spacingLeft=15;" parent="1" vertex="1">
+          <mxGeometry x="-1040" y="1100" width="280" height="305" as="geometry" />
+        </mxCell>
+        <mxCell id="monitoring" value="MONITORING&#xa;&#xa;Application Insights + Grafana&#xa;&#xa;METRICAS&#xa;- Validation latency&#xa;- Error rate per rule&#xa;- Throughput (files/hour)&#xa;- Resource utilization&#xa;&#xa;ALERTAS&#xa;- Error rate mayor 1 pct&#xa;- Latency mayor 5 min&#xa;- CONSAR deadline menor 24h" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#c5e1a5;strokeColor=#558b2f;strokeWidth=3;fontSize=16;align=left;spacingLeft=15;" parent="1" vertex="1">
+          <mxGeometry x="-720" y="1100" width="280" height="305" as="geometry" />
+        </mxCell>
+        <mxCell id="feature-flags" value="FEATURE FLAGS&#xa;&#xa;LaunchDarkly / Azure App Config&#xa;&#xa;FLAGS&#xa;- validation_rule_V001 - V099&#xa;- Canary deployment&#xa;- A/B testing&#xa;- Kill switch&#xa;&#xa;ROLLOUT&#xa;- Gradual 10-25-50-100 pct&#xa;- Instant rollback (menor 1 min)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#c5e1a5;strokeColor=#558b2f;strokeWidth=3;fontSize=16;align=left;spacingLeft=15;" parent="1" vertex="1">
+          <mxGeometry x="-400" y="1100" width="280" height="295" as="geometry" />
+        </mxCell>
+        <mxCell id="catalog-service" value="CATALOG SERVICE&#xa;&#xa;.NET 8 API + Redis Cache&#xa;&#xa;CATALOGOS&#xa;- CuentasConsar&#xa;- SubcuentasConsar&#xa;- TiposCambio (Banxico)&#xa;- Contracuentas&#xa;&#xa;CACHE&#xa;- Redis 1 hora TTL&#xa;- Auto-refresh&#xa;- Fallback to DB" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#c5e1a5;strokeColor=#558b2f;strokeWidth=3;fontSize=16;align=left;spacingLeft=15;" parent="1" vertex="1">
+          <mxGeometry x="-80" y="1100" width="280" height="295" as="geometry" />
+        </mxCell>
+        <mxCell id="notification-service" value="NOTIFICATION SERVICE&#xa;&#xa;SendGrid + Slack + Teams&#xa;&#xa;NOTIFICACIONES&#xa;- ValidationCompleted&#xa;- ValidationFailed&#xa;- RegulatoryChangeDetected&#xa;- DeadlineApproaching&#xa;&#xa;CANALES&#xa;- Email, SMS, Slack, Teams&#xa;- Prioridad: Low/Med/High" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#c5e1a5;strokeColor=#558b2f;strokeWidth=3;fontSize=16;align=left;spacingLeft=15;" parent="1" vertex="1">
+          <mxGeometry x="240" y="1100" width="280" height="280" as="geometry" />
+        </mxCell>
+        <mxCell id="regulatory-workflow" value="WORKFLOW ACTUALIZACION REGULATORIA&lt;br&gt;&lt;br&gt;1. MONITOREO: Scraper detecta circular CONSAR - Analisis IA (GPT-4) - Notificacion equipo&lt;br&gt;2. ANALISIS: Compliance Officer revisa - Identifica cambios - Prioriza por criticidad&lt;br&gt;3. DISEÑO: Designer crea regla (JSON) - Define test cases - Review tecnico&lt;br&gt;4. DESARROLLO: Implementa regla - Unit testing - Sandbox testing (100 archivos)&lt;br&gt;5. APPROVAL: Compliance approval - CTO approval - Documentacion&lt;br&gt;6. DEPLOYMENT: DEV - QA - STAGING - Canary (10 pct) - Gradual rollout (100 pct)&lt;br&gt;7. MONITOREO: Error rate menor 0.1 pct - Performance menor 3 min - User feedback - Cierre" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fff9c4;strokeColor=#f57f17;strokeWidth=4;fontSize=23;align=left;spacingLeft=15;" parent="1" vertex="1">
+          <mxGeometry x="-1360" y="1431.5" width="1010" height="297.5" as="geometry" />
+        </mxCell>
+        <mxCell id="flow-sap-etl" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#4caf50;strokeWidth=5;endArrow=block;endSize=12;" parent="1" source="sap" target="etl-service" edge="1">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="250" y="330" />
+              <mxPoint x="700" y="330" />
+              <mxPoint x="700" y="380" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="flow-etl-parser" value="Event: DataExtracted" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#1565c0;strokeWidth=6;endArrow=block;endSize=12;fontSize=11;fontColor=#1565c0;labelBackgroundColor=#ffffff;" parent="1" source="etl-service" target="parser-service" edge="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="flow-parser-validation" value="Event: FileParsed" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#1976d2;strokeWidth=7;endArrow=block;endSize=12;fontSize=11;fontColor=#1976d2;labelBackgroundColor=#ffffff;fontStyle=1;exitX=0.5;exitY=0;exitDx=0;exitDy=0;" parent="1" source="oracle" target="validation-api" edge="1">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="510" y="90" />
+              <mxPoint x="1420" y="90" />
+              <mxPoint x="1420" y="300" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="flow-api-rules" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#0d47a1;strokeWidth=5;endArrow=block;endSize=12;dashed=1;" parent="1" source="validation-api" target="rules-engine" edge="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="flow-rules-db" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#1976d2;strokeWidth=5;endArrow=block;endSize=12;startArrow=block;startSize=12;exitX=0.5;exitY=1;exitDx=0;exitDy=0;" parent="1" source="rules-management" target="validationdb" edge="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="1820" y="1330" as="sourcePoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="flow-validation-contable" value="Event: FileValidated (status=OK)" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#2e7d32;strokeWidth=8;endArrow=block;endSize=14;fontSize=11;fontColor=#2e7d32;labelBackgroundColor=#ffffff;fontStyle=1;" parent="1" source="rules-engine" target="contable-service" edge="1">
+          <mxGeometry x="0.1111" y="50" relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="2220" y="750" />
+              <mxPoint x="2220" y="350" />
+            </Array>
+            <mxPoint as="offset" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="flow-contable-db" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#7b1fa2;strokeWidth=5;endArrow=block;endSize=12;" parent="1" source="contable-service" target="contabledb" edge="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="flow-reporting-sftp" value="Send to CONSAR" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#c2185b;strokeWidth=8;endArrow=block;endSize=14;fontSize=11;fontColor=#c2185b;labelBackgroundColor=#ffffff;fontStyle=1;" parent="1" source="reporting-service" target="sftp-gateway" edge="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="legend-bg" value="" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#424242;strokeWidth=2;arcSize=6;fontSize=17;" parent="1" vertex="1">
+          <mxGeometry x="2240" y="1700" width="600" height="320" as="geometry" />
+        </mxCell>
+        <mxCell id="legend-title" value="LEYENDA" style="text;html=1;align=left;verticalAlign=top;fontSize=17;fontStyle=1;fontColor=#1a1a1a;" parent="1" vertex="1">
+          <mxGeometry x="2260" y="1720" width="150" height="25" as="geometry" />
+        </mxCell>
+        <mxCell id="legend1" value="Extraccion de datos (SAP, Oracle, etc)" style="text;html=1;strokeColor=#4caf50;fillColor=none;align=left;verticalAlign=middle;fontSize=17;fontColor=#1a1a1a;strokeWidth=5;" parent="1" vertex="1">
+          <mxGeometry x="2320" y="1760" width="300" height="20" as="geometry" />
+        </mxCell>
+        <mxCell id="legend2" value="Transformacion y parsing" style="text;html=1;strokeColor=#1565c0;fillColor=none;align=left;verticalAlign=middle;fontSize=17;fontColor=#1a1a1a;strokeWidth=6;" parent="1" vertex="1">
+          <mxGeometry x="2320" y="1790" width="300" height="20" as="geometry" />
+        </mxCell>
+        <mxCell id="legend3" value="Validacion (37 reglas CONSAR)" style="text;html=1;strokeColor=#1976d2;fillColor=none;align=left;verticalAlign=middle;fontSize=17;fontColor=#1a1a1a;strokeWidth=7;fontStyle=1;" parent="1" vertex="1">
+          <mxGeometry x="2320" y="1820" width="300" height="20" as="geometry" />
+        </mxCell>
+        <mxCell id="legend4" value="Archivo validado OK - Contabilidad" style="text;html=1;strokeColor=#2e7d32;fillColor=none;align=left;verticalAlign=middle;fontSize=17;fontColor=#1a1a1a;strokeWidth=8;fontStyle=1;" parent="1" vertex="1">
+          <mxGeometry x="2320" y="1850" width="300" height="20" as="geometry" />
+        </mxCell>
+        <mxCell id="legend5" value="Envio a CONSAR (PGP + SFTP)" style="text;html=1;strokeColor=#c2185b;fillColor=none;align=left;verticalAlign=middle;fontSize=17;fontColor=#1a1a1a;strokeWidth=8;fontStyle=1;" parent="1" vertex="1">
+          <mxGeometry x="2320" y="1880" width="300" height="20" as="geometry" />
+        </mxCell>
+        <mxCell id="legend6" value="Configuracion / Control (dashed)" style="text;html=1;strokeColor=#0d47a1;fillColor=none;align=left;verticalAlign=middle;fontSize=17;fontColor=#1a1a1a;strokeWidth=5;dashed=1;" parent="1" vertex="1">
+          <mxGeometry x="2320" y="1910" width="300" height="20" as="geometry" />
+        </mxCell>
+        <mxCell id="legend-note" value="VENTAJA CLAVE: ValidationService es INDEPENDIENTE&#xa;del Sistema Contable. Puede cambiar la tecnologia&#xa;de Contable sin afectar las validaciones CONSAR." style="text;html=1;strokeColor=#ff6f00;fillColor=#fff3e0;align=left;verticalAlign=middle;rounded=1;fontSize=17;fontColor=#1a1a1a;strokeWidth=2;spacingLeft=10;" parent="1" vertex="1">
+          <mxGeometry x="2260" y="1940" width="540" height="70" as="geometry" />
+        </mxCell>
+        <mxCell id="hUl7yUzpjMRuvijXz-oS-2" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#7b1fa2;strokeWidth=5;endArrow=block;endSize=12;entryX=1.001;entryY=0.454;entryDx=0;entryDy=0;entryPerimeter=0;exitX=0;exitY=0.5;exitDx=0;exitDy=0;" edge="1" parent="1" source="contabledb" target="rules-engine">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="2670" y="790" as="sourcePoint" />
+            <mxPoint x="2670" y="830" as="targetPoint" />
+            <Array as="points">
+              <mxPoint x="2260" y="670" />
+              <mxPoint x="2260" y="747" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="hUl7yUzpjMRuvijXz-oS-1" value="Event: ReportGenerated (status=OK)" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#2e7d32;strokeWidth=8;endArrow=block;endSize=14;fontSize=11;fontColor=#2e7d32;labelBackgroundColor=#ffffff;fontStyle=1;exitX=1.003;exitY=0.454;exitDx=0;exitDy=0;exitPerimeter=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" edge="1" parent="1" source="rules-engine" target="reporting-service">
+          <mxGeometry x="0.0876" y="-40" relative="1" as="geometry">
+            <mxPoint x="2650" y="1510" as="sourcePoint" />
+            <mxPoint x="2790" y="1110" as="targetPoint" />
+            <Array as="points">
+              <mxPoint x="2220" y="747" />
+              <mxPoint x="2220" y="940" />
+            </Array>
+            <mxPoint as="offset" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="hUl7yUzpjMRuvijXz-oS-4" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#4caf50;strokeWidth=5;endArrow=block;endSize=12;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" edge="1" parent="1" target="etl-service">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="250" y="470" as="sourcePoint" />
+            <mxPoint x="1310" y="420" as="targetPoint" />
+            <Array as="points">
+              <mxPoint x="250" y="490" />
+              <mxPoint x="700" y="490" />
+              <mxPoint x="700" y="380" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="hUl7yUzpjMRuvijXz-oS-5" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#4caf50;strokeWidth=5;endArrow=block;endSize=12;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" edge="1" parent="1" target="etl-service">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="620" y="380" as="sourcePoint" />
+            <mxPoint x="840" y="410" as="targetPoint" />
+            <Array as="points">
+              <mxPoint x="620" y="380" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="hUl7yUzpjMRuvijXz-oS-9" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#1976d2;strokeWidth=5;endArrow=block;endSize=12;startArrow=block;startSize=12;exitX=0;exitY=0.5;exitDx=0;exitDy=0;entryX=1;entryY=0.5;entryDx=0;entryDy=0;" edge="1" parent="1" source="regulatory-monitoring" target="regulatory-workflow">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="1740" y="1420" as="sourcePoint" />
+            <mxPoint x="1740" y="1495" as="targetPoint" />
+            <Array as="points">
+              <mxPoint x="630" y="1325" />
+              <mxPoint x="630" y="1580" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>

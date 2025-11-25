@@ -1,0 +1,162 @@
+<mxfile host="app.diagrams.net">
+  <diagram name="SOC 2 Compliance" id="soc2-compliance">
+    <mxGraphModel dx="1434" dy="844" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="2400" pageHeight="2200" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+
+        <!-- HEADER -->
+        <mxCell id="header" value="SOC 2 TYPE II COMPLIANCE - TRUST SERVICE CRITERIA" style="text;html=1;strokeColor=#6c8ebf;fillColor=#dae8fc;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=1;fontSize=20;fontStyle=1;" parent="1" vertex="1">
+          <mxGeometry x="700" y="20" width="1000" height="40" as="geometry" />
+        </mxCell>
+
+        <!-- TSC 1: SECURITY -->
+        <mxCell id="tsc-security" value="TSC 1: SECURITY (COMMON CRITERIA)" style="swimlane;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=14;fontStyle=1;startSize=40;" parent="1" vertex="1">
+          <mxGeometry x="40" y="80" width="2320" height="300" as="geometry" />
+        </mxCell>
+        <mxCell id="sec-controls" value="CONTROLES SECURITY&#xa;&#xa;CC6.1 Logical access&#xa;CC6.2 New user access&#xa;CC6.3 Modify user access&#xa;CC6.4 Terminate access&#xa;CC6.5 Password policies&#xa;CC6.6 MFA&#xa;CC6.7 Encryption in transit&#xa;CC6.8 Encryption at rest&#xa;CC7.1 Threat detection&#xa;CC7.2 Vulnerability scanning&#xa;CC7.3 Penetration testing&#xa;CC7.4 Incident response" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=9;fontStyle=1;align=left;verticalAlign=top;" parent="tsc-security" vertex="1">
+          <mxGeometry x="40" y="60" width="240" height="210" as="geometry" />
+        </mxCell>
+        <mxCell id="sec-azure" value="SERVICIOS AZURE (SOC 2 Certified)&#xa;&#xa;Identity and Access:&#xa;- Azure AD (MFA, RBAC, PIM)&#xa;- Azure Key Vault (secrets, certificates)&#xa;- Managed Identity&#xa;&#xa;Encryption:&#xa;- Azure Storage (encryption at rest AES-256)&#xa;- Azure SQL (TDE, Always Encrypted)&#xa;- Azure Disk Encryption&#xa;&#xa;Security:&#xa;- Microsoft Defender for Cloud&#xa;- Azure Sentinel (SIEM)&#xa;- Azure DDoS Protection&#xa;- Azure Firewall&#xa;- Azure WAF&#xa;&#xa;Monitoring:&#xa;- Azure Monitor&#xa;- Application Insights&#xa;- Log Analytics" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;fontSize=8;fontStyle=1;align=left;verticalAlign=top;" parent="tsc-security" vertex="1">
+          <mxGeometry x="310" y="60" width="280" height="210" as="geometry" />
+        </mxCell>
+        <mxCell id="sec-implementation" value="IMPLEMENTACION SISTEMA CONSAR&#xa;&#xa;Access Control:&#xa;- Azure AD con MFA obligatorio&#xa;- RBAC roles: Admin, Compliance, Operator, Viewer&#xa;- Privileged Identity Management (JIT access)&#xa;- Acceso basado en grupos AD&#xa;&#xa;Encryption:&#xa;- TLS 1.3 en todas las conexiones&#xa;- Azure SQL TDE habilitado&#xa;- Blob Storage encrypted (Microsoft-managed keys)&#xa;- Key Vault para secretos (PGP keys CONSAR)&#xa;&#xa;Security Monitoring:&#xa;- Defender for Cloud: Score mayor 85&#xa;- Sentinel: 50 reglas de deteccion activas&#xa;- Vulnerability scanning: Semanal (Qualys)&#xa;- Penetration testing: Anual (externo)&#xa;&#xa;Incident Response:&#xa;- Playbook documentado&#xa;- Equipo SOC 24/7 (PagerDuty)&#xa;- MTTR objetivo menor 2 horas" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;fontSize=8;fontStyle=1;align=left;verticalAlign=top;" parent="tsc-security" vertex="1">
+          <mxGeometry x="620" y="60" width="340" height="210" as="geometry" />
+        </mxCell>
+        <mxCell id="sec-evidence" value="EVIDENCIAS REQUERIDAS&#xa;&#xa;Politicas:&#xa;- Access Control Policy&#xa;- Password Policy&#xa;- Encryption Policy&#xa;- Incident Response Plan&#xa;&#xa;Logs (90 dias retention):&#xa;- Azure AD sign-in logs&#xa;- Azure Activity logs&#xa;- Security Center alerts&#xa;- Incident tickets&#xa;&#xa;Reviews:&#xa;- Quarterly access reviews&#xa;- Annual penetration test report&#xa;- Vulnerability scan reports&#xa;- Security training certificates&#xa;&#xa;Tests:&#xa;- 25 samples access provisioning&#xa;- 25 samples access termination&#xa;- MFA enforcement verification&#xa;- Encryption verification" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f8cecc;strokeColor=#b85450;fontSize=8;fontStyle=1;align=left;verticalAlign=top;" parent="tsc-security" vertex="1">
+          <mxGeometry x="990" y="60" width="300" height="210" as="geometry" />
+        </mxCell>
+        <mxCell id="sec-audit" value="TESTING AUDITOR&#xa;&#xa;Inquiry:&#xa;- Interview CISO&#xa;- Interview Security team&#xa;- Review policies&#xa;&#xa;Observation:&#xa;- Observe access provisioning&#xa;- Observe incident response&#xa;&#xa;Inspection:&#xa;- Inspect firewall rules&#xa;- Inspect Key Vault config&#xa;- Inspect Defender alerts&#xa;&#xa;Reperformance:&#xa;- Test 25 user access grants&#xa;- Test 25 user terminations&#xa;- Verify MFA enforcement&#xa;- Verify encryption settings&#xa;&#xa;Resultado:&#xa;No exceptions identified&#xa;Controls operating effectively" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#e1d5e7;strokeColor=#9673a6;fontSize=8;fontStyle=1;align=left;verticalAlign=top;" parent="tsc-security" vertex="1">
+          <mxGeometry x="1320" y="60" width="280" height="210" as="geometry" />
+        </mxCell>
+
+        <!-- TSC 2: AVAILABILITY -->
+        <mxCell id="tsc-availability" value="TSC 2: AVAILABILITY" style="swimlane;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;fontSize=14;fontStyle=1;startSize=40;" parent="1" vertex="1">
+          <mxGeometry x="40" y="400" width="2320" height="280" as="geometry" />
+        </mxCell>
+        <mxCell id="avail-controls" value="CONTROLES AVAILABILITY&#xa;&#xa;A1.1 Monitoring&#xa;A1.2 Capacity planning&#xa;A1.3 SLA targets&#xa;A1.4 Backup and recovery&#xa;A1.5 Disaster recovery&#xa;A1.6 Change management&#xa;A1.7 Incident management&#xa;A1.8 Performance tuning" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;fontSize=9;fontStyle=1;align=left;verticalAlign=top;" parent="tsc-availability" vertex="1">
+          <mxGeometry x="40" y="60" width="240" height="190" as="geometry" />
+        </mxCell>
+        <mxCell id="avail-azure" value="SERVICIOS AZURE&#xa;&#xa;High Availability:&#xa;- AKS (3-20 nodes autoscale)&#xa;- Azure SQL (Business Critical, Geo-replication)&#xa;- Azure Storage (GRS, 99.99 pct SLA)&#xa;- Azure Load Balancer (zone redundant)&#xa;- Traffic Manager (multi-region)&#xa;&#xa;Backup and DR:&#xa;- Azure Backup (automated)&#xa;- SQL Point-in-time restore (35 days)&#xa;- Blob soft delete (90 days)&#xa;- Site Recovery (RTO 4h, RPO 1h)&#xa;&#xa;Monitoring:&#xa;- Azure Monitor (99.9 pct uptime)&#xa;- Application Insights&#xa;- Service Health alerts" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;fontSize=8;fontStyle=1;align=left;verticalAlign=top;" parent="tsc-availability" vertex="1">
+          <mxGeometry x="310" y="60" width="280" height="190" as="geometry" />
+        </mxCell>
+        <mxCell id="avail-implementation" value="IMPLEMENTACION&#xa;&#xa;SLA Targets:&#xa;- System availability: 99.9 pct&#xa;- API response time: menor 500ms p95&#xa;- Validation time: menor 3 min&#xa;&#xa;Monitoring:&#xa;- Health checks: every 30 sec&#xa;- Uptime monitoring: Pingdom&#xa;- Status page: status.afore.com&#xa;- Alertas PagerDuty: mayor 1 min downtime&#xa;&#xa;Backup:&#xa;- SQL backup: Diario&#xa;- Blob backup: Continuo (versioning)&#xa;- Retention: 35 dias (SQL), 7 años (reportes)&#xa;&#xa;DR Testing:&#xa;- Failover test: Mensual&#xa;- Full DR drill: Quarterly&#xa;- RTO actual: 2.5 horas (target 4h)&#xa;- RPO actual: 30 min (target 1h)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;fontSize=8;fontStyle=1;align=left;verticalAlign=top;" parent="tsc-availability" vertex="1">
+          <mxGeometry x="620" y="60" width="340" height="190" as="geometry" />
+        </mxCell>
+        <mxCell id="avail-evidence" value="EVIDENCIAS&#xa;&#xa;Monitoring:&#xa;- Uptime reports (monthly)&#xa;- Incident tickets&#xa;- RCA (Root Cause Analysis) docs&#xa;- Performance baselines&#xa;&#xa;Backup:&#xa;- Backup success logs&#xa;- Restore test results (quarterly)&#xa;- DR test reports&#xa;&#xa;Capacity:&#xa;- Capacity planning docs (annual)&#xa;- Autoscaling logs&#xa;- Load testing reports&#xa;&#xa;Change Management:&#xa;- Change request tickets&#xa;- Deployment logs&#xa;- Rollback procedures" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f8cecc;strokeColor=#b85450;fontSize=8;fontStyle=1;align=left;verticalAlign=top;" parent="tsc-availability" vertex="1">
+          <mxGeometry x="990" y="60" width="300" height="190" as="geometry" />
+        </mxCell>
+        <mxCell id="avail-audit" value="TESTING AUDITOR&#xa;&#xa;Test samples:&#xa;- 12 months uptime reports&#xa;- 25 incident tickets&#xa;- 4 DR test reports&#xa;- 12 backup success logs&#xa;&#xa;Verify:&#xa;- SLA mayor 99.9 pct achieved&#xa;- Incident response menor 2h&#xa;- Backup restoration tested&#xa;- DR RTO within target&#xa;&#xa;Observations:&#xa;- Monitoring dashboards&#xa;- Alerting configuration&#xa;- Autoscaling in action&#xa;&#xa;Resultado:&#xa;1 minor exception:&#xa;- DR test delayed 1 month&#xa;  (Feb 2024)&#xa;Remediated: Test completed&#xa;  March 2024" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#e1d5e7;strokeColor=#9673a6;fontSize=8;fontStyle=1;align=left;verticalAlign=top;" parent="tsc-availability" vertex="1">
+          <mxGeometry x="1320" y="60" width="280" height="190" as="geometry" />
+        </mxCell>
+
+        <!-- TSC 3: PROCESSING INTEGRITY -->
+        <mxCell id="tsc-processing" value="TSC 3: PROCESSING INTEGRITY" style="swimlane;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;fontSize=14;fontStyle=1;startSize=40;" parent="1" vertex="1">
+          <mxGeometry x="40" y="700" width="2320" height="280" as="geometry" />
+        </mxCell>
+        <mxCell id="proc-controls" value="CONTROLES PROCESSING&#xa;&#xa;PI1.1 Input validation&#xa;PI1.2 Processing controls&#xa;PI1.3 Output validation&#xa;PI1.4 Error handling&#xa;PI1.5 Data integrity&#xa;PI1.6 Checksums&#xa;PI1.7 Reconciliation&#xa;PI1.8 Audit trails" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;fontSize=9;fontStyle=1;align=left;verticalAlign=top;" parent="tsc-processing" vertex="1">
+          <mxGeometry x="40" y="60" width="240" height="190" as="geometry" />
+        </mxCell>
+        <mxCell id="proc-azure" value="SERVICIOS AZURE&#xa;&#xa;Data Integrity:&#xa;- Azure SQL (ACID transactions)&#xa;- Azure Service Bus (at-least-once)&#xa;- Azure Event Hub (ordered processing)&#xa;- Cosmos DB (consistency levels)&#xa;&#xa;Validation:&#xa;- API Management (schema validation)&#xa;- Azure Functions (input validation)&#xa;- Logic Apps (workflow validation)&#xa;&#xa;Audit:&#xa;- Azure Monitor (distributed tracing)&#xa;- Application Insights (telemetry)&#xa;- Event Hub (audit events, 7 days)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;fontSize=8;fontStyle=1;align=left;verticalAlign=top;" parent="tsc-processing" vertex="1">
+          <mxGeometry x="310" y="60" width="280" height="190" as="geometry" />
+        </mxCell>
+        <mxCell id="proc-implementation" value="IMPLEMENTACION&#xa;&#xa;37 Validaciones CONSAR:&#xa;- Input: Schema validation XSD&#xa;- Process: Parallel execution (semaphore)&#xa;- Output: Checksum MD5/SHA256&#xa;- Error handling: Dead letter queue&#xa;&#xa;Data Integrity:&#xa;- ACID transactions en SQL&#xa;- Idempotency keys en APIs&#xa;- Message deduplication (Service Bus)&#xa;- Row count reconciliation&#xa;&#xa;Audit Trail:&#xa;- Event sourcing pattern&#xa;- All events logged (Event Hub)&#xa;- Retention 7 años (Cosmos DB)&#xa;- Immutable append-only&#xa;&#xa;Reconciliation:&#xa;- Daily reconciliation ETL vs Validation&#xa;- Monthly reconciliation con CONSAR&#xa;- Automated alerts if mismatch" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;fontSize=8;fontStyle=1;align=left;verticalAlign=top;" parent="tsc-processing" vertex="1">
+          <mxGeometry x="620" y="60" width="340" height="190" as="geometry" />
+        </mxCell>
+        <mxCell id="proc-evidence" value="EVIDENCIAS&#xa;&#xa;Validation:&#xa;- 37 validator unit tests (mayor 95 pct coverage)&#xa;- Integration test results&#xa;- Sandbox test results (100 archivos)&#xa;&#xa;Processing:&#xa;- Reconciliation reports (monthly)&#xa;- Error logs with resolution&#xa;- Dead letter queue monitoring&#xa;&#xa;Audit:&#xa;- Event Hub logs (7 days retention)&#xa;- Cosmos DB audit events (7 años)&#xa;- Distributed tracing samples&#xa;&#xa;Quality:&#xa;- Accuracy rate mayor 99.5 pct&#xa;- False positive rate menor 0.5 pct&#xa;- Processing time p95 menor 3 min" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f8cecc;strokeColor=#b85450;fontSize=8;fontStyle=1;align=left;verticalAlign=top;" parent="tsc-processing" vertex="1">
+          <mxGeometry x="990" y="60" width="300" height="190" as="geometry" />
+        </mxCell>
+        <mxCell id="proc-audit" value="TESTING AUDITOR&#xa;&#xa;Test 25 transactions:&#xa;- Input validation working&#xa;- 37 validators executed&#xa;- Checksums match&#xa;- Audit events logged&#xa;&#xa;Reconciliation:&#xa;- Review 12 monthly reports&#xa;- Verify discrepancies resolved&#xa;- Check automated alerts&#xa;&#xa;Error handling:&#xa;- Review dead letter queue&#xa;- Verify retry logic&#xa;- Check error notifications&#xa;&#xa;Performance:&#xa;- Verify p95 menor 3 min&#xa;- Check accuracy mayor 99.5 pct&#xa;&#xa;Resultado:&#xa;No exceptions&#xa;All controls effective" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#e1d5e7;strokeColor=#9673a6;fontSize=8;fontStyle=1;align=left;verticalAlign=top;" parent="tsc-processing" vertex="1">
+          <mxGeometry x="1320" y="60" width="280" height="190" as="geometry" />
+        </mxCell>
+
+        <!-- TSC 4: CONFIDENTIALITY -->
+        <mxCell id="tsc-confidentiality" value="TSC 4: CONFIDENTIALITY" style="swimlane;whiteSpace=wrap;html=1;fillColor=#e1d5e7;strokeColor=#9673a6;fontSize=14;fontStyle=1;startSize=40;" parent="1" vertex="1">
+          <mxGeometry x="40" y="1000" width="1120" height="280" as="geometry" />
+        </mxCell>
+        <mxCell id="conf-controls" value="CONTROLES CONFIDENTIALITY&#xa;&#xa;C1.1 Data classification&#xa;C1.2 Encryption in transit&#xa;C1.3 Encryption at rest&#xa;C1.4 Key management&#xa;C1.5 Data retention&#xa;C1.6 Data disposal&#xa;C1.7 Non-disclosure agreements&#xa;C1.8 Confidential data handling" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#e1d5e7;strokeColor=#9673a6;fontSize=9;fontStyle=1;align=left;verticalAlign=top;" parent="tsc-confidentiality" vertex="1">
+          <mxGeometry x="40" y="60" width="240" height="190" as="geometry" />
+        </mxCell>
+        <mxCell id="conf-implementation" value="IMPLEMENTACION&#xa;&#xa;Data Classification:&#xa;- Public: Marketing materials&#xa;- Internal: System documentation&#xa;- Confidential: User data, transacciones&#xa;- Highly Confidential: PGP keys, passwords&#xa;&#xa;Encryption:&#xa;- In transit: TLS 1.3 all connections&#xa;- At rest: AES-256 all databases&#xa;- PGP: 4096-bit for CONSAR reports&#xa;- Key Vault: HSM-backed keys&#xa;&#xa;Key Management:&#xa;- Keys rotation: Annual&#xa;- Access logs: All key access logged&#xa;- Separation of duties: 2 person rule&#xa;&#xa;Data Disposal:&#xa;- Secure delete: Azure Purge&#xa;- After retention: Auto-delete policies&#xa;- Certificates: Shredding (physical)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;fontSize=8;fontStyle=1;align=left;verticalAlign=top;" parent="tsc-confidentiality" vertex="1">
+          <mxGeometry x="310" y="60" width="340" height="190" as="geometry" />
+        </mxCell>
+        <mxCell id="conf-evidence" value="EVIDENCIAS&#xa;&#xa;Policies:&#xa;- Data Classification Policy&#xa;- Data Retention Policy&#xa;- Data Disposal Policy&#xa;- Encryption Policy&#xa;&#xa;Logs:&#xa;- Key Vault access logs&#xa;- Data disposal certificates&#xa;- Encryption verification&#xa;&#xa;Agreements:&#xa;- Employee NDAs (100 pct)&#xa;- Vendor NDAs (all vendors)&#xa;- CONSAR data sharing agreement&#xa;&#xa;Controls:&#xa;- DLP (Data Loss Prevention) rules&#xa;- Email encryption enabled&#xa;- USB ports disabled" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f8cecc;strokeColor=#b85450;fontSize=8;fontStyle=1;align=left;verticalAlign=top;" parent="tsc-confidentiality" vertex="1">
+          <mxGeometry x="680" y="60" width="400" height="190" as="geometry" />
+        </mxCell>
+
+        <!-- TSC 5: PRIVACY -->
+        <mxCell id="tsc-privacy" value="TSC 5: PRIVACY (si aplica)" style="swimlane;whiteSpace=wrap;html=1;fillColor=#ffe6cc;strokeColor=#d79b00;fontSize=14;fontStyle=1;startSize=40;" parent="1" vertex="1">
+          <mxGeometry x="1180" y="1000" width="1180" height="280" as="geometry" />
+        </mxCell>
+        <mxCell id="priv-controls" value="CONTROLES PRIVACY&#xa;&#xa;P1.1 Privacy notice&#xa;P2.1 Consent&#xa;P3.1 Data collection&#xa;P4.1 Data usage&#xa;P5.1 Data retention&#xa;P6.1 Data disposal&#xa;P7.1 Data quality&#xa;P8.1 Data subject rights" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffe6cc;strokeColor=#d79b00;fontSize=9;fontStyle=1;align=left;verticalAlign=top;" parent="tsc-privacy" vertex="1">
+          <mxGeometry x="40" y="60" width="240" height="190" as="geometry" />
+        </mxCell>
+        <mxCell id="priv-implementation" value="IMPLEMENTACION&#xa;&#xa;Privacy Notice:&#xa;- Aviso de Privacidad publicado&#xa;- Actualizado anual&#xa;- Disponible en website&#xa;&#xa;Consent:&#xa;- Consent opt-in al registro&#xa;- Logged en base de datos&#xa;- Revocable por usuario&#xa;&#xa;Data Subject Rights (LFPDPPP):&#xa;- ARCO rights: Acceso, Rectificacion,&#xa;  Cancelacion, Oposicion&#xa;- Response time: 20 dias habiles&#xa;- Portal self-service&#xa;&#xa;Data Minimization:&#xa;- Solo datos necesarios colectados&#xa;- Purpose limitation documented&#xa;- Retention según CONSAR (7 años)&#xa;&#xa;Third-Party Sharing:&#xa;- Solo CONSAR (regulador)&#xa;- DPA (Data Processing Agreement)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;fontSize=8;fontStyle=1;align=left;verticalAlign=top;" parent="tsc-privacy" vertex="1">
+          <mxGeometry x="310" y="60" width="340" height="190" as="geometry" />
+        </mxCell>
+        <mxCell id="priv-evidence" value="EVIDENCIAS&#xa;&#xa;Compliance LFPDPPP:&#xa;- Aviso de Privacidad v2.1&#xa;- Consent records database&#xa;- ARCO requests log (25 en 2024)&#xa;- DPO appointed (Data Protection Officer)&#xa;&#xa;Data Mapping:&#xa;- Data flow diagram&#xa;- Data inventory (tipos de datos)&#xa;- Processing activities record&#xa;&#xa;Privacy Impact Assessment:&#xa;- PIA completed (annual)&#xa;- Risk assessment&#xa;- Mitigation controls&#xa;&#xa;Training:&#xa;- Privacy training (annual)&#xa;- 100 pct employees completed" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f8cecc;strokeColor=#b85450;fontSize=8;fontStyle=1;align=left;verticalAlign=top;" parent="tsc-privacy" vertex="1">
+          <mxGeometry x="680" y="60" width="460" height="190" as="geometry" />
+        </mxCell>
+
+        <!-- AUDIT PROCESS -->
+        <mxCell id="audit-process" value="PROCESO AUDITORIA SOC 2 TYPE II" style="swimlane;whiteSpace=wrap;html=1;fillColor=#f8cecc;strokeColor=#b85450;fontSize=14;fontStyle=1;startSize=40;" parent="1" vertex="1">
+          <mxGeometry x="40" y="1300" width="2320" height="320" as="geometry" />
+        </mxCell>
+        <mxCell id="audit-phase1" value="FASE 1: PREPARACION&#xa;(2-3 meses)&#xa;&#xa;Actividades:&#xa;- Gap analysis vs TSC&#xa;- Remediation plan&#xa;- Policy documentation&#xa;- Control implementation&#xa;- Evidence collection setup&#xa;- Select audit firm&#xa;  (Big 4 preferred)&#xa;&#xa;Deliverables:&#xa;- System description&#xa;- Control matrix&#xa;- Policy handbook&#xa;- Remediation evidence&#xa;&#xa;Costo:&#xa;$50K-$80K (internal effort)&#xa;&#xa;Team:&#xa;- CISO (lead)&#xa;- Compliance Officer&#xa;- Security team&#xa;- DevOps team" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f8cecc;strokeColor=#b85450;fontSize=8;fontStyle=1;align=left;verticalAlign=top;" parent="audit-process" vertex="1">
+          <mxGeometry x="40" y="60" width="280" height="230" as="geometry" />
+        </mxCell>
+        <mxCell id="audit-phase2" value="FASE 2: READINESS&#xa;(1 mes)&#xa;&#xa;Actividades:&#xa;- Pre-audit assessment&#xa;- Mock audit (internal)&#xa;- Evidence validation&#xa;- Control testing&#xa;- Documentation review&#xa;- Scoping meeting con auditor&#xa;&#xa;Deliverables:&#xa;- Evidence repository&#xa;- Control testing results&#xa;- Pre-audit report&#xa;- Scope document&#xa;&#xa;Verificar:&#xa;- All 5 TSC in scope&#xa;- 12 month period defined&#xa;- All Azure services listed&#xa;- Subservice orgs (SAP, Oracle)&#xa;&#xa;Costo:&#xa;$20K (audit firm readiness)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f8cecc;strokeColor=#b85450;fontSize=8;fontStyle=1;align=left;verticalAlign=top;" parent="audit-process" vertex="1">
+          <mxGeometry x="350" y="60" width="280" height="230" as="geometry" />
+        </mxCell>
+        <mxCell id="audit-phase3" value="FASE 3: FIELDWORK&#xa;(6-8 semanas)&#xa;&#xa;Audit Period:&#xa;- Jan 1 - Dec 31, 2024&#xa;- 12 months continuous&#xa;&#xa;Actividades Auditor:&#xa;- Walkthrough controles&#xa;- Inquiry (interviews)&#xa;- Observation (live demos)&#xa;- Inspection (config review)&#xa;- Reperformance (testing)&#xa;&#xa;Sample Sizes (typical):&#xa;- Access grants: 25&#xa;- Access terminations: 25&#xa;- Change requests: 25&#xa;- Incidents: All&#xa;- Backups: 12 (monthly)&#xa;- DR tests: 4 (quarterly)&#xa;&#xa;Costo:&#xa;$80K-$120K (audit fees)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f8cecc;strokeColor=#b85450;fontSize=8;fontStyle=1;align=left;verticalAlign=top;" parent="audit-process" vertex="1">
+          <mxGeometry x="660" y="60" width="280" height="230" as="geometry" />
+        </mxCell>
+        <mxCell id="audit-phase4" value="FASE 4: REPORTING&#xa;(2-3 semanas)&#xa;&#xa;Auditor Deliverables:&#xa;- SOC 2 Type II Report&#xa;- Management letter&#xa;- Control deficiencies (if any)&#xa;&#xa;Report Sections:&#xa;1. Independent auditor report&#xa;2. Management assertion&#xa;3. System description&#xa;4. Trust service criteria&#xa;5. Controls and tests&#xa;6. Auditor opinion&#xa;&#xa;Opiniones posibles:&#xa;- Unqualified (clean) - GOAL&#xa;- Qualified (exceptions)&#xa;- Adverse (major issues)&#xa;&#xa;Distribucion:&#xa;- Customers (under NDA)&#xa;- Prospects&#xa;- CONSAR (if requested)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f8cecc;strokeColor=#b85450;fontSize=8;fontStyle=1;align=left;verticalAlign=top;" parent="audit-process" vertex="1">
+          <mxGeometry x="970" y="60" width="280" height="230" as="geometry" />
+        </mxCell>
+        <mxCell id="audit-phase5" value="FASE 5: MANTENIMIENTO&#xa;(continuo)&#xa;&#xa;Post-Certification:&#xa;- Maintain controls (ongoing)&#xa;- Quarterly self-assessments&#xa;- Evidence collection (daily)&#xa;- Policy reviews (annual)&#xa;- Re-audit: Annual&#xa;&#xa;Continuous Monitoring:&#xa;- Azure Security Score&#xa;- Compliance dashboard&#xa;- Automated evidence collection&#xa;- Control testing automation&#xa;&#xa;Remediation:&#xa;- Address any exceptions&#xa;- Implement improvements&#xa;- Update documentation&#xa;&#xa;Timeline Re-audit:&#xa;- Start prep: Oct 2025&#xa;- Audit period: Jan-Dec 2025&#xa;- Fieldwork: Feb 2026&#xa;- Report: Mar 2026" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;fontSize=8;fontStyle=1;align=left;verticalAlign=top;" parent="audit-process" vertex="1">
+          <mxGeometry x="1280" y="60" width="280" height="230" as="geometry" />
+        </mxCell>
+
+        <!-- AZURE SERVICES COMPLIANCE MATRIX -->
+        <mxCell id="azure-matrix" value="MATRIZ SERVICIOS AZURE - CUMPLIMIENTO SOC 2" style="swimlane;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=14;fontStyle=1;startSize=40;" parent="1" vertex="1">
+          <mxGeometry x="40" y="1640" width="2320" height="260" as="geometry" />
+        </mxCell>
+        <mxCell id="azure-list1" value="COMPUTE (SOC 2 Certified)&#xa;&#xa;- Azure Kubernetes Service (AKS)&#xa;- Azure App Service&#xa;- Azure Functions&#xa;- Azure Container Registry&#xa;- Azure Virtual Machines&#xa;- Azure Batch&#xa;&#xa;Shared Responsibility:&#xa;Microsoft: Platform security&#xa;Cliente: App security, access control" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;fontSize=9;fontStyle=1;align=left;verticalAlign=top;" parent="azure-matrix" vertex="1">
+          <mxGeometry x="40" y="60" width="280" height="170" as="geometry" />
+        </mxCell>
+        <mxCell id="azure-list2" value="DATA (SOC 2 Certified)&#xa;&#xa;- Azure SQL Database&#xa;- Azure Cosmos DB&#xa;- Azure Cache for Redis&#xa;- Azure Blob Storage&#xa;- Azure Data Lake&#xa;- Azure Synapse Analytics&#xa;&#xa;Shared Responsibility:&#xa;Microsoft: Encryption at rest, backups&#xa;Cliente: Access control, data classification" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;fontSize=9;fontStyle=1;align=left;verticalAlign=top;" parent="azure-matrix" vertex="1">
+          <mxGeometry x="350" y="60" width="300" height="170" as="geometry" />
+        </mxCell>
+        <mxCell id="azure-list3" value="SECURITY (SOC 2 Certified)&#xa;&#xa;- Azure AD / Entra ID&#xa;- Azure Key Vault&#xa;- Microsoft Defender for Cloud&#xa;- Azure Sentinel&#xa;- Azure DDoS Protection&#xa;- Azure Firewall&#xa;- Azure WAF&#xa;&#xa;Compliance Reports:&#xa;Available in Service Trust Portal&#xa;Updated: Annually" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;fontSize=9;fontStyle=1;align=left;verticalAlign=top;" parent="azure-matrix" vertex="1">
+          <mxGeometry x="680" y="60" width="280" height="170" as="geometry" />
+        </mxCell>
+        <mxCell id="azure-list4" value="MESSAGING (SOC 2 Certified)&#xa;&#xa;- Azure Service Bus&#xa;- Azure Event Hub&#xa;- Azure Event Grid&#xa;- Azure Notification Hubs&#xa;&#xa;MONITORING (SOC 2 Certified)&#xa;&#xa;- Azure Monitor&#xa;- Application Insights&#xa;- Log Analytics&#xa;&#xa;Reports: Service Trust Portal&#xa;Audit Firm: Deloitte&#xa;Last Audit: 2024" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;fontSize=9;fontStyle=1;align=left;verticalAlign=top;" parent="azure-matrix" vertex="1">
+          <mxGeometry x="990" y="60" width="280" height="170" as="geometry" />
+        </mxCell>
+        <mxCell id="azure-verify" value="VERIFICACION COMPLIANCE&#xa;&#xa;Azure Service Trust Portal:&#xa;https://servicetrust.microsoft.com&#xa;&#xa;Documentos Disponibles:&#xa;- SOC 2 Type II Report (annual)&#xa;- Azure Security white papers&#xa;- Compliance guides&#xa;- Shared Responsibility Model&#xa;&#xa;Proceso Verificacion:&#xa;1. Login con Azure AD&#xa;2. Select SOC 2 Compliance&#xa;3. Download current report&#xa;4. Verify services in scope&#xa;5. Review audit opinion&#xa;6. Check effective dates&#xa;&#xa;Nota: Reports under NDA&#xa;Valido solo para Azure customers" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;fontSize=8;fontStyle=1;align=left;verticalAlign=top;" parent="azure-matrix" vertex="1">
+          <mxGeometry x="1300" y="60" width="280" height="170" as="geometry" />
+        </mxCell>
+
+        <!-- COST AND TIMELINE -->
+        <mxCell id="cost-timeline" value="COSTO Y TIMELINE CERTIFICACION SOC 2" style="text;html=1;strokeColor=#b85450;fillColor=#f8cecc;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=1;fontSize=14;fontStyle=1;" parent="1" vertex="1">
+          <mxGeometry x="40" y="1920" width="600" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="cost-breakdown" value="DESGLOSE COSTOS&#xa;&#xa;Audit Fees (Big 4):&#xa;- Initial SOC 2 Type II: $80K-$120K&#xa;- Annual re-audit: $60K-$90K&#xa;&#xa;Internal Effort:&#xa;- Preparation (3 meses): $50K-$80K&#xa;- Ongoing maintenance: $30K/año&#xa;&#xa;Tools and Services:&#xa;- Compliance automation: $20K/año&#xa;- Security tools: $40K/año&#xa;&#xa;TOTAL Year 1: $190K-$260K&#xa;TOTAL Ongoing: $130K-$170K/año&#xa;&#xa;Timeline:&#xa;Month 1-3: Preparation&#xa;Month 4: Readiness&#xa;Month 5-18: Audit period (12 months + 6 weeks fieldwork)&#xa;Month 19: Report&#xa;&#xa;Total to certification: 19 meses" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f8cecc;strokeColor=#b85450;fontSize=9;fontStyle=1;align=left;verticalAlign=top;" parent="1" vertex="1">
+          <mxGeometry x="40" y="1960" width="600" height="260" as="geometry" />
+        </mxCell>
+
+        <!-- BENEFITS -->
+        <mxCell id="benefits" value="BENEFICIOS CERTIFICACION SOC 2&#xa;&#xa;Comerciales:&#xa;- Diferenciador competitivo&#xa;- Requerido por clientes enterprise&#xa;- Acelera ventas (reduce due diligence)&#xa;- Permite vender a Fortune 500&#xa;&#xa;Operacionales:&#xa;- Mejora postura de seguridad&#xa;- Estandariza procesos&#xa;- Reduce riesgo cibernetico&#xa;- Facilita auditorias futuras (ISO 27001)&#xa;&#xa;Regulatorios:&#xa;- Demuestra compliance a CONSAR&#xa;- Evidencia para reguladores&#xa;- Reduce liability&#xa;&#xa;Financieros:&#xa;- Reduce costo de seguros (cyber insurance)&#xa;- Evita multas regulatorias&#xa;- ROI estimado: 200 pct en 3 años" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;fontSize=9;fontStyle=1;align=left;verticalAlign=top;" parent="1" vertex="1">
+          <mxGeometry x="670" y="1960" width="490" height="260" as="geometry" />
+        </mxCell>
+
+        <!-- KEY CONTACTS -->
+        <mxCell id="contacts" value="CONTACTOS CLAVE&#xa;&#xa;Audit Firms (Big 4):&#xa;- Deloitte&#xa;- PwC&#xa;- EY&#xa;- KPMG&#xa;&#xa;Recursos:&#xa;- AICPA (SOC 2 standards)&#xa;  www.aicpa.org&#xa;- Azure Trust Center&#xa;  servicetrust.microsoft.com&#xa;- Compliance automation:&#xa;  - Vanta&#xa;  - Drata&#xa;  - Secureframe&#xa;&#xa;Consultores Mexico:&#xa;- Protiviti&#xa;- Grant Thornton&#xa;- BDO&#xa;&#xa;Training:&#xa;- (ISC)2 CISSP&#xa;- ISACA CISA" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#e1d5e7;strokeColor=#9673a6;fontSize=9;fontStyle=1;align=left;verticalAlign=top;" parent="1" vertex="1">
+          <mxGeometry x="1190" y="1960" width="420" height="260" as="geometry" />
+        </mxCell>
+
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>

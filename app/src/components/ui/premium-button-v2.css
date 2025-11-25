@@ -1,0 +1,278 @@
+/**
+ * Premium Button V2 - VisionOS Fintech 2026 Styles
+ *
+ * Ultra-premium capsule button with atmospheric lighting,
+ * 3D depth, and professional microinteractions
+ */
+
+/* ============================================
+   NORMAL STATE
+   ============================================ */
+
+.premium-button-v2 {
+  /* Subtle Border Glow - Only on edges */
+  box-shadow:
+    /* Soft outer border glow */
+    0 0 8px rgba(59, 130, 246, 0.15),
+    0 0 4px rgba(124, 77, 255, 0.10),
+
+    /* Minimal depth shadow */
+    0 2px 4px rgba(0, 0, 0, 0.20),
+    inset 0 -1px 2px rgba(0, 0, 0, 0.10);
+
+  /* Smooth transform origin */
+  transform: translateY(0) scale(1);
+  filter: brightness(1);
+}
+
+/* ============================================
+   HOVER STATE - Microinteraction
+   ============================================ */
+
+.premium-button-v2-hover {
+  /* Enhanced Border Glow - Microinteraction */
+  box-shadow:
+    /* Stronger border glow on hover */
+    0 0 12px rgba(59, 130, 246, 0.30),
+    0 0 8px rgba(124, 77, 255, 0.22),
+    0 0 4px rgba(236, 72, 153, 0.15),
+
+    /* Subtle elevation shadow */
+    0 4px 8px rgba(0, 0, 0, 0.25),
+
+    /* Inner subtle glow */
+    inset 0 0 16px rgba(96, 165, 250, 0.08),
+    inset 0 1px 0 rgba(255, 255, 255, 0.20);
+
+  /* Subtle elevation - microinteraction */
+  transform: translateY(-2px) scale(1.005);
+
+  /* Slight brightness boost */
+  filter: brightness(1.08);
+}
+
+/* Icon glow enhancement on hover - subtle */
+.premium-button-v2-hover svg {
+  filter: drop-shadow(0 0 6px rgba(96,165,250,0.6));
+}
+
+/* ============================================
+   PRESSED STATE - Tactile Microinteraction
+   ============================================ */
+
+.premium-button-v2-pressed {
+  /* Minimal border glow - pressed state */
+  box-shadow:
+    /* Very subtle outer glow */
+    0 0 4px rgba(59, 130, 246, 0.12),
+    0 0 2px rgba(124, 77, 255, 0.08),
+
+    /* Inner depth shadow - tactile feedback */
+    inset 0 2px 4px rgba(0, 0, 0, 0.30),
+    inset 0 1px 2px rgba(0, 0, 0, 0.40);
+
+  /* Subtle compression - tactile feel */
+  transform: translateY(1px) scale(0.995);
+
+  /* Slight darkening */
+  filter: brightness(0.92);
+}
+
+/* ============================================
+   DISABLED STATE
+   ============================================ */
+
+.premium-button-v2-disabled {
+  /* Minimal muted glow */
+  box-shadow:
+    0 0 4px rgba(100, 116, 139, 0.10),
+    0 1px 2px rgba(0, 0, 0, 0.15),
+    inset 0 1px 0 rgba(255, 255, 255, 0.05);
+
+  /* No transform */
+  transform: translateY(0) scale(1);
+
+  /* Desaturated and dimmed */
+  filter: grayscale(0.5) brightness(0.75) opacity(0.6);
+}
+
+/* ============================================
+   FOCUS STATE - Accessibility
+   ============================================ */
+
+.premium-button-v2-focus {
+  /* Accessibility focus ring - institutional blue */
+  outline: none;
+  box-shadow:
+    /* Border glow */
+    0 0 8px rgba(59, 130, 246, 0.15),
+    0 0 4px rgba(124, 77, 255, 0.10),
+    0 2px 4px rgba(0, 0, 0, 0.20),
+
+    /* Focus ring - prominent for accessibility */
+    0 0 0 3px rgba(147, 197, 253, 0.40),
+    0 0 0 5px rgba(147, 197, 253, 0.20);
+}
+
+/* ============================================
+   TRANSITION SMOOTHING
+   ============================================ */
+
+.premium-button-v2,
+.premium-button-v2-hover,
+.premium-button-v2-pressed,
+.premium-button-v2-disabled {
+  transition:
+    box-shadow 300ms cubic-bezier(0.34, 1.56, 0.64, 1),
+    transform 300ms cubic-bezier(0.34, 1.56, 0.64, 1),
+    filter 300ms ease-out,
+    opacity 300ms ease-out;
+}
+
+/* ============================================
+   LOADING STATE ANIMATION - Subtle Pulse
+   ============================================ */
+
+.premium-button-v2:has(.animate-spin) {
+  /* Subtle border pulse while loading */
+  animation: premium-button-v2-pulse 2.5s ease-in-out infinite;
+}
+
+@keyframes premium-button-v2-pulse {
+  0%, 100% {
+    box-shadow:
+      0 0 8px rgba(59, 130, 246, 0.15),
+      0 0 4px rgba(124, 77, 255, 0.10),
+      0 2px 4px rgba(0, 0, 0, 0.20),
+      inset 0 -1px 2px rgba(0, 0, 0, 0.10);
+  }
+  50% {
+    box-shadow:
+      0 0 12px rgba(59, 130, 246, 0.25),
+      0 0 6px rgba(124, 77, 255, 0.18),
+      0 2px 4px rgba(0, 0, 0, 0.20),
+      inset 0 0 12px rgba(96, 165, 250, 0.08);
+  }
+}
+
+/* ============================================
+   SUBTLE INNER GLOW - Hover Microinteraction
+   ============================================ */
+
+.premium-button-v2::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: radial-gradient(
+    ellipse at center,
+    rgba(96, 165, 250, 0.08) 0%,
+    transparent 70%
+  );
+  opacity: 0;
+  transition: opacity 300ms ease-out;
+  pointer-events: none;
+  border-radius: inherit;
+}
+
+.premium-button-v2:hover::before {
+  opacity: 1;
+}
+
+/* ============================================
+   ICON SUBTLE GLOW - Microinteraction
+   ============================================ */
+
+.premium-button-v2 svg {
+  /* Minimal icon glow */
+  filter: drop-shadow(0 0 3px rgba(96,165,250,0.4));
+  transition: filter 300ms ease-out;
+}
+
+.premium-button-v2-hover svg {
+  /* Enhanced on hover */
+  filter: drop-shadow(0 0 6px rgba(96,165,250,0.6));
+}
+
+.premium-button-v2-pressed svg {
+  /* Reduced on press */
+  filter: drop-shadow(0 0 2px rgba(96,165,250,0.3));
+}
+
+/* ============================================
+   RESPONSIVE ADJUSTMENTS
+   ============================================ */
+
+/* Mobile - Minimal effects for performance */
+@media (max-width: 640px) {
+  .premium-button-v2 {
+    box-shadow:
+      0 0 6px rgba(59, 130, 246, 0.12),
+      0 0 3px rgba(124, 77, 255, 0.08),
+      0 2px 4px rgba(0, 0, 0, 0.20);
+  }
+
+  .premium-button-v2-hover {
+    box-shadow:
+      0 0 10px rgba(59, 130, 246, 0.20),
+      0 0 6px rgba(124, 77, 255, 0.15),
+      0 3px 6px rgba(0, 0, 0, 0.22);
+  }
+}
+
+/* High-res displays - Enhanced precision */
+@media (-webkit-min-device-pixel-ratio: 2), (min-resolution: 192dpi) {
+  .premium-button-v2::before {
+    background: linear-gradient(
+      135deg,
+      rgba(59, 130, 246, 0.35) 0%,
+      rgba(124, 77, 255, 0.35) 50%,
+      rgba(236, 72, 153, 0.35) 100%
+    );
+  }
+}
+
+/* ============================================
+   DARK MODE OPTIMIZATIONS
+   ============================================ */
+
+@media (prefers-color-scheme: dark) {
+  .premium-button-v2 {
+    box-shadow:
+      0 0 10px rgba(59, 130, 246, 0.18),
+      0 0 5px rgba(124, 77, 255, 0.12),
+      0 2px 4px rgba(0, 0, 0, 0.25);
+  }
+
+  .premium-button-v2-hover {
+    box-shadow:
+      0 0 14px rgba(59, 130, 246, 0.32),
+      0 0 10px rgba(124, 77, 255, 0.24),
+      0 0 6px rgba(236, 72, 153, 0.18),
+      0 4px 8px rgba(0, 0, 0, 0.28);
+  }
+}
+
+/* ============================================
+   REDUCED MOTION - Accessibility
+   ============================================ */
+
+@media (prefers-reduced-motion: reduce) {
+  .premium-button-v2,
+  .premium-button-v2-hover,
+  .premium-button-v2-pressed,
+  .premium-button-v2-disabled {
+    transition: none;
+    animation: none;
+  }
+
+  .premium-button-v2-hover {
+    transform: translateY(0) scale(1);
+  }
+
+  .premium-button-v2-pressed {
+    transform: translateY(0) scale(1);
+  }
+}

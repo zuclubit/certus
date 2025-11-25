@@ -1,0 +1,243 @@
+<mxfile host="app.diagrams.net">
+  <diagram name="Rule Versioning and Rollback Flow" id="rule-versioning-flow">
+    <mxGraphModel dx="1434" dy="844" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1800" pageHeight="1600" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+
+        <!-- SWIMLANE 1: RULES DESIGNER -->
+        <mxCell id="lane-designer" value="RULES DESIGNER" style="swimlane;horizontal=0;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=14;fontStyle=1;startSize=40;" parent="1" vertex="1">
+          <mxGeometry x="40" y="40" width="1720" height="160" as="geometry" />
+        </mxCell>
+        <mxCell id="designer-create" value="Diseñar&#xa;Nueva Regla&#xa;v2.1.0&#xa;(JSON)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=11;fontStyle=1;" parent="lane-designer" vertex="1">
+          <mxGeometry x="60" y="50" width="100" height="70" as="geometry" />
+        </mxCell>
+        <mxCell id="designer-testcases" value="Definir&#xa;Test Cases&#xa;(10 samples)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=11;" parent="lane-designer" vertex="1">
+          <mxGeometry x="180" y="50" width="100" height="70" as="geometry" />
+        </mxCell>
+        <mxCell id="designer-review" value="Peer&#xa;Review&#xa;Tecnico" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;fontSize=11;" parent="lane-designer" vertex="1">
+          <mxGeometry x="300" y="50" width="100" height="70" as="geometry" />
+        </mxCell>
+
+        <!-- SWIMLANE 2: DEVELOPER -->
+        <mxCell id="lane-developer" value="DEVELOPER" style="swimlane;horizontal=0;whiteSpace=wrap;html=1;fillColor=#e1d5e7;strokeColor=#9673a6;fontSize=14;fontStyle=1;startSize=40;" parent="1" vertex="1">
+          <mxGeometry x="40" y="200" width="1720" height="160" as="geometry" />
+        </mxCell>
+        <mxCell id="dev-implement" value="Implementar&#xa;Regla&#xa;(C#)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#e1d5e7;strokeColor=#9673a6;fontSize=11;fontStyle=1;" parent="lane-developer" vertex="1">
+          <mxGeometry x="420" y="50" width="100" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="dev-unittest" value="Unit Test&#xa;xUnit&#xa;coverage mayor 95 pct" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#e1d5e7;strokeColor=#9673a6;fontSize=10;" parent="lane-developer" vertex="1">
+          <mxGeometry x="540" y="50" width="100" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="dev-sandbox" value="Sandbox&#xa;Testing&#xa;(100 files)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#e1d5e7;strokeColor=#9673a6;fontSize=11;" parent="lane-developer" vertex="1">
+          <mxGeometry x="660" y="50" width="100" height="60" as="geometry" />
+        </mxCell>
+
+        <!-- SWIMLANE 3: RULES REPOSITORY -->
+        <mxCell id="lane-repo" value="RULES REPOSITORY (DB)" style="swimlane;horizontal=0;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;fontSize=14;fontStyle=1;startSize=40;" parent="1" vertex="1">
+          <mxGeometry x="40" y="360" width="1720" height="180" as="geometry" />
+        </mxCell>
+        <mxCell id="repo-store" value="Almacenar&#xa;Nueva Version&#xa;RuleId: R37&#xa;Version: v2.1.0&#xa;Status: DRAFT" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;fontSize=10;fontStyle=1;" parent="lane-repo" vertex="1">
+          <mxGeometry x="780" y="50" width="120" height="80" as="geometry" />
+        </mxCell>
+        <mxCell id="repo-activate" value="Cambiar&#xa;Status a&#xa;ACTIVE&#xa;EffectiveDate&#xa;=NOW" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;fontSize=10;fontStyle=1;" parent="lane-repo" vertex="1">
+          <mxGeometry x="920" y="50" width="100" height="80" as="geometry" />
+        </mxCell>
+        <mxCell id="repo-deprecate" value="Deprecar&#xa;Version&#xa;Anterior&#xa;v2.0.5&#xa;Status:&#xa;DEPRECATED" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;fontSize=9;" parent="lane-repo" vertex="1">
+          <mxGeometry x="1040" y="50" width="100" height="80" as="geometry" />
+        </mxCell>
+
+        <!-- SWIMLANE 4: FEATURE FLAG SYSTEM -->
+        <mxCell id="lane-ff" value="FEATURE FLAG SYSTEM" style="swimlane;horizontal=0;whiteSpace=wrap;html=1;fillColor=#ffe6cc;strokeColor=#d79b00;fontSize=14;fontStyle=1;startSize=40;" parent="1" vertex="1">
+          <mxGeometry x="40" y="540" width="1720" height="180" as="geometry" />
+        </mxCell>
+        <mxCell id="ff-create" value="Crear Flag&#xa;rule_R37_v2.1.0&#xa;Targeting:&#xa;userId hash" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffe6cc;strokeColor=#d79b00;fontSize=10;fontStyle=1;" parent="lane-ff" vertex="1">
+          <mxGeometry x="780" y="50" width="120" height="70" as="geometry" />
+        </mxCell>
+        <mxCell id="ff-canary" value="Activar&#xa;Canary&#xa;10 pct" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffe6cc;strokeColor=#d79b00;fontSize=11;fontStyle=1;" parent="lane-ff" vertex="1">
+          <mxGeometry x="920" y="50" width="80" height="70" as="geometry" />
+        </mxCell>
+        <mxCell id="ff-gradual1" value="25 pct" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffe6cc;strokeColor=#d79b00;fontSize=11;fontStyle=1;" parent="lane-ff" vertex="1">
+          <mxGeometry x="1020" y="50" width="60" height="70" as="geometry" />
+        </mxCell>
+        <mxCell id="ff-gradual2" value="50 pct" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffe6cc;strokeColor=#d79b00;fontSize=11;fontStyle=1;" parent="lane-ff" vertex="1">
+          <mxGeometry x="1100" y="50" width="60" height="70" as="geometry" />
+        </mxCell>
+        <mxCell id="ff-full" value="100 pct" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;fontSize=11;fontStyle=1;" parent="lane-ff" vertex="1">
+          <mxGeometry x="1180" y="50" width="60" height="70" as="geometry" />
+        </mxCell>
+
+        <!-- SWIMLANE 5: SISTEMA VALIDACION (PROD) -->
+        <mxCell id="lane-prod" value="SISTEMA VALIDACION (PROD)" style="swimlane;horizontal=0;whiteSpace=wrap;html=1;fillColor=#f5f5f5;strokeColor=#666666;fontSize=14;fontStyle=1;startSize=40;" parent="1" vertex="1">
+          <mxGeometry x="40" y="720" width="1720" height="180" as="geometry" />
+        </mxCell>
+        <mxCell id="prod-load" value="Hot Reload&#xa;Nueva Regla&#xa;(sin redeploy)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f5f5f5;strokeColor=#666666;fontSize=11;fontStyle=1;" parent="lane-prod" vertex="1">
+          <mxGeometry x="780" y="50" width="120" height="70" as="geometry" />
+        </mxCell>
+        <mxCell id="prod-execute" value="Ejecutar&#xa;Regla v2.1.0&#xa;(10 pct usuarios)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;fontSize=11;" parent="lane-prod" vertex="1">
+          <mxGeometry x="920" y="50" width="120" height="70" as="geometry" />
+        </mxCell>
+        <mxCell id="prod-monitor" value="Monitor&#xa;Error Rate&#xa;Performance" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=11;" parent="lane-prod" vertex="1">
+          <mxGeometry x="1060" y="50" width="100" height="70" as="geometry" />
+        </mxCell>
+
+        <!-- SWIMLANE 6: MONITORING -->
+        <mxCell id="lane-monitoring" value="MONITORING" style="swimlane;horizontal=0;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=14;fontStyle=1;startSize=40;" parent="1" vertex="1">
+          <mxGeometry x="40" y="900" width="1720" height="200" as="geometry" />
+        </mxCell>
+        <mxCell id="mon-collect" value="Recolectar&#xa;Metricas&#xa;- Error Rate&#xa;- Latency p99&#xa;- Throughput" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=10;" parent="lane-monitoring" vertex="1">
+          <mxGeometry x="920" y="50" width="120" height="80" as="geometry" />
+        </mxCell>
+        <mxCell id="mon-decision" value="Error Rate&#xa;mayor 0.5 pct&#xa;O&#xa;Latency&#xa;mayor 5 seg?" style="rhombus;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;fontSize=10;fontStyle=1;" parent="lane-monitoring" vertex="1">
+          <mxGeometry x="1060" y="40" width="120" height="100" as="geometry" />
+        </mxCell>
+        <mxCell id="mon-alert" value="Trigger&#xa;ALERT&#xa;Critical" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f8cecc;strokeColor=#b85450;fontSize=11;fontStyle=1;" parent="lane-monitoring" vertex="1">
+          <mxGeometry x="1300" y="55" width="100" height="70" as="geometry" />
+        </mxCell>
+        <mxCell id="mon-continue" value="Continue&#xa;Gradual&#xa;Rollout" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;fontSize=11;" parent="lane-monitoring" vertex="1">
+          <mxGeometry x="1180" y="55" width="100" height="70" as="geometry" />
+        </mxCell>
+
+        <!-- SWIMLANE 7: DEVOPS (ROLLBACK) -->
+        <mxCell id="lane-rollback" value="DEVOPS (ROLLBACK)" style="swimlane;horizontal=0;whiteSpace=wrap;html=1;fillColor=#f8cecc;strokeColor=#b85450;fontSize=14;fontStyle=1;startSize=40;" parent="1" vertex="1">
+          <mxGeometry x="40" y="1100" width="1720" height="180" as="geometry" />
+        </mxCell>
+        <mxCell id="rb-disable-ff" value="Deshabilitar&#xa;Feature Flag&#xa;menor 30 seg" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f8cecc;strokeColor=#b85450;fontSize=11;fontStyle=1;" parent="lane-rollback" vertex="1">
+          <mxGeometry x="1300" y="50" width="100" height="70" as="geometry" />
+        </mxCell>
+        <mxCell id="rb-activate-old" value="Activar&#xa;Version&#xa;Anterior&#xa;v2.0.5" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f8cecc;strokeColor=#b85450;fontSize=11;fontStyle=1;" parent="lane-rollback" vertex="1">
+          <mxGeometry x="1420" y="50" width="100" height="70" as="geometry" />
+        </mxCell>
+        <mxCell id="rb-verify" value="Verificar&#xa;Rollback&#xa;Exitoso" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;fontSize=11;" parent="lane-rollback" vertex="1">
+          <mxGeometry x="1540" y="50" width="100" height="70" as="geometry" />
+        </mxCell>
+        <mxCell id="rb-postmortem" value="Post-Mortem&#xa;Analysis&#xa;RCA" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffe6cc;strokeColor=#d79b00;fontSize=11;" parent="lane-rollback" vertex="1">
+          <mxGeometry x="1660" y="50" width="80" height="70" as="geometry" />
+        </mxCell>
+
+        <!-- ARROWS / FLOW -->
+        <mxCell id="arrow1" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeWidth=2;strokeColor=#6c8ebf;" parent="1" source="designer-create" target="designer-testcases" edge="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="arrow2" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeWidth=2;strokeColor=#6c8ebf;" parent="1" source="designer-testcases" target="designer-review" edge="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="arrow3" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeWidth=2;strokeColor=#9673a6;" parent="1" source="designer-review" target="dev-implement" edge="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="arrow4" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeWidth=2;strokeColor=#9673a6;" parent="1" source="dev-implement" target="dev-unittest" edge="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="arrow5" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeWidth=2;strokeColor=#9673a6;" parent="1" source="dev-unittest" target="dev-sandbox" edge="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="arrow6" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeWidth=2;strokeColor=#82b366;" parent="1" source="dev-sandbox" target="repo-store" edge="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="arrow7" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeWidth=2;strokeColor=#82b366;" parent="1" source="repo-store" target="repo-activate" edge="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="arrow8" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeWidth=2;strokeColor=#82b366;" parent="1" source="repo-activate" target="repo-deprecate" edge="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="arrow9" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeWidth=2;strokeColor=#d79b00;dashed=1;" parent="1" source="repo-store" target="ff-create" edge="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="arrow10" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeWidth=2;strokeColor=#d79b00;" parent="1" source="ff-create" target="ff-canary" edge="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="arrow11" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeWidth=2;strokeColor=#d79b00;" parent="1" source="ff-canary" target="ff-gradual1" edge="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="label-wait1" value="Wait 2h&#xa;monitor" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=9;fontColor=#d79b00;fontStyle=1;" parent="1" vertex="1">
+          <mxGeometry x="1000" y="570" width="60" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="arrow12" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeWidth=2;strokeColor=#d79b00;" parent="1" source="ff-gradual1" target="ff-gradual2" edge="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="label-wait2" value="Wait 4h" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=9;fontColor=#d79b00;fontStyle=1;" parent="1" vertex="1">
+          <mxGeometry x="1080" y="570" width="50" height="20" as="geometry" />
+        </mxCell>
+        <mxCell id="arrow13" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeWidth=2;strokeColor=#d79b00;" parent="1" source="ff-gradual2" target="ff-full" edge="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="label-wait3" value="Wait 8h" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=9;fontColor=#d79b00;fontStyle=1;" parent="1" vertex="1">
+          <mxGeometry x="1160" y="570" width="50" height="20" as="geometry" />
+        </mxCell>
+        <mxCell id="arrow14" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeWidth=2;strokeColor=#666666;dashed=1;" parent="1" source="ff-canary" target="prod-load" edge="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="arrow15" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeWidth=2;strokeColor=#666666;" parent="1" source="prod-load" target="prod-execute" edge="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="arrow16" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeWidth=2;strokeColor=#6c8ebf;" parent="1" source="prod-execute" target="prod-monitor" edge="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="arrow17" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeWidth=2;strokeColor=#6c8ebf;" parent="1" source="prod-monitor" target="mon-collect" edge="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="arrow18" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeWidth=2;strokeColor=#6c8ebf;" parent="1" source="mon-collect" target="mon-decision" edge="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="arrow19" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeWidth=2;strokeColor=#82b366;" parent="1" source="mon-decision" target="mon-continue" edge="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="label-ok" value="OK" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=11;fontColor=#82b366;fontStyle=1;" parent="1" vertex="1">
+          <mxGeometry x="1180" y="930" width="40" height="20" as="geometry" />
+        </mxCell>
+        <mxCell id="arrow20" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeWidth=2;strokeColor=#b85450;" parent="1" source="mon-decision" target="mon-alert" edge="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="label-error" value="ERROR" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=11;fontColor=#b85450;fontStyle=1;" parent="1" vertex="1">
+          <mxGeometry x="1200" y="970" width="60" height="20" as="geometry" />
+        </mxCell>
+        <mxCell id="arrow21" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeWidth=2;strokeColor=#b85450;" parent="1" source="mon-alert" target="rb-disable-ff" edge="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="arrow22" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeWidth=2;strokeColor=#b85450;" parent="1" source="rb-disable-ff" target="rb-activate-old" edge="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="arrow23" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeWidth=2;strokeColor=#b85450;" parent="1" source="rb-activate-old" target="rb-verify" edge="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="arrow24" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeWidth=2;strokeColor=#d79b00;" parent="1" source="rb-verify" target="rb-postmortem" edge="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <!-- Continue path back to next stage -->
+        <mxCell id="arrow-continue" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeWidth=2;strokeColor=#82b366;dashed=1;" parent="1" source="mon-continue" target="ff-gradual1" edge="1">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="1230" y="870" />
+              <mxPoint x="1050" y="870" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="label-next" value="Next Stage" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=10;fontColor=#82b366;fontStyle=1;" parent="1" vertex="1">
+          <mxGeometry x="1100" y="850" width="80" height="20" as="geometry" />
+        </mxCell>
+
+        <!-- ROLLBACK METRICS BOX -->
+        <mxCell id="rollback-metrics" value="ROLLBACK METRICAS&#xa;&#xa;Tiempo deteccion: menor 5 minutos (automated)&#xa;Tiempo rollback: menor 30 segundos&#xa;Downtime: 0 (zero downtime rollback)&#xa;&#xa;Triggers automaticos:&#xa;- Error rate mayor 0.5 pct (sustained 2 min)&#xa;- Latency p99 mayor 5 seg&#xa;- Crash rate mayor 0.1 pct&#xa;- Memory leak detection&#xa;&#xa;Triggers manuales:&#xa;- CTO/DevOps manual rollback&#xa;- Customer complaints mayor threshold&#xa;&#xa;Post-rollback:&#xa;- RCA dentro 24 horas&#xa;- Fix y redeploy: 48-72 horas" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f8cecc;strokeColor=#b85450;fontSize=10;fontStyle=1;align=left;verticalAlign=top;" parent="1" vertex="1">
+          <mxGeometry x="40" y="1320" width="520" height="260" as="geometry" />
+        </mxCell>
+
+        <!-- VERSIONING STRATEGY BOX -->
+        <mxCell id="version-strategy" value="ESTRATEGIA VERSIONADO REGLAS&#xa;&#xa;Semantic Versioning: MAJOR.MINOR.PATCH&#xa;- MAJOR: Cambio logica validacion (breaking)&#xa;- MINOR: Nuevas condiciones (backward compatible)&#xa;- PATCH: Bug fixes, performance&#xa;&#xa;Ejemplo Regla 37 - Validacion Saldo:&#xa;v1.0.0: Inicial (solo mayor 0)&#xa;v2.0.0: Breaking (agregar rango min-max)&#xa;v2.1.0: Feature (agregar excepcion tipo cuenta)&#xa;v2.1.1: Patch (fix precision decimal)&#xa;&#xa;Metadata por version:&#xa;- Author, ApprovedBy, EffectiveDate&#xa;- Changelog, Breaking Changes&#xa;- Test Coverage, Performance Baseline&#xa;- CONSAR Circular Reference (ej: 28-19)&#xa;&#xa;Retention: Ultimas 5 versiones activas&#xa;Archive: Todas versiones 7 años" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;fontSize=10;fontStyle=1;align=left;verticalAlign=top;" parent="1" vertex="1">
+          <mxGeometry x="600" y="1320" width="520" height="260" as="geometry" />
+        </mxCell>
+
+        <!-- GRADUAL ROLLOUT STRATEGY BOX -->
+        <mxCell id="gradual-strategy" value="ESTRATEGIA GRADUAL ROLLOUT&#xa;&#xa;Stage 1: Canary (10 pct) - 2 horas&#xa;- Target: Internal users + 5 pct AFOREs&#xa;- Monitor: Error rate, latency, accuracy&#xa;- Rollback: Automatico si error mayor 0.5 pct&#xa;&#xa;Stage 2: Early Adopters (25 pct) - 4 horas&#xa;- Target: Usuarios activos mayores 1 año&#xa;- A/B Testing: Comparar v2.0.5 vs v2.1.0&#xa;- Manual approval required para continuar&#xa;&#xa;Stage 3: Majority (50 pct) - 8 horas&#xa;- Target: 50 pct usuarios random&#xa;- Extended monitoring: 8 horas&#xa;- Performance regression testing&#xa;&#xa;Stage 4: Full Rollout (100 pct) - 24 horas&#xa;- Target: Todos usuarios&#xa;- Final validation y cierre&#xa;- Documentation update&#xa;&#xa;Total timeline: 14-16 horas&#xa;Rollback at ANY stage si issues detectados&#xa;&#xa;Success Criteria:&#xa;- Error rate menor 0.1 pct&#xa;- Latency p99 menor 3 seg&#xa;- Zero crashes&#xa;- Customer satisfaction mayor 95 pct" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffe6cc;strokeColor=#d79b00;fontSize=9;fontStyle=1;align=left;verticalAlign=top;" parent="1" vertex="1">
+          <mxGeometry x="1160" y="1320" width="600" height="260" as="geometry" />
+        </mxCell>
+
+        <!-- TITLE -->
+        <mxCell id="title" value="FLUJO RULE VERSIONING AND ROLLBACK - VERSIONADO Y ROLLBACK DE REGLAS VALIDACION" style="text;html=1;strokeColor=#6c8ebf;fillColor=#dae8fc;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=1;fontSize=16;fontStyle=1;" parent="1" vertex="1">
+          <mxGeometry x="440" y="0" width="1000" height="30" as="geometry" />
+        </mxCell>
+
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>

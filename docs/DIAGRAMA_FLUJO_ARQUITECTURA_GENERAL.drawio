@@ -1,0 +1,409 @@
+<mxfile host="app.diagrams.net" modified="2025-11-21T18:30:00.000Z" agent="Claude Code - Architecture Flow" version="24.0.0">
+  <diagram name="Arquitectura General - Flujos" id="flujos-arquitectura">
+    <mxGraphModel dx="2200" dy="1400" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="2400" pageHeight="1600" math="0" shadow="0" background="#ffffff">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+
+        <!-- TÍTULO -->
+        <mxCell id="titulo" value="ARQUITECTURA GENERAL - SISTEMA HERGON VECTOR01" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=32;fontStyle=1;fontColor=#1a1a1a" vertex="1" parent="1">
+          <mxGeometry x="400" y="30" width="1600" height="60" as="geometry" />
+        </mxCell>
+
+        <mxCell id="subtitulo" value="Flujo de Validación de Archivos Regulatorios CONSAR" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=20;fontStyle=0;fontColor=#666666" vertex="1" parent="1">
+          <mxGeometry x="400" y="95" width="1600" height="35" as="geometry" />
+        </mxCell>
+
+        <!-- ===== ZONA 1: FUENTES DE DATOS ===== -->
+        <mxCell id="zona1-bg" value="" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#c8e6c9;strokeColor=#4caf50;strokeWidth=3;opacity=40" vertex="1" parent="1">
+          <mxGeometry x="80" y="180" width="520" height="680" as="geometry" />
+        </mxCell>
+
+        <mxCell id="zona1-titulo" value="1. FUENTES DE DATOS" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=24;fontStyle=1;fontColor=#2e7d32" vertex="1" parent="1">
+          <mxGeometry x="140" y="200" width="400" height="40" as="geometry" />
+        </mxCell>
+
+        <!-- Sistemas Corporativos -->
+        <mxCell id="sap" value="&lt;b style=&quot;font-size:18px&quot;&gt;SAP ERP&lt;/b&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#66bb6a;strokeColor=#2e7d32;strokeWidth=2;fontColor=#ffffff;fontSize=14;spacingTop=10;spacingBottom=10" vertex="1" parent="1">
+          <mxGeometry x="140" y="270" width="180" height="70" as="geometry" />
+        </mxCell>
+        <mxCell id="sap-detail" value="Balanzas&#xa;Contabilidad" style="text;html=1;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=12;fontColor=#ffffff" vertex="1" parent="1">
+          <mxGeometry x="140" y="350" width="180" height="40" as="geometry" />
+        </mxCell>
+
+        <mxCell id="oracle" value="&lt;b style=&quot;font-size:18px&quot;&gt;Oracle ERP&lt;/b&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#66bb6a;strokeColor=#2e7d32;strokeWidth=2;fontColor=#ffffff;fontSize=14;spacingTop=10;spacingBottom=10" vertex="1" parent="1">
+          <mxGeometry x="360" y="270" width="180" height="70" as="geometry" />
+        </mxCell>
+        <mxCell id="oracle-detail" value="General Ledger&#xa;Reportes" style="text;html=1;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=12;fontColor=#ffffff" vertex="1" parent="1">
+          <mxGeometry x="360" y="350" width="180" height="40" as="geometry" />
+        </mxCell>
+
+        <mxCell id="aladdin" value="&lt;b style=&quot;font-size:18px&quot;&gt;Aladdin&lt;/b&gt;&#xa;(BlackRock)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#424242;strokeColor=#212121;strokeWidth=2;fontColor=#ffffff;fontSize=14;spacingTop=10;spacingBottom=10" vertex="1" parent="1">
+          <mxGeometry x="140" y="430" width="180" height="80" as="geometry" />
+        </mxCell>
+        <mxCell id="aladdin-detail" value="Portafolios&#xa;Valuación&#xa;REST API" style="text;html=1;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=12;fontColor=#ffffff" vertex="1" parent="1">
+          <mxGeometry x="140" y="520" width="180" height="50" as="geometry" />
+        </mxCell>
+
+        <mxCell id="otros" value="&lt;b style=&quot;font-size:18px&quot;&gt;Otros Sistemas&lt;/b&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#66bb6a;strokeColor=#2e7d32;strokeWidth=2;fontColor=#ffffff;fontSize=14;spacingTop=10;spacingBottom=10" vertex="1" parent="1">
+          <mxGeometry x="360" y="430" width="180" height="70" as="geometry" />
+        </mxCell>
+        <mxCell id="otros-detail" value="CSV/Excel&#xa;SFTP/API" style="text;html=1;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=12;fontColor=#ffffff" vertex="1" parent="1">
+          <mxGeometry x="360" y="510" width="180" height="40" as="geometry" />
+        </mxCell>
+
+        <mxCell id="usuarios" value="&lt;b style=&quot;font-size:18px&quot;&gt;Usuarios&lt;/b&gt;&#xa;(Portal Web)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#42a5f5;strokeColor=#1565c0;strokeWidth=2;fontColor=#ffffff;fontSize=14;spacingTop=10;spacingBottom=10" vertex="1" parent="1">
+          <mxGeometry x="240" y="610" width="180" height="80" as="geometry" />
+        </mxCell>
+        <mxCell id="usuarios-detail" value="Upload Manual&#xa;Consultas&#xa;Correcciones" style="text;html=1;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=12;fontColor=#ffffff" vertex="1" parent="1">
+          <mxGeometry x="240" y="700" width="180" height="50" as="geometry" />
+        </mxCell>
+
+        <!-- ===== ZONA 2: PROCESAMIENTO ===== -->
+        <mxCell id="zona2-bg" value="" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#e3f2fd;strokeColor=#1976d2;strokeWidth=3;opacity=40" vertex="1" parent="1">
+          <mxGeometry x="680" y="180" width="1040" height="680" as="geometry" />
+        </mxCell>
+
+        <mxCell id="zona2-titulo" value="2. PROCESAMIENTO Y VALIDACIÓN" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=24;fontStyle=1;fontColor=#0d47a1" vertex="1" parent="1">
+          <mxGeometry x="800" y="200" width="800" height="40" as="geometry" />
+        </mxCell>
+
+        <!-- ETL Hub -->
+        <mxCell id="etl-hub" value="&lt;b style=&quot;font-size:20px&quot;&gt;📥 ETL / INTEGRATION HUB&lt;/b&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#90caf9;strokeColor=#1565c0;strokeWidth=3;fontColor=#0d47a1;fontSize=16;spacingTop=15;spacingBottom=15" vertex="1" parent="1">
+          <mxGeometry x="740" y="270" width="420" height="80" as="geometry" />
+        </mxCell>
+        <mxCell id="etl-detail" value="Extract → Transform → Load&#xa;Conectores: SAP, Oracle, Aladdin, SFTP, CSV" style="text;html=1;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=13;fontColor=#0d47a1;fontStyle=1" vertex="1" parent="1">
+          <mxGeometry x="740" y="360" width="420" height="40" as="geometry" />
+        </mxCell>
+
+        <!-- Parser -->
+        <mxCell id="parser" value="&lt;b style=&quot;font-size:18px&quot;&gt;🔍 PARSER SERVICE&lt;/b&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#64b5f6;strokeColor=#1565c0;strokeWidth=2;fontColor=#ffffff;fontSize=15;spacingTop=12;spacingBottom=12" vertex="1" parent="1">
+          <mxGeometry x="740" y="440" width="200" height="70" as="geometry" />
+        </mxCell>
+        <mxCell id="parser-detail" value="Parse archivos&#xa;Fixed-width (77 chars)&#xa;Tipos: 1101-1104" style="text;html=1;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=11;fontColor=#ffffff" vertex="1" parent="1">
+          <mxGeometry x="740" y="520" width="200" height="50" as="geometry" />
+        </mxCell>
+
+        <!-- Contable -->
+        <mxCell id="contable" value="&lt;b style=&quot;font-size:18px&quot;&gt;💾 SISTEMA CONTABLE&lt;/b&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#64b5f6;strokeColor=#1565c0;strokeWidth=2;fontColor=#ffffff;fontSize=15;spacingTop=12;spacingBottom=12" vertex="1" parent="1">
+          <mxGeometry x="970" y="440" width="190" height="70" as="geometry" />
+        </mxCell>
+        <mxCell id="contable-detail" value="Azure SQL / RDS&#xa;Catálogos CONSAR&#xa;Records parsed" style="text;html=1;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=11;fontColor=#ffffff" vertex="1" parent="1">
+          <mxGeometry x="970" y="520" width="190" height="50" as="geometry" />
+        </mxCell>
+
+        <!-- Validación - DESTACADO -->
+        <mxCell id="validacion" value="&lt;b style=&quot;font-size:22px&quot;&gt;✅ SISTEMA VALIDACIÓN&lt;/b&gt;&#xa;⚠️ 37 Validaciones CONSAR" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#1976d2;strokeColor=#0d47a1;strokeWidth=4;fontColor=#ffffff;fontSize=16;spacingTop=15;spacingBottom=15" vertex="1" parent="1">
+          <mxGeometry x="740" y="610" width="420" height="90" as="geometry" />
+        </mxCell>
+        <mxCell id="validacion-detail" value="Validación paralela • Orchestrator • 37 validators • Results Aggregator&#xa;Azure Functions / Lambda • PDF/Excel Reports" style="text;html=1;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=12;fontColor=#ffffff;fontStyle=1" vertex="1" parent="1">
+          <mxGeometry x="740" y="710" width="420" height="50" as="geometry" />
+        </mxCell>
+
+        <!-- Corrección -->
+        <mxCell id="correccion-box" value="" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffebee;strokeColor=#c62828;strokeWidth=2;opacity=60" vertex="1" parent="1">
+          <mxGeometry x="1210" y="430" width="240" height="220" as="geometry" />
+        </mxCell>
+
+        <mxCell id="correccion-titulo" value="&lt;b style=&quot;font-size:16px&quot;&gt;⚠️ CORRECCIÓN&lt;/b&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=14;fontColor=#c62828;fontStyle=1" vertex="1" parent="1">
+          <mxGeometry x="1210" y="445" width="240" height="30" as="geometry" />
+        </mxCell>
+
+        <mxCell id="correccion-manual" value="&lt;b&gt;Manual:&lt;/b&gt; Usuario edita&#xa;archivo en portal" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ef5350;strokeColor=#c62828;strokeWidth=1;fontColor=#ffffff;fontSize=13" vertex="1" parent="1">
+          <mxGeometry x="1230" y="490" width="200" height="60" as="geometry" />
+        </mxCell>
+
+        <mxCell id="correccion-raiz" value="&lt;b&gt;De Raíz:&lt;/b&gt; Fix en&#xa;sistema origen" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ef5350;strokeColor=#c62828;strokeWidth=1;fontColor=#ffffff;fontSize=13" vertex="1" parent="1">
+          <mxGeometry x="1230" y="570" width="200" height="60" as="geometry" />
+        </mxCell>
+
+        <mxCell id="correccion-arrow" value="→ Re-validación" style="text;html=1;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=12;fontColor=#c62828;fontStyle=1" vertex="1" parent="1">
+          <mxGeometry x="1230" y="635" width="200" height="20" as="geometry" />
+        </mxCell>
+
+        <!-- SFTP Gateway - DESTACADO -->
+        <mxCell id="sftp-box" value="&lt;b style=&quot;font-size:20px&quot;&gt;🔒 SFTP GATEWAY&lt;/b&gt;&#xa;⚠️ Envío a CONSAR" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#66bb6a;strokeColor=#2e7d32;strokeWidth=4;fontColor=#ffffff;fontSize=16;spacingTop=15;spacingBottom=15" vertex="1" parent="1">
+          <mxGeometry x="1490" y="610" width="210" height="90" as="geometry" />
+        </mxCell>
+        <mxCell id="sftp-detail" value="1. Encrypt PGP&#xa;2. SFTP + TLS 1.3&#xa;3. Send to CONSAR&#xa;4. Confirmación" style="text;html=1;align=left;verticalAlign=top;whiteSpace=wrap;rounded=0;fontSize=11;fontColor=#ffffff;spacingLeft=10" vertex="1" parent="1">
+          <mxGeometry x="1500" y="710" width="190" height="70" as="geometry" />
+        </mxCell>
+
+        <!-- ===== ZONA 3: DESTINO ===== -->
+        <mxCell id="zona3-bg" value="" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#c8e6c9;strokeColor=#4caf50;strokeWidth=3;opacity=40" vertex="1" parent="1">
+          <mxGeometry x="1800" y="180" width="520" height="680" as="geometry" />
+        </mxCell>
+
+        <mxCell id="zona3-titulo" value="3. DESTINO" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=24;fontStyle=1;fontColor=#2e7d32" vertex="1" parent="1">
+          <mxGeometry x="1860" y="200" width="400" height="40" as="geometry" />
+        </mxCell>
+
+        <!-- CONSAR -->
+        <mxCell id="consar-box" value="&lt;b style=&quot;font-size:24px&quot;&gt;🏛️ CONSAR&lt;/b&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#66bb6a;strokeColor=#2e7d32;strokeWidth=4;fontColor=#ffffff;fontSize=18;spacingTop=20;spacingBottom=20" vertex="1" parent="1">
+          <mxGeometry x="1880" y="400" width="360" height="100" as="geometry" />
+        </mxCell>
+        <mxCell id="consar-titulo" value="Comisión Nacional del Sistema&#xa;de Ahorro para el Retiro" style="text;html=1;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=14;fontColor=#ffffff;fontStyle=1" vertex="1" parent="1">
+          <mxGeometry x="1880" y="510" width="360" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="consar-detail" value="• SFTP Server&#xa;• Recepción archivos PGP&#xa;• Validación formato&#xa;• Confirmación recepción&#xa;• Procesamiento regulatorio" style="text;html=1;align=left;verticalAlign=top;whiteSpace=wrap;rounded=0;fontSize=12;fontColor=#ffffff;spacingLeft=20" vertex="1" parent="1">
+          <mxGeometry x="1900" y="570" width="320" height="100" as="geometry" />
+        </mxCell>
+
+        <!-- ===== ZONA 4: SERVICIOS TRANSVERSALES ===== -->
+        <mxCell id="zona4-bg" value="" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f3e5f5;strokeColor=#7b1fa2;strokeWidth=3;opacity=40" vertex="1" parent="1">
+          <mxGeometry x="80" y="920" width="2240" height="380" as="geometry" />
+        </mxCell>
+
+        <mxCell id="zona4-titulo" value="4. SERVICIOS TRANSVERSALES" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=24;fontStyle=1;fontColor=#6a1b9a" vertex="1" parent="1">
+          <mxGeometry x="820" y="940" width="760" height="40" as="geometry" />
+        </mxCell>
+
+        <!-- Seguridad -->
+        <mxCell id="seguridad-box" value="&lt;b style=&quot;font-size:16px&quot;&gt;🔐 SEGURIDAD&lt;/b&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ce93d8;strokeColor=#7b1fa2;strokeWidth=2;fontColor=#4a148c;fontSize=14;spacingTop=10;spacingBottom=10" vertex="1" parent="1">
+          <mxGeometry x="140" y="1010" width="250" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="seguridad-detail" value="• Azure AD B2C / Cognito&#xa;• OAuth 2.0 + MFA&#xa;• API Gateway&#xa;• Secrets Manager (Key Vault)" style="text;html=1;align=left;verticalAlign=top;whiteSpace=wrap;rounded=0;fontSize=11;fontColor=#4a148c;spacingLeft=10" vertex="1" parent="1">
+          <mxGeometry x="150" y="1080" width="230" height="80" as="geometry" />
+        </mxCell>
+
+        <!-- Event Store -->
+        <mxCell id="eventstore-box" value="&lt;b style=&quot;font-size:16px&quot;&gt;📝 EVENT STORE&lt;/b&gt;&#xa;(Auditoría)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ce93d8;strokeColor=#7b1fa2;strokeWidth=2;fontColor=#4a148c;fontSize=14;spacingTop=10;spacingBottom=10" vertex="1" parent="1">
+          <mxGeometry x="450" y="1010" width="250" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="eventstore-detail" value="• Cosmos DB / DynamoDB&#xa;• Event Sourcing&#xa;• Retención 7 años (CONSAR)&#xa;• Audit trail completo" style="text;html=1;align=left;verticalAlign=top;whiteSpace=wrap;rounded=0;fontSize=11;fontColor=#4a148c;spacingLeft=10" vertex="1" parent="1">
+          <mxGeometry x="460" y="1080" width="230" height="80" as="geometry" />
+        </mxCell>
+
+        <!-- Storage -->
+        <mxCell id="storage-box" value="&lt;b style=&quot;font-size:16px&quot;&gt;💾 STORAGE&lt;/b&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ce93d8;strokeColor=#7b1fa2;strokeWidth=2;fontColor=#4a148c;fontSize=14;spacingTop=10;spacingBottom=10" vertex="1" parent="1">
+          <mxGeometry x="760" y="1010" width="250" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="storage-detail" value="• Blob Storage / S3&#xa;• Archivos originales&#xa;• Archivos encriptados (PGP)&#xa;• Reports (PDF/Excel)" style="text;html=1;align=left;verticalAlign=top;whiteSpace=wrap;rounded=0;fontSize=11;fontColor=#4a148c;spacingLeft=10" vertex="1" parent="1">
+          <mxGeometry x="770" y="1080" width="230" height="80" as="geometry" />
+        </mxCell>
+
+        <!-- Cache -->
+        <mxCell id="cache-box" value="&lt;b style=&quot;font-size:16px&quot;&gt;⚡ CACHE&lt;/b&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ce93d8;strokeColor=#7b1fa2;strokeWidth=2;fontColor=#4a148c;fontSize=14;spacingTop=10;spacingBottom=10" vertex="1" parent="1">
+          <mxGeometry x="1070" y="1010" width="250" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="cache-detail" value="• Redis Cache&#xa;• Catálogos CONSAR&#xa;• Session state&#xa;• Distributed locks" style="text;html=1;align=left;verticalAlign=top;whiteSpace=wrap;rounded=0;fontSize=11;fontColor=#4a148c;spacingLeft=10" vertex="1" parent="1">
+          <mxGeometry x="1080" y="1080" width="230" height="80" as="geometry" />
+        </mxCell>
+
+        <!-- Monitoring -->
+        <mxCell id="monitoring-box" value="&lt;b style=&quot;font-size:16px&quot;&gt;📊 MONITORING&lt;/b&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ce93d8;strokeColor=#7b1fa2;strokeWidth=2;fontColor=#4a148c;fontSize=14;spacingTop=10;spacingBottom=10" vertex="1" parent="1">
+          <mxGeometry x="1380" y="1010" width="250" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="monitoring-detail" value="• App Insights / CloudWatch&#xa;• Distributed tracing&#xa;• Custom metrics&#xa;• Alerts &amp; Dashboards" style="text;html=1;align=left;verticalAlign=top;whiteSpace=wrap;rounded=0;fontSize=11;fontColor=#4a148c;spacingLeft=10" vertex="1" parent="1">
+          <mxGeometry x="1390" y="1080" width="230" height="80" as="geometry" />
+        </mxCell>
+
+        <!-- Notifications -->
+        <mxCell id="notifications-box" value="&lt;b style=&quot;font-size:16px&quot;&gt;📧 NOTIFICATIONS&lt;/b&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ce93d8;strokeColor=#7b1fa2;strokeWidth=2;fontColor=#4a148c;fontSize=14;spacingTop=10;spacingBottom=10" vertex="1" parent="1">
+          <mxGeometry x="1690" y="1010" width="250" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="notifications-detail" value="• Email (SES/SendGrid)&#xa;• SMS (SNS/Twilio)&#xa;• Webhooks&#xa;• Push notifications" style="text;html=1;align=left;verticalAlign=top;whiteSpace=wrap;rounded=0;fontSize=11;fontColor=#4a148c;spacingLeft=10" vertex="1" parent="1">
+          <mxGeometry x="1700" y="1080" width="230" height="80" as="geometry" />
+        </mxCell>
+
+        <!-- Message Queue -->
+        <mxCell id="queue-box" value="&lt;b style=&quot;font-size:16px&quot;&gt;📮 MESSAGE QUEUE&lt;/b&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ce93d8;strokeColor=#7b1fa2;strokeWidth=2;fontColor=#4a148c;fontSize=14;spacingTop=10;spacingBottom=10" vertex="1" parent="1">
+          <mxGeometry x="2000" y="1010" width="250" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="queue-detail" value="• Service Bus / SQS+SNS&#xa;• Topics &amp; Queues&#xa;• Event-driven architecture&#xa;• Dead-letter queues" style="text;html=1;align=left;verticalAlign=top;whiteSpace=wrap;rounded=0;fontSize=11;fontColor=#4a148c;spacingLeft=10" vertex="1" parent="1">
+          <mxGeometry x="2010" y="1080" width="230" height="80" as="geometry" />
+        </mxCell>
+
+        <!-- ===== FLUJOS PRINCIPALES (FLECHAS) ===== -->
+
+        <!-- Flujo 1: Fuentes → ETL -->
+        <mxCell id="flow1-sap" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#4caf50;strokeWidth=5;endArrow=block;endFill=1" edge="1" parent="1" source="sap" target="etl-hub">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="flow1-oracle" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#4caf50;strokeWidth=5;endArrow=block;endFill=1" edge="1" parent="1" source="oracle" target="etl-hub">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="flow1-aladdin" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#424242;strokeWidth=5;endArrow=block;endFill=1" edge="1" parent="1" source="aladdin" target="etl-hub">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="640" y="470" />
+              <mxPoint x="640" y="310" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="flow1-otros" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#4caf50;strokeWidth=5;endArrow=block;endFill=1" edge="1" parent="1" source="otros" target="etl-hub">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="640" y="465" />
+              <mxPoint x="640" y="310" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="flow1-usuarios" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#1976d2;strokeWidth=4;endArrow=block;endFill=1;dashed=1" edge="1" parent="1" source="usuarios" target="etl-hub">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="640" y="650" />
+              <mxPoint x="640" y="310" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+
+        <mxCell id="label-extract" value="&lt;b style=&quot;font-size:14px&quot;&gt;EXTRACT&lt;/b&gt;&#xa;(Extracción)" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];fontSize=12;fontColor=#2e7d32;fontStyle=1;backgroundColor=#ffffff;labelBorderColor=#4caf50" vertex="1" connectable="0" parent="flow1-sap">
+          <mxGeometry x="-0.3" y="2" relative="1" as="geometry">
+            <mxPoint x="50" y="-12" as="offset" />
+          </mxGeometry>
+        </mxCell>
+
+        <!-- Flujo 2: ETL → Parser -->
+        <mxCell id="flow2" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#1565c0;strokeWidth=6;endArrow=block;endFill=1" edge="1" parent="1" source="etl-hub" target="parser">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="label-transform" value="&lt;b style=&quot;font-size:14px&quot;&gt;TRANSFORM + LOAD&lt;/b&gt;&#xa;(Formato CONSAR)" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];fontSize=12;fontColor=#0d47a1;fontStyle=1;backgroundColor=#ffffff;labelBorderColor=#1565c0" vertex="1" connectable="0" parent="flow2">
+          <mxGeometry x="-0.1" y="2" relative="1" as="geometry">
+            <mxPoint x="10" y="-12" as="offset" />
+          </mxGeometry>
+        </mxCell>
+
+        <!-- Flujo 3: Parser → Contable -->
+        <mxCell id="flow3" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#1565c0;strokeWidth=6;endArrow=block;endFill=1" edge="1" parent="1" source="parser" target="contable">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="label-parse" value="&lt;b style=&quot;font-size:13px&quot;&gt;PARSE&lt;/b&gt;&#xa;(Parsed Records)" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];fontSize=11;fontColor=#0d47a1;fontStyle=1;backgroundColor=#ffffff;labelBorderColor=#1565c0" vertex="1" connectable="0" parent="flow3">
+          <mxGeometry x="-0.1" y="2" relative="1" as="geometry">
+            <mxPoint y="-10" as="offset" />
+          </mxGeometry>
+        </mxCell>
+
+        <!-- Flujo 4: Contable → Validación -->
+        <mxCell id="flow4" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#1565c0;strokeWidth=6;endArrow=block;endFill=1" edge="1" parent="1" source="contable" target="validacion">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="1065" y="585" />
+              <mxPoint x="950" y="585" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="label-trigger" value="&lt;b style=&quot;font-size:13px&quot;&gt;TRIGGER&lt;/b&gt;&#xa;(37 Validaciones)" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];fontSize=11;fontColor=#0d47a1;fontStyle=1;backgroundColor=#ffffff;labelBorderColor=#1565c0" vertex="1" connectable="0" parent="flow4">
+          <mxGeometry x="-0.1" y="2" relative="1" as="geometry">
+            <mxPoint x="5" y="-10" as="offset" />
+          </mxGeometry>
+        </mxCell>
+
+        <!-- Flujo 5: Validación → Corrección (ERROR) -->
+        <mxCell id="flow5" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#c62828;strokeWidth=4;endArrow=block;endFill=1;dashed=1" edge="1" parent="1" source="validacion" target="correccion-box">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="label-error" value="&lt;b style=&quot;font-size:14px&quot;&gt;❌ ERROR&lt;/b&gt;" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];fontSize=12;fontColor=#c62828;fontStyle=1;backgroundColor=#ffebee;labelBorderColor=#c62828" vertex="1" connectable="0" parent="flow5">
+          <mxGeometry x="-0.1" y="2" relative="1" as="geometry">
+            <mxPoint y="-10" as="offset" />
+          </mxGeometry>
+        </mxCell>
+
+        <!-- Flujo 6: Corrección → ETL (loop back) -->
+        <mxCell id="flow6" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#c62828;strokeWidth=3;endArrow=block;endFill=1;dashed=1" edge="1" parent="1" source="correccion-raiz" target="etl-hub">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="1330" y="240" />
+              <mxPoint x="950" y="240" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="label-reextract" value="Re-extracción" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];fontSize=11;fontColor=#c62828;fontStyle=1;backgroundColor=#ffffff" vertex="1" connectable="0" parent="flow6">
+          <mxGeometry x="-0.1" y="2" relative="1" as="geometry">
+            <mxPoint x="10" y="-8" as="offset" />
+          </mxGeometry>
+        </mxCell>
+
+        <!-- Flujo 7: Validación → SFTP (OK) -->
+        <mxCell id="flow7" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#2e7d32;strokeWidth=7;endArrow=block;endFill=1" edge="1" parent="1" source="validacion" target="sftp-box">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="1380" y="655" />
+              <mxPoint x="1380" y="655" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="label-ok" value="&lt;b style=&quot;font-size:16px&quot;&gt;✅ VALIDATION OK&lt;/b&gt;&#xa;(37/37 passed)" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];fontSize=13;fontColor=#1b5e20;fontStyle=1;backgroundColor=#c8e6c9;labelBorderColor=#2e7d32" vertex="1" connectable="0" parent="flow7">
+          <mxGeometry x="-0.1" y="2" relative="1" as="geometry">
+            <mxPoint y="-15" as="offset" />
+          </mxGeometry>
+        </mxCell>
+
+        <!-- Flujo 8: SFTP → CONSAR -->
+        <mxCell id="flow8" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#2e7d32;strokeWidth=8;endArrow=block;endFill=1" edge="1" parent="1" source="sftp-box" target="consar-box">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="1730" y="655" />
+              <mxPoint x="1730" y="450" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="label-sftp" value="&lt;b style=&quot;font-size:16px&quot;&gt;🔒 SFTP + TLS 1.3&lt;/b&gt;&#xa;PGP Encrypted" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];fontSize=13;fontColor=#1b5e20;fontStyle=1;backgroundColor=#c8e6c9;labelBorderColor=#2e7d32" vertex="1" connectable="0" parent="flow8">
+          <mxGeometry x="-0.1" y="2" relative="1" as="geometry">
+            <mxPoint x="15" as="offset" />
+          </mxGeometry>
+        </mxCell>
+
+        <!-- Conexiones a servicios transversales (líneas punteadas finas) -->
+        <mxCell id="conn-etl-event" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#7b1fa2;strokeWidth=1;endArrow=classic;endFill=1;dashed=1;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0" edge="1" parent="1" source="etl-hub" target="eventstore-box">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="950" y="900" />
+              <mxPoint x="575" y="900" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+
+        <mxCell id="conn-validacion-event" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#7b1fa2;strokeWidth=1;endArrow=classic;endFill=1;dashed=1;exitX=0.5;exitY=1;exitDx=0;exitDy=0" edge="1" parent="1" source="validacion" target="eventstore-box">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="950" y="900" />
+              <mxPoint x="575" y="900" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+
+        <mxCell id="conn-sftp-event" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#7b1fa2;strokeWidth=1;endArrow=classic;endFill=1;dashed=1;exitX=0.5;exitY=1;exitDx=0;exitDy=0" edge="1" parent="1" source="sftp-box" target="eventstore-box">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="1595" y="900" />
+              <mxPoint x="575" y="900" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+
+        <mxCell id="label-events-all" value="Events (audit trail)" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];fontSize=10;fontColor=#7b1fa2;fontStyle=1;backgroundColor=#ffffff" vertex="1" connectable="0" parent="conn-sftp-event">
+          <mxGeometry x="-0.8" y="2" relative="1" as="geometry">
+            <mxPoint x="-440" y="-8" as="offset" />
+          </mxGeometry>
+        </mxCell>
+
+        <!-- ===== LEYENDA ===== -->
+        <mxCell id="leyenda-bg" value="" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fafafa;strokeColor=#616161;strokeWidth=2" vertex="1" parent="1">
+          <mxGeometry x="80" y="1360" width="2240" height="180" as="geometry" />
+        </mxCell>
+
+        <mxCell id="leyenda-titulo-box" value="LEYENDA" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=20;fontStyle=1;fontColor=#212121" vertex="1" parent="1">
+          <mxGeometry x="1080" y="1375" width="240" height="30" as="geometry" />
+        </mxCell>
+
+        <mxCell id="leyenda-flujos" value="&lt;b style=&quot;font-size:14px&quot;&gt;FLUJOS PRINCIPALES:&lt;/b&gt;&#xa;━━━  Verde/Azul (grueso): Flujo principal de datos&#xa;━ ━  Rojo (punteado): Flujo de corrección/error&#xa;- - -  Morado (fino): Eventos de auditoría" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=top;whiteSpace=wrap;rounded=0;fontSize=12;fontColor=#424242;spacingLeft=10" vertex="1" parent="1">
+          <mxGeometry x="120" y="1420" width="500" height="100" as="geometry" />
+        </mxCell>
+
+        <mxCell id="leyenda-colores" value="&lt;b style=&quot;font-size:14px&quot;&gt;COLORES:&lt;/b&gt;&#xa;■ Verde: Sistemas externos &amp; CONSAR&#xa;■ Azul: Procesamiento &amp; Validación&#xa;■ Negro: Aladdin (BlackRock)&#xa;■ Rojo: Corrección de errores&#xa;■ Morado: Servicios transversales" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=top;whiteSpace=wrap;rounded=0;fontSize=12;fontColor=#424242;spacingLeft=10" vertex="1" parent="1">
+          <mxGeometry x="700" y="1420" width="380" height="100" as="geometry" />
+        </mxCell>
+
+        <mxCell id="leyenda-componentes" value="&lt;b style=&quot;font-size:14px&quot;&gt;COMPONENTES CRÍTICOS:&lt;/b&gt;&#xa;⚠️ ETL Hub: Extracción automatizada&#xa;⚠️ 37 Validaciones: Compliance CONSAR&#xa;⚠️ SFTP Gateway: Envío PGP encriptado&#xa;🔐 Event Store: Auditoría 7 años" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=top;whiteSpace=wrap;rounded=0;fontSize=12;fontColor=#424242;spacingLeft=10" vertex="1" parent="1">
+          <mxGeometry x="1160" y="1420" width="400" height="100" as="geometry" />
+        </mxCell>
+
+        <mxCell id="leyenda-tech" value="&lt;b style=&quot;font-size:14px&quot;&gt;TECNOLOGÍAS:&lt;/b&gt;&#xa;Cloud: Azure / AWS&#xa;Compute: Container Apps / ECS Fargate&#xa;Serverless: Azure Functions / Lambda&#xa;DB: SQL + Cosmos DB / DynamoDB" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=top;whiteSpace=wrap;rounded=0;fontSize=12;fontColor=#424242;spacingLeft=10" vertex="1" parent="1">
+          <mxGeometry x="1640" y="1420" width="380" height="100" as="geometry" />
+        </mxCell>
+
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>

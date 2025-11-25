@@ -1,0 +1,380 @@
+<mxfile host="app.diagrams.net">
+  <diagram name="Reporte Resultados Workflow" id="reporting-workflow">
+    <mxGraphModel dx="1434" dy="844" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1900" pageHeight="1900" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+
+        <!-- SWIMLANE 1: TRIGGERS / EVENT BUS -->
+        <mxCell id="lane-triggers" value="TRIGGERS / EVENT BUS" style="swimlane;horizontal=0;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=14;fontStyle=1;startSize=40;" parent="1" vertex="1">
+          <mxGeometry x="40" y="40" width="1820" height="180" as="geometry" />
+        </mxCell>
+        <mxCell id="trigger-validated-error" value="Evento&#xa;FileValidated&#xa;(ERROR)&#xa;&#xa;Trigger:&#xa;Inmediato" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f8cecc;strokeColor=#b85450;fontSize=10;fontStyle=1;" parent="lane-triggers" vertex="1">
+          <mxGeometry x="60" y="50" width="120" height="90" as="geometry" />
+        </mxCell>
+        <mxCell id="trigger-validated-ok" value="Evento&#xa;FileValidated&#xa;(OK)&#xa;&#xa;Trigger:&#xa;Inmediato" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;fontSize=10;fontStyle=1;" parent="lane-triggers" vertex="1">
+          <mxGeometry x="200" y="50" width="120" height="90" as="geometry" />
+        </mxCell>
+        <mxCell id="trigger-scheduled" value="Scheduled&#xa;Reports&#xa;&#xa;Daily: 7AM&#xa;Weekly: Lunes&#xa;Monthly: Dia 1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;fontSize=10;fontStyle=1;" parent="lane-triggers" vertex="1">
+          <mxGeometry x="340" y="50" width="120" height="90" as="geometry" />
+        </mxCell>
+        <mxCell id="trigger-ondemand" value="On-Demand&#xa;Usuario&#xa;&#xa;API Request&#xa;Dashboard&#xa;UI" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#e1d5e7;strokeColor=#9673a6;fontSize=10;fontStyle=1;" parent="lane-triggers" vertex="1">
+          <mxGeometry x="480" y="50" width="120" height="90" as="geometry" />
+        </mxCell>
+
+        <!-- SWIMLANE 2: REPORT ORCHESTRATOR -->
+        <mxCell id="lane-orchestrator" value="REPORT ORCHESTRATOR" style="swimlane;horizontal=0;whiteSpace=wrap;html=1;fillColor=#e1d5e7;strokeColor=#9673a6;fontSize=14;fontStyle=1;startSize=40;" parent="1" vertex="1">
+          <mxGeometry x="40" y="220" width="1820" height="200" as="geometry" />
+        </mxCell>
+        <mxCell id="orch-receive" value="Recibir&#xa;Trigger&#xa;&#xa;Identificar&#xa;tipo reporte" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#e1d5e7;strokeColor=#9673a6;fontSize=10;fontStyle=1;" parent="lane-orchestrator" vertex="1">
+          <mxGeometry x="620" y="50" width="100" height="90" as="geometry" />
+        </mxCell>
+        <mxCell id="orch-decision" value="Tipo&#xa;Reporte?" style="rhombus;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;fontSize=11;fontStyle=1;" parent="lane-orchestrator" vertex="1">
+          <mxGeometry x="740" y="50" width="100" height="90" as="geometry" />
+        </mxCell>
+        <mxCell id="orch-error-detail" value="Reporte&#xa;ERRORES&#xa;Detallado&#xa;&#xa;Individual&#xa;File" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f8cecc;strokeColor=#b85450;fontSize=10;fontStyle=1;" parent="lane-orchestrator" vertex="1">
+          <mxGeometry x="860" y="50" width="100" height="90" as="geometry" />
+        </mxCell>
+        <mxCell id="orch-success-summary" value="Reporte&#xa;SUCCESS&#xa;Resumen&#xa;&#xa;Individual&#xa;File" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;fontSize=10;fontStyle=1;" parent="lane-orchestrator" vertex="1">
+          <mxGeometry x="980" y="50" width="100" height="90" as="geometry" />
+        </mxCell>
+        <mxCell id="orch-consolidated" value="Reporte&#xa;CONSOLIDADO&#xa;&#xa;Multiple Files&#xa;Periodo&#xa;(dia/semana/mes)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;fontSize=9;fontStyle=1;" parent="lane-orchestrator" vertex="1">
+          <mxGeometry x="1100" y="50" width="110" height="90" as="geometry" />
+        </mxCell>
+        <mxCell id="orch-consar-official" value="Reporte&#xa;OFICIAL&#xa;CONSAR&#xa;&#xa;Formato&#xa;Regulatorio&#xa;Mensual" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffe6cc;strokeColor=#d79b00;fontSize=9;fontStyle=1;" parent="lane-orchestrator" vertex="1">
+          <mxGeometry x="1230" y="50" width="110" height="90" as="geometry" />
+        </mxCell>
+
+        <!-- SWIMLANE 3: DATA AGGREGATION SERVICE -->
+        <mxCell id="lane-aggregation" value="DATA AGGREGATION SERVICE" style="swimlane;horizontal=0;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=14;fontStyle=1;startSize=40;" parent="1" vertex="1">
+          <mxGeometry x="40" y="420" width="1820" height="200" as="geometry" />
+        </mxCell>
+        <mxCell id="agg-query-results" value="Query&#xa;ValidationDB&#xa;&#xa;SELECT *&#xa;FROM&#xa;ValidationResults&#xa;WHERE&#xa;FileId=X" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=9;fontStyle=1;" parent="lane-aggregation" vertex="1">
+          <mxGeometry x="860" y="50" width="110" height="100" as="geometry" />
+        </mxCell>
+        <mxCell id="agg-enrich" value="Enriquecer&#xa;Datos&#xa;&#xa;Join con:&#xa;- Files&#xa;- Rules&#xa;- Users&#xa;- Catalogs" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=9;fontStyle=1;" parent="lane-aggregation" vertex="1">
+          <mxGeometry x="990" y="50" width="100" height="100" as="geometry" />
+        </mxCell>
+        <mxCell id="agg-calculate-metrics" value="Calcular&#xa;Metricas&#xa;&#xa;- Total records&#xa;- Error count&#xa;- Success rate&#xa;- By severity&#xa;- By rule&#xa;- Trends" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=8;fontStyle=1;" parent="lane-aggregation" vertex="1">
+          <mxGeometry x="1110" y="50" width="100" height="100" as="geometry" />
+        </mxCell>
+        <mxCell id="agg-group-data" value="Agrupar&#xa;Datos&#xa;&#xa;Por:&#xa;- File&#xa;- Date&#xa;- User&#xa;- AFORE&#xa;- Rule&#xa;- Severity" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=8;fontStyle=1;" parent="lane-aggregation" vertex="1">
+          <mxGeometry x="1230" y="50" width="100" height="100" as="geometry" />
+        </mxCell>
+
+        <!-- SWIMLANE 4: REPORT GENERATOR -->
+        <mxCell id="lane-generator" value="REPORT GENERATOR" style="swimlane;horizontal=0;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;fontSize=14;fontStyle=1;startSize=40;" parent="1" vertex="1">
+          <mxGeometry x="40" y="620" width="1820" height="220" as="geometry" />
+        </mxCell>
+        <mxCell id="gen-template" value="Cargar&#xa;Template&#xa;&#xa;- Header&#xa;- Logo AFORE&#xa;- Styles CSS&#xa;- Charts config" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;fontSize=9;fontStyle=1;" parent="lane-generator" vertex="1">
+          <mxGeometry x="1360" y="50" width="100" height="100" as="geometry" />
+        </mxCell>
+        <mxCell id="gen-pdf" value="Generar&#xa;PDF&#xa;&#xa;iTextSharp&#xa;&#xa;- Cover page&#xa;- Summary&#xa;- Details&#xa;- Charts" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;fontSize=9;fontStyle=1;" parent="lane-generator" vertex="1">
+          <mxGeometry x="1480" y="50" width="100" height="100" as="geometry" />
+        </mxCell>
+        <mxCell id="gen-excel" value="Generar&#xa;EXCEL&#xa;&#xa;EPPlus&#xa;&#xa;- Summary sheet&#xa;- Details sheet&#xa;- Pivot tables&#xa;- Charts" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;fontSize=9;fontStyle=1;" parent="lane-generator" vertex="1">
+          <mxGeometry x="1600" y="50" width="100" height="100" as="geometry" />
+        </mxCell>
+        <mxCell id="gen-csv" value="Generar&#xa;CSV&#xa;&#xa;CsvHelper&#xa;&#xa;- Raw data&#xa;- Delimiters&#xa;- UTF-8" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;fontSize=9;fontStyle=1;" parent="lane-generator" vertex="1">
+          <mxGeometry x="1720" y="50" width="100" height="100" as="geometry" />
+        </mxCell>
+
+        <!-- SWIMLANE 5: ENCRYPTION SERVICE (for CONSAR) -->
+        <mxCell id="lane-encryption" value="ENCRYPTION SERVICE (CONSAR)" style="swimlane;horizontal=0;whiteSpace=wrap;html=1;fillColor=#ffe6cc;strokeColor=#d79b00;fontSize=14;fontStyle=1;startSize=40;" parent="1" vertex="1">
+          <mxGeometry x="40" y="840" width="1820" height="180" as="geometry" />
+        </mxCell>
+        <mxCell id="enc-pgp" value="Encriptar&#xa;PGP&#xa;&#xa;Key: 4096-bit&#xa;&#xa;Public Key&#xa;CONSAR" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffe6cc;strokeColor=#d79b00;fontSize=10;fontStyle=1;" parent="lane-encryption" vertex="1">
+          <mxGeometry x="1230" y="50" width="100" height="90" as="geometry" />
+        </mxCell>
+        <mxCell id="enc-sign" value="Firma&#xa;Digital&#xa;&#xa;Certificado&#xa;AFORE&#xa;&#xa;SHA-256" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffe6cc;strokeColor=#d79b00;fontSize=10;fontStyle=1;" parent="lane-encryption" vertex="1">
+          <mxGeometry x="1350" y="50" width="100" height="90" as="geometry" />
+        </mxCell>
+        <mxCell id="enc-compress" value="Comprimir&#xa;ZIP&#xa;&#xa;Password&#xa;Protected&#xa;&#xa;AES-256" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffe6cc;strokeColor=#d79b00;fontSize=10;fontStyle=1;" parent="lane-encryption" vertex="1">
+          <mxGeometry x="1470" y="50" width="100" height="90" as="geometry" />
+        </mxCell>
+
+        <!-- SWIMLANE 6: STORAGE SERVICE -->
+        <mxCell id="lane-storage" value="STORAGE SERVICE" style="swimlane;horizontal=0;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;fontSize=14;fontStyle=1;startSize=40;" parent="1" vertex="1">
+          <mxGeometry x="40" y="1020" width="1820" height="180" as="geometry" />
+        </mxCell>
+        <mxCell id="store-blob" value="Azure Blob&#xa;Storage&#xa;&#xa;Container:&#xa;reports&#xa;&#xa;Path:&#xa;YYYY/MM/DD/&#xa;FileId/" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;fontSize=9;fontStyle=1;" parent="lane-storage" vertex="1">
+          <mxGeometry x="1480" y="50" width="110" height="90" as="geometry" />
+        </mxCell>
+        <mxCell id="store-metadata" value="Almacenar&#xa;Metadata&#xa;&#xa;ReportDB:&#xa;- ReportId&#xa;- FileId&#xa;- Type&#xa;- Format&#xa;- BlobUrl&#xa;- Timestamp&#xa;- Size" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;fontSize=8;fontStyle=1;" parent="lane-storage" vertex="1">
+          <mxGeometry x="1610" y="50" width="100" height="90" as="geometry" />
+        </mxCell>
+        <mxCell id="store-retention" value="Retention&#xa;Policy&#xa;&#xa;Hot: 90 dias&#xa;Cool: 1 año&#xa;Archive: 7 años&#xa;&#xa;Auto-delete&#xa;despues 7 años" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;fontSize=8;fontStyle=1;" parent="lane-storage" vertex="1">
+          <mxGeometry x="1730" y="50" width="100" height="90" as="geometry" />
+        </mxCell>
+
+        <!-- SWIMLANE 7: DISTRIBUTION SERVICE -->
+        <mxCell id="lane-distribution" value="DISTRIBUTION SERVICE" style="swimlane;horizontal=0;whiteSpace=wrap;html=1;fillColor=#e1d5e7;strokeColor=#9673a6;fontSize=14;fontStyle=1;startSize=40;" parent="1" vertex="1">
+          <mxGeometry x="40" y="1200" width="1820" height="200" as="geometry" />
+        </mxCell>
+        <mxCell id="dist-email" value="Email&#xa;&#xa;SendGrid&#xa;&#xa;To: User&#xa;Cc: Manager&#xa;&#xa;Attachment:&#xa;PDF + Excel&#xa;&#xa;Link: Download" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#e1d5e7;strokeColor=#9673a6;fontSize=8;fontStyle=1;" parent="lane-distribution" vertex="1">
+          <mxGeometry x="860" y="50" width="110" height="110" as="geometry" />
+        </mxCell>
+        <mxCell id="dist-dashboard" value="Dashboard&#xa;Web&#xa;&#xa;React UI&#xa;&#xa;Real-time&#xa;charts&#xa;&#xa;Download&#xa;buttons" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#e1d5e7;strokeColor=#9673a6;fontSize=9;fontStyle=1;" parent="lane-distribution" vertex="1">
+          <mxGeometry x="990" y="50" width="100" height="110" as="geometry" />
+        </mxCell>
+        <mxCell id="dist-api" value="REST API&#xa;&#xa;Endpoint:&#xa;/api/reports/&#xa;FileId&#xa;&#xa;Auth: JWT&#xa;&#xa;Response:&#xa;JSON + URLs" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#e1d5e7;strokeColor=#9673a6;fontSize=8;fontStyle=1;" parent="lane-distribution" vertex="1">
+          <mxGeometry x="1110" y="50" width="100" height="110" as="geometry" />
+        </mxCell>
+        <mxCell id="dist-sftp-consar" value="SFTP&#xa;CONSAR&#xa;&#xa;Host:&#xa;consar.gob.mx&#xa;&#xa;TLS 1.3&#xa;&#xa;Path:&#xa;/reportes/&#xa;AFORE_ID/" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffe6cc;strokeColor=#d79b00;fontSize=8;fontStyle=1;" parent="lane-distribution" vertex="1">
+          <mxGeometry x="1230" y="50" width="100" height="110" as="geometry" />
+        </mxCell>
+
+        <!-- SWIMLANE 8: NOTIFICATION SERVICE -->
+        <mxCell id="lane-notification" value="NOTIFICATION SERVICE" style="swimlane;horizontal=0;whiteSpace=wrap;html=1;fillColor=#f8cecc;strokeColor=#b85450;fontSize=14;fontStyle=1;startSize=40;" parent="1" vertex="1">
+          <mxGeometry x="40" y="1400" width="1820" height="160" as="geometry" />
+        </mxCell>
+        <mxCell id="notif-success" value="Notificacion&#xa;SUCCESS&#xa;&#xa;Email:&#xa;Reporte generado&#xa;&#xa;Slack:&#xa;Canal validaciones" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;fontSize=9;fontStyle=1;" parent="lane-notification" vertex="1">
+          <mxGeometry x="980" y="40" width="120" height="90" as="geometry" />
+        </mxCell>
+        <mxCell id="notif-error-critical" value="Notificacion&#xa;ERROR CRITICO&#xa;&#xa;Email + SMS:&#xa;Responsable&#xa;&#xa;Slack:&#xa;@channel&#xa;&#xa;PagerDuty:&#xa;On-Call" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f8cecc;strokeColor=#b85450;fontSize=8;fontStyle=1;" parent="lane-notification" vertex="1">
+          <mxGeometry x="860" y="40" width="100" height="90" as="geometry" />
+        </mxCell>
+        <mxCell id="notif-consar-receipt" value="Confirmacion&#xa;CONSAR&#xa;&#xa;Receipt&#xa;Number&#xa;&#xa;Timestamp&#xa;&#xa;Status:&#xa;RECEIVED" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffe6cc;strokeColor=#d79b00;fontSize=9;fontStyle=1;" parent="lane-notification" vertex="1">
+          <mxGeometry x="1230" y="40" width="100" height="90" as="geometry" />
+        </mxCell>
+
+        <!-- SWIMLANE 9: CONSAR (EXTERNO) -->
+        <mxCell id="lane-consar" value="CONSAR (EXTERNO)" style="swimlane;horizontal=0;whiteSpace=wrap;html=1;fillColor=#ffe6cc;strokeColor=#d79b00;fontSize=14;fontStyle=1;startSize=40;" parent="1" vertex="1">
+          <mxGeometry x="40" y="1560" width="1820" height="160" as="geometry" />
+        </mxCell>
+        <mxCell id="consar-receive" value="Recibir&#xa;Reporte&#xa;&#xa;SFTP Server&#xa;&#xa;Validar&#xa;Encriptacion&#xa;Firma" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffe6cc;strokeColor=#d79b00;fontSize=10;fontStyle=1;" parent="lane-consar" vertex="1">
+          <mxGeometry x="1230" y="40" width="100" height="90" as="geometry" />
+        </mxCell>
+        <mxCell id="consar-process" value="Procesar&#xa;Reporte&#xa;&#xa;Sistema&#xa;Interno&#xa;CONSAR" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffe6cc;strokeColor=#d79b00;fontSize=10;fontStyle=1;" parent="lane-consar" vertex="1">
+          <mxGeometry x="1350" y="40" width="100" height="90" as="geometry" />
+        </mxCell>
+        <mxCell id="consar-confirm" value="Enviar&#xa;Confirmacion&#xa;&#xa;Receipt&#xa;Number&#xa;&#xa;API Callback" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffe6cc;strokeColor=#d79b00;fontSize=10;fontStyle=1;" parent="lane-consar" vertex="1">
+          <mxGeometry x="1470" y="40" width="100" height="90" as="geometry" />
+        </mxCell>
+
+        <!-- ARROWS - TRIGGERS TO ORCHESTRATOR -->
+        <mxCell id="arrow1" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeWidth=2;strokeColor=#b85450;" parent="1" source="trigger-validated-error" target="orch-receive" edge="1">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="160" y="180" />
+              <mxPoint x="710" y="180" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="arrow2" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeWidth=2;strokeColor=#82b366;" parent="1" source="trigger-validated-ok" target="orch-receive" edge="1">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="300" y="180" />
+              <mxPoint x="710" y="180" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="arrow3" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeWidth=2;strokeColor=#d6b656;" parent="1" source="trigger-scheduled" target="orch-receive" edge="1">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="440" y="180" />
+              <mxPoint x="710" y="180" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="arrow4" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeWidth=2;strokeColor=#9673a6;" parent="1" source="trigger-ondemand" target="orch-receive" edge="1">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="580" y="180" />
+              <mxPoint x="710" y="180" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+
+        <!-- ARROWS - ORCHESTRATOR DECISION -->
+        <mxCell id="arrow5" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeWidth=2;strokeColor=#9673a6;" parent="1" source="orch-receive" target="orch-decision" edge="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="arrow6" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeWidth=2;strokeColor=#b85450;" parent="1" source="orch-decision" target="orch-error-detail" edge="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="label-error" value="ERROR" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=10;fontColor=#b85450;fontStyle=1;" parent="1" vertex="1">
+          <mxGeometry x="800" y="250" width="60" height="20" as="geometry" />
+        </mxCell>
+        <mxCell id="arrow7" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeWidth=2;strokeColor=#82b366;" parent="1" source="orch-decision" target="orch-success-summary" edge="1">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="830" y="315" />
+              <mxPoint x="1070" y="315" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="label-success" value="SUCCESS" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=10;fontColor=#82b366;fontStyle=1;" parent="1" vertex="1">
+          <mxGeometry x="900" y="295" width="80" height="20" as="geometry" />
+        </mxCell>
+        <mxCell id="arrow8" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeWidth=2;strokeColor=#d6b656;" parent="1" source="orch-decision" target="orch-consolidated" edge="1">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="830" y="340" />
+              <mxPoint x="1195" y="340" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="label-consolidated" value="SCHEDULED" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=10;fontColor=#d6b656;fontStyle=1;" parent="1" vertex="1">
+          <mxGeometry x="980" y="320" width="100" height="20" as="geometry" />
+        </mxCell>
+        <mxCell id="arrow9" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeWidth=2;strokeColor=#d79b00;" parent="1" source="orch-decision" target="orch-consar-official" edge="1">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="830" y="365" />
+              <mxPoint x="1325" y="365" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="label-consar" value="CONSAR" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=10;fontColor=#d79b00;fontStyle=1;" parent="1" vertex="1">
+          <mxGeometry x="1060" y="345" width="80" height="20" as="geometry" />
+        </mxCell>
+
+        <!-- ARROWS - DATA AGGREGATION -->
+        <mxCell id="arrow10" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeWidth=2;strokeColor=#6c8ebf;" parent="1" source="orch-error-detail" target="agg-query-results" edge="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="arrow11" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeWidth=2;strokeColor=#6c8ebf;" parent="1" source="agg-query-results" target="agg-enrich" edge="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="arrow12" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeWidth=2;strokeColor=#6c8ebf;" parent="1" source="agg-enrich" target="agg-calculate-metrics" edge="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="arrow13" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeWidth=2;strokeColor=#6c8ebf;" parent="1" source="agg-calculate-metrics" target="agg-group-data" edge="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <!-- ARROWS - REPORT GENERATION -->
+        <mxCell id="arrow14" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeWidth=2;strokeColor=#d6b656;" parent="1" source="agg-group-data" target="gen-template" edge="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="arrow15" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeWidth=2;strokeColor=#d6b656;" parent="1" source="gen-template" target="gen-pdf" edge="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="arrow16" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeWidth=2;strokeColor=#d6b656;dashed=1;" parent="1" source="gen-template" target="gen-excel" edge="1">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="1450" y="770" />
+              <mxPoint x="1690" y="770" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="label-parallel-gen" value="Paralelo" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=9;fontColor=#d6b656;fontStyle=1;" parent="1" vertex="1">
+          <mxGeometry x="1540" y="750" width="60" height="20" as="geometry" />
+        </mxCell>
+        <mxCell id="arrow17" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeWidth=2;strokeColor=#d6b656;dashed=1;" parent="1" source="gen-template" target="gen-csv" edge="1">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="1450" y="790" />
+              <mxPoint x="1810" y="790" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+
+        <!-- ARROWS - ENCRYPTION (CONSAR only) -->
+        <mxCell id="arrow18" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeWidth=2;strokeColor=#d79b00;" parent="1" source="orch-consar-official" target="enc-pgp" edge="1">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="1325" y="390" />
+              <mxPoint x="1320" y="390" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="arrow19" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeWidth=2;strokeColor=#d79b00;" parent="1" source="enc-pgp" target="enc-sign" edge="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="arrow20" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeWidth=2;strokeColor=#d79b00;" parent="1" source="enc-sign" target="enc-compress" edge="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <!-- ARROWS - STORAGE -->
+        <mxCell id="arrow21" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeWidth=2;strokeColor=#82b366;" parent="1" source="gen-pdf" target="store-blob" edge="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="arrow22" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeWidth=2;strokeColor=#82b366;" parent="1" source="store-blob" target="store-metadata" edge="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="arrow23" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeWidth=2;strokeColor=#82b366;" parent="1" source="store-metadata" target="store-retention" edge="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <!-- ARROWS - DISTRIBUTION -->
+        <mxCell id="arrow24" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeWidth=2;strokeColor=#9673a6;" parent="1" source="orch-error-detail" target="dist-email" edge="1">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="950" y="1150" />
+              <mxPoint x="955" y="1150" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="arrow25" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeWidth=2;strokeColor=#9673a6;" parent="1" source="orch-success-summary" target="dist-dashboard" edge="1">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="1070" y="1150" />
+              <mxPoint x="1080" y="1150" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="arrow26" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeWidth=2;strokeColor=#9673a6;" parent="1" source="orch-consolidated" target="dist-api" edge="1">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="1195" y="1150" />
+              <mxPoint x="1200" y="1150" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="arrow27" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeWidth=2;strokeColor=#d79b00;" parent="1" source="enc-compress" target="dist-sftp-consar" edge="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <!-- ARROWS - NOTIFICATIONS -->
+        <mxCell id="arrow28" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeWidth=2;strokeColor=#b85450;" parent="1" source="dist-email" target="notif-error-critical" edge="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="arrow29" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeWidth=2;strokeColor=#82b366;" parent="1" source="dist-dashboard" target="notif-success" edge="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <!-- ARROWS - CONSAR FLOW -->
+        <mxCell id="arrow30" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeWidth=2;strokeColor=#d79b00;" parent="1" source="dist-sftp-consar" target="consar-receive" edge="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="arrow31" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeWidth=2;strokeColor=#d79b00;" parent="1" source="consar-receive" target="consar-process" edge="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="arrow32" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeWidth=2;strokeColor=#d79b00;" parent="1" source="consar-process" target="consar-confirm" edge="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="arrow33" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeWidth=2;strokeColor=#d79b00;dashed=1;" parent="1" source="consar-confirm" target="notif-consar-receipt" edge="1">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="1560" y="1645" />
+              <mxPoint x="1320" y="1645" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+
+        <!-- REPORT TYPES BOX -->
+        <mxCell id="report-types" value="TIPOS DE REPORTES&#xa;&#xa;1. REPORTE ERRORES DETALLADO (individual):&#xa;- Por cada archivo con errores&#xa;- Detalle registro por registro&#xa;- RuleId, ErrorMessage, Severidad&#xa;- Sugerencias correccion&#xa;- Formato: PDF + Excel&#xa;&#xa;2. REPORTE SUCCESS RESUMEN (individual):&#xa;- Por cada archivo exitoso&#xa;- Resumen metricas&#xa;- Total registros, validaciones OK&#xa;- Tiempo procesamiento&#xa;- Formato: PDF&#xa;&#xa;3. REPORTE CONSOLIDADO (periodo):&#xa;- Diario: Todos archivos del dia&#xa;- Semanal: Ultimos 7 dias&#xa;- Mensual: Mes completo&#xa;- Metricas agregadas, tendencias, charts&#xa;- Formato: PDF + Excel + CSV&#xa;&#xa;4. REPORTE OFICIAL CONSAR (mensual):&#xa;- Formato regulatorio CONSAR&#xa;- Estructura fija definida por CONSAR&#xa;- Encriptado PGP 4096-bit&#xa;- Firmado digitalmente&#xa;- Transmision SFTP segura&#xa;- Formato: TXT + XML" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=10;fontStyle=1;align=left;verticalAlign=top;arcSize=6;" parent="1" vertex="1">
+          <mxGeometry x="40" y="1760" width="540" height="380" as="geometry" />
+        </mxCell>
+
+        <!-- REPORT CONTENT BOX -->
+        <mxCell id="report-content" value="CONTENIDO REPORTES&#xa;&#xa;COVER PAGE:&#xa;- Logo AFORE&#xa;- Periodo reporte&#xa;- Fecha generacion&#xa;- Usuario solicitante&#xa;&#xa;EXECUTIVE SUMMARY:&#xa;- Total archivos procesados&#xa;- Success rate (pct)&#xa;- Error rate (pct)&#xa;- Tiempo promedio validacion&#xa;- Charts: Pie, Bar, Line&#xa;&#xa;DETALLES VALIDACION:&#xa;- Por archivo: FileId, Timestamp, Status&#xa;- Por regla: RuleId, Success/Fail count&#xa;- Por severidad: CRITICO, ALTO, MEDIO, BAJO&#xa;- Tabla detallada errores&#xa;&#xa;ERRORES DETALLE (si aplica):&#xa;- Registro: Row number&#xa;- Campo: Field name&#xa;- Valor actual: Current value&#xa;- Valor esperado: Expected value&#xa;- Regla violada: RuleId + Description&#xa;- Sugerencia: How to fix&#xa;&#xa;METRICAS HISTORICAS:&#xa;- Tendencia ultimos 30 dias&#xa;- Comparacion periodo anterior&#xa;- Top 10 errores mas frecuentes&#xa;- Performance por AFORE&#xa;&#xa;FOOTER:&#xa;- Timestamp generacion&#xa;- Version sistema&#xa;- Contacto soporte" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;fontSize=9;fontStyle=1;align=left;verticalAlign=top;arcSize=6;" parent="1" vertex="1">
+          <mxGeometry x="620" y="1760" width="540" height="440" as="geometry" />
+        </mxCell>
+
+        <!-- METRICS BOX -->
+        <mxCell id="metrics-reporting" value="METRICAS REPORTING&#xa;&#xa;Tiempo generacion por tipo:&#xa;- Error detallado: 10-15 seg&#xa;- Success resumen: 5-10 seg&#xa;- Consolidado diario: 30-60 seg&#xa;- Consolidado mensual: 2-5 min&#xa;- Oficial CONSAR: 3-7 min&#xa;&#xa;Tamaños reportes:&#xa;- PDF: 200KB - 5MB&#xa;- Excel: 500KB - 20MB&#xa;- CSV: 100KB - 10MB&#xa;&#xa;Volumenes:&#xa;- Reportes diarios: 50-100&#xa;- Reportes semanales: 10-20&#xa;- Reportes mensuales: 5-10&#xa;- Reportes CONSAR: 1/mes&#xa;&#xa;Distribucion:&#xa;- Email: menor 2 min&#xa;- Dashboard: Real-time&#xa;- API: menor 1 seg response&#xa;- SFTP CONSAR: 5-10 min&#xa;&#xa;Storage:&#xa;- Total reportes/mes: 1-2 GB&#xa;- Retention 7 años: 84-168 GB&#xa;- Azure Blob: Hot tier (90 dias)&#xa;- Cool tier (1 año), Archive (6 años)&#xa;&#xa;Availability: 99.9 pct&#xa;Error rate: menor 0.5 pct" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;fontSize=9;fontStyle=1;align=left;verticalAlign=top;arcSize=6;" parent="1" vertex="1">
+          <mxGeometry x="1200" y="1760" width="660" height="360" as="geometry" />
+        </mxCell>
+
+        <!-- TITLE -->
+        <mxCell id="title" value="WORKFLOW REPORTE DE RESULTADOS - GENERACION Y DISTRIBUCION" style="text;html=1;strokeColor=#6c8ebf;fillColor=#dae8fc;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=1;fontSize=16;fontStyle=1;" parent="1" vertex="1">
+          <mxGeometry x="560" y="0" width="900" height="30" as="geometry" />
+        </mxCell>
+
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>

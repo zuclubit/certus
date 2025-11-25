@@ -1,0 +1,1 @@
+export { default as component } from "../../../../src/routes/roadmap-ai/+page.svelte";

@@ -1,0 +1,159 @@
+<mxfile host="app.diagrams.net">
+  <diagram name="Error Handling and Recovery Flow" id="error-recovery-flow">
+    <mxGraphModel dx="1434" dy="844" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1600" pageHeight="1400" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+
+        <!-- SWIMLANE 1: USUARIO / AFORE -->
+        <mxCell id="lane-usuario" value="USUARIO / AFORE" style="swimlane;horizontal=0;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=14;fontStyle=1;startSize=40;" parent="1" vertex="1">
+          <mxGeometry x="40" y="40" width="1520" height="180" as="geometry" />
+        </mxCell>
+        <mxCell id="user-start" value="Cargar Archivo&#xa;CONSAR" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;fontSize=12;fontStyle=1;" parent="lane-usuario" vertex="1">
+          <mxGeometry x="60" y="50" width="120" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="user-notification" value="Recibir&#xa;Notificacion&#xa;ERROR" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f8cecc;strokeColor=#b85450;fontSize=12;fontStyle=1;" parent="lane-usuario" vertex="1">
+          <mxGeometry x="480" y="50" width="120" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="user-resubmit" value="Corregir y&#xa;Reenviar&#xa;Archivo" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;fontSize=12;fontStyle=1;" parent="lane-usuario" vertex="1">
+          <mxGeometry x="900" y="50" width="120" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="user-success" value="Recibir&#xa;Confirmacion&#xa;EXITO" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;fontSize=12;fontStyle=1;" parent="lane-usuario" vertex="1">
+          <mxGeometry x="1360" y="50" width="120" height="60" as="geometry" />
+        </mxCell>
+
+        <!-- SWIMLANE 2: SISTEMA VALIDACION -->
+        <mxCell id="lane-validation" value="SISTEMA VALIDACION" style="swimlane;horizontal=0;whiteSpace=wrap;html=1;fillColor=#e1d5e7;strokeColor=#9673a6;fontSize=14;fontStyle=1;startSize=40;" parent="1" vertex="1">
+          <mxGeometry x="40" y="220" width="1520" height="200" as="geometry" />
+        </mxCell>
+        <mxCell id="val-receive" value="Recibir&#xa;FileParsed&#xa;Event" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=12;" parent="lane-validation" vertex="1">
+          <mxGeometry x="220" y="60" width="120" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="val-execute" value="EJECUTAR&#xa;37 VALIDADORES&#xa;(paralelo)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#e1d5e7;strokeColor=#9673a6;fontSize=12;fontStyle=1;" parent="lane-validation" vertex="1">
+          <mxGeometry x="360" y="60" width="120" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="val-decision" value="Validacion&#xa;OK?" style="rhombus;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;fontSize=12;fontStyle=1;" parent="lane-validation" vertex="1">
+          <mxGeometry x="500" y="50" width="100" height="80" as="geometry" />
+        </mxCell>
+        <mxCell id="val-error-detail" value="Generar&#xa;Reporte&#xa;Detallado&#xa;Errores" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f8cecc;strokeColor=#b85450;fontSize=12;" parent="lane-validation" vertex="1">
+          <mxGeometry x="640" y="60" width="120" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="val-revalidate" value="REVALIDAR&#xa;Archivo&#xa;Corregido" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#e1d5e7;strokeColor=#9673a6;fontSize=12;fontStyle=1;" parent="lane-validation" vertex="1">
+          <mxGeometry x="1060" y="60" width="120" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="val-publish-ok" value="Publicar&#xa;FileValidated&#xa;(OK)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;fontSize=12;fontStyle=1;" parent="lane-validation" vertex="1">
+          <mxGeometry x="1200" y="60" width="120" height="60" as="geometry" />
+        </mxCell>
+
+        <!-- SWIMLANE 3: SISTEMA NOTIFICACIONES -->
+        <mxCell id="lane-notifications" value="NOTIFICACIONES" style="swimlane;horizontal=0;whiteSpace=wrap;html=1;fillColor=#ffe6cc;strokeColor=#d79b00;fontSize=14;fontStyle=1;startSize=40;" parent="1" vertex="1">
+          <mxGeometry x="40" y="420" width="1520" height="160" as="geometry" />
+        </mxCell>
+        <mxCell id="notif-error-email" value="Enviar Email&#xa;con Reporte&#xa;Errores" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f8cecc;strokeColor=#b85450;fontSize=12;" parent="lane-notifications" vertex="1">
+          <mxGeometry x="780" y="50" width="120" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="notif-success-email" value="Enviar Email&#xa;Confirmacion&#xa;EXITO" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;fontSize=12;" parent="lane-notifications" vertex="1">
+          <mxGeometry x="1360" y="50" width="120" height="60" as="geometry" />
+        </mxCell>
+
+        <!-- SWIMLANE 4: SISTEMA CONTABLE -->
+        <mxCell id="lane-accounting" value="SISTEMA CONTABLE" style="swimlane;horizontal=0;whiteSpace=wrap;html=1;fillColor=#f5f5f5;strokeColor=#666666;fontSize=14;fontStyle=1;startSize=40;" parent="1" vertex="1">
+          <mxGeometry x="40" y="580" width="1520" height="160" as="geometry" />
+        </mxCell>
+        <mxCell id="acc-process" value="Procesar&#xa;Registro&#xa;Contable" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;fontSize=12;fontStyle=1;" parent="lane-accounting" vertex="1">
+          <mxGeometry x="1340" y="50" width="120" height="60" as="geometry" />
+        </mxCell>
+
+        <!-- SWIMLANE 5: AUDIT TRAIL -->
+        <mxCell id="lane-audit" value="AUDIT TRAIL" style="swimlane;horizontal=0;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;fontSize=14;fontStyle=1;startSize=40;" parent="1" vertex="1">
+          <mxGeometry x="40" y="740" width="1520" height="180" as="geometry" />
+        </mxCell>
+        <mxCell id="audit-log-error" value="Registrar&#xa;Evento ERROR&#xa;(timestamp, user, errores)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f8cecc;strokeColor=#b85450;fontSize=11;" parent="lane-audit" vertex="1">
+          <mxGeometry x="640" y="50" width="140" height="70" as="geometry" />
+        </mxCell>
+        <mxCell id="audit-log-retry" value="Registrar&#xa;Evento REINTENTO&#xa;(timestamp, fileId, attempt)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;fontSize=11;" parent="lane-audit" vertex="1">
+          <mxGeometry x="1050" y="50" width="140" height="70" as="geometry" />
+        </mxCell>
+        <mxCell id="audit-log-success" value="Registrar&#xa;Evento SUCCESS&#xa;(timestamp, validationId)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;fontSize=11;" parent="lane-audit" vertex="1">
+          <mxGeometry x="1340" y="50" width="140" height="70" as="geometry" />
+        </mxCell>
+
+        <!-- ARROWS / FLOW -->
+        <mxCell id="arrow1" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeWidth=2;strokeColor=#6c8ebf;" parent="1" source="user-start" target="val-receive" edge="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="arrow2" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeWidth=2;strokeColor=#9673a6;" parent="1" source="val-receive" target="val-execute" edge="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="arrow3" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeWidth=2;strokeColor=#9673a6;" parent="1" source="val-execute" target="val-decision" edge="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="arrow4" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeWidth=2;strokeColor=#b85450;dashed=1;" parent="1" source="val-decision" target="val-error-detail" edge="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="label-error" value="ERROR" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=11;fontColor=#b85450;fontStyle=1;" parent="1" vertex="1">
+          <mxGeometry x="610" y="280" width="60" height="20" as="geometry" />
+        </mxCell>
+        <mxCell id="arrow5" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeWidth=2;strokeColor=#b85450;" parent="1" source="val-error-detail" target="notif-error-email" edge="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="arrow6" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeWidth=2;strokeColor=#b85450;" parent="1" source="notif-error-email" target="user-notification" edge="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="arrow7" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeWidth=2;strokeColor=#d6b656;dashed=1;" parent="1" source="user-notification" target="user-resubmit" edge="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="label-user-corrects" value="Usuario descarga reporte&#xa;corrige archivo" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=10;fontColor=#d6b656;fontStyle=1;" parent="1" vertex="1">
+          <mxGeometry x="640" y="70" width="120" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="arrow8" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeWidth=2;strokeColor=#d6b656;" parent="1" source="user-resubmit" target="val-revalidate" edge="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="arrow9" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeWidth=2;strokeColor=#82b366;" parent="1" source="val-revalidate" target="val-publish-ok" edge="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="arrow10" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeWidth=2;strokeColor=#82b366;" parent="1" source="val-publish-ok" target="acc-process" edge="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="arrow11" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeWidth=2;strokeColor=#82b366;" parent="1" source="acc-process" target="notif-success-email" edge="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="arrow12" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeWidth=2;strokeColor=#82b366;" parent="1" source="notif-success-email" target="user-success" edge="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <!-- Audit trail arrows -->
+        <mxCell id="arrow-audit1" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeWidth=1;strokeColor=#b85450;dashed=1;" parent="1" source="val-error-detail" target="audit-log-error" edge="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="arrow-audit2" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeWidth=1;strokeColor=#d6b656;dashed=1;" parent="1" source="val-revalidate" target="audit-log-retry" edge="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="arrow-audit3" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeWidth=1;strokeColor=#82b366;dashed=1;" parent="1" source="val-publish-ok" target="audit-log-success" edge="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <!-- METRICS BOX -->
+        <mxCell id="metrics-box" value="METRICAS ERROR RECOVERY&#xa;&#xa;Tiempo promedio correccion: 2-4 horas&#xa;Tasa reintento exitoso: 92 pct&#xa;Errores mas comunes: Formato (45 pct), Catalogo (30 pct), Cruce (25 pct)&#xa;Intentos promedio hasta exito: 1.3&#xa;Retention audit trail: 7 años (CONSAR requirement)&#xa;Max reintentos permitidos: 5 por archivo&#xa;Auto-block despues: 3 errores consecutivos (requiere approval)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;fontSize=11;fontStyle=1;align=left;verticalAlign=top;" parent="1" vertex="1">
+          <mxGeometry x="40" y="960" width="520" height="160" as="geometry" />
+        </mxCell>
+
+        <!-- ERROR CATEGORIES BOX -->
+        <mxCell id="error-categories" value="CATEGORIAS DE ERROR&#xa;&#xa;CRITICO (bloquea archivo): Estructura invalida, Encoding incorrecto&#xa;ALTO (bloquea registro): Catalogo no existe, Fecha fuera rango&#xa;MEDIO (warning): Formato menor, Precision decimal&#xa;BAJO (informativo): Sugerencias mejora, Optimizaciones&#xa;&#xa;Auto-correccion habilitada para: BAJO y algunos MEDIO&#xa;Requiere intervencion manual: CRITICO y ALTO" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f8cecc;strokeColor=#b85450;fontSize=11;fontStyle=1;align=left;verticalAlign=top;" parent="1" vertex="1">
+          <mxGeometry x="600" y="960" width="520" height="160" as="geometry" />
+        </mxCell>
+
+        <!-- NOTIFICATION CHANNELS BOX -->
+        <mxCell id="notif-channels" value="CANALES NOTIFICACION&#xa;&#xa;Email: Reporte detallado PDF (todos errores)&#xa;SMS: Solo errores CRITICO (responsable AFORE)&#xa;Slack: Webhook tiempo real (canal validaciones)&#xa;Dashboard: Vista consolidada errores (tiempo real)&#xa;API: Webhook configurable (integraciones externas)&#xa;&#xa;SLA notificacion: menor 2 minutos post-validacion&#xa;Disponibilidad: 99.95 pct" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffe6cc;strokeColor=#d79b00;fontSize=11;fontStyle=1;align=left;verticalAlign=top;" parent="1" vertex="1">
+          <mxGeometry x="1160" y="960" width="400" height="160" as="geometry" />
+        </mxCell>
+
+        <!-- TITLE -->
+        <mxCell id="title" value="FLUJO ERROR HANDLING AND RECOVERY - SISTEMA VALIDACION CONSAR" style="text;html=1;strokeColor=#6c8ebf;fillColor=#dae8fc;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=1;fontSize=16;fontStyle=1;" parent="1" vertex="1">
+          <mxGeometry x="540" y="0" width="720" height="30" as="geometry" />
+        </mxCell>
+
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>
