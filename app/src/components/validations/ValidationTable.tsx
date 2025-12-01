@@ -257,28 +257,27 @@ export function ValidationTable({
         },
       },
       {
-        accessorKey: 'recordCount',
+        accessorKey: 'errorCount',
         minSize: 120,
-        header: 'Registros',
+        header: 'Resultado',
         cell: ({ row }) => {
-          const recordCount = row.getValue('recordCount') as number
-          const validRecordCount = row.original.validRecordCount
-          const errorCount = row.original.errorCount
-          const warningCount = row.original.warningCount
+          const errorCount = row.original.errorCount || 0
+          const warningCount = row.original.warningCount || 0
 
           return (
             <div className="space-y-1">
-              <p
-                className={cn(
-                  'text-sm font-bold',
-                  isDark ? 'text-neutral-200' : 'text-neutral-800'
-                )}
-              >
-                {recordCount.toLocaleString()}
-              </p>
-              {errorCount > 0 && (
+              {errorCount > 0 ? (
                 <p className="text-xs font-semibold text-red-500">
                   {errorCount} errores
+                </p>
+              ) : (
+                <p
+                  className={cn(
+                    'text-sm font-bold',
+                    isDark ? 'text-green-400' : 'text-green-600'
+                  )}
+                >
+                  Sin errores
                 </p>
               )}
               {warningCount > 0 && (

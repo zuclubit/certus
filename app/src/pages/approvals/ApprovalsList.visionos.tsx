@@ -8,18 +8,17 @@
  * @compliance CONSAR Multi-level Approval System
  */
 
-import { useEffect, useState } from 'react'
+import { useMemo, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { cn } from '@/lib/utils'
 import { useAppStore, selectTheme } from '@/stores/appStore'
-import { useApproval } from '@/hooks/useApproval'
-import {
-  ApprovalWorkflowCard,
-} from '@/components/approval'
+import { useApprovals, useApprovalStatistics } from '@/hooks/useApproval'
+import { ApprovalWorkflowCard } from '@/components/approval'
 import { PremiumButtonV2 } from '@/components/ui'
 import { LottieIcon } from '@/components/ui/LottieIcon'
 import { getAnimation } from '@/lib/lottiePreloader'
 import { Card, CardContent } from '@/components/ui/card'
+import { ExportService } from '@/lib/services/export.adapter'
 import {
   Filter,
   RefreshCw,
@@ -29,11 +28,12 @@ import {
   AlertCircle,
   CheckCircle2,
   XCircle,
-  Plus,
   Search,
   X,
+  Loader2,
 } from 'lucide-react'
-import type { ApprovalStatus, SLAStatus } from '@/types'
+import type { ApprovalStatus, SLAStatus, ApprovalWorkflow } from '@/types'
+import { ApprovalsSkeleton } from '@/components/ui/skeleton'
 
 export function ApprovalsListVisionOS() {
   const navigate = useNavigate()
@@ -41,75 +41,130 @@ export function ApprovalsListVisionOS() {
   const isDark = theme === 'dark'
   const approvalsAnimationData = getAnimation('approvals')
 
-  const {
-    workflows,
-    filters,
-    isLoading,
-    loadWorkflows,
-    setFilters,
-    resetFilters,
-    getPendingWorkflows,
-    getWorkflowsByStatus,
-    getWorkflowsBySLA,
-  } = useApproval()
-
+  // Local filter state
   const [searchQuery, setSearchQuery] = useState('')
   const [selectedStatuses, setSelectedStatuses] = useState<ApprovalStatus[]>([])
   const [selectedSLAs, setSelectedSLAs] = useState<SLAStatus[]>([])
+  const [isExporting, setIsExporting] = useState(false)
 
-  // Load workflows on mount
-  useEffect(() => {
-    loadWorkflows()
-  }, [])
-
-  // Apply filters
-  useEffect(() => {
-    setFilters({
-      search: searchQuery || undefined,
-      status: selectedStatuses.length > 0 ? selectedStatuses : undefined,
-      slaStatus: selectedSLAs.length > 0 ? selectedSLAs : undefined,
-    })
-  }, [searchQuery, selectedStatuses, selectedSLAs])
-
-  // Filter workflows locally for display
-  const filteredWorkflows = workflows.filter((workflow) => {
-    // Search filter
-    if (searchQuery) {
-      const query = searchQuery.toLowerCase()
-      const matchesSearch =
-        workflow.fileName.toLowerCase().includes(query) ||
-        workflow.fileType.toLowerCase().includes(query) ||
-        workflow.afore.toLowerCase().includes(query) ||
-        workflow.submittedBy.name.toLowerCase().includes(query)
-
-      if (!matchesSearch) return false
-    }
-
-    // Status filter
-    if (selectedStatuses.length > 0 && !selectedStatuses.includes(workflow.status)) {
-      return false
-    }
-
-    // SLA filter
-    if (selectedSLAs.length > 0 && !selectedSLAs.includes(workflow.overallSLAStatus)) {
-      return false
-    }
-
-    return true
+  // TanStack Query hooks
+  const {
+    data: approvalsResponse,
+    isLoading,
+    refetch,
+  } = useApprovals({
+    search: searchQuery || undefined,
+    status: selectedStatuses.length > 0 ? selectedStatuses : undefined,
+    slaStatus: selectedSLAs.length > 0 ? selectedSLAs : undefined,
   })
 
-  // Stats
-  const stats = {
-    total: workflows.length,
-    pending: getPendingWorkflows().length,
-    approved: getWorkflowsByStatus('approved').length,
-    rejected: getWorkflowsByStatus('rejected').length,
-    breached: getWorkflowsBySLA('breached').length,
+  const { data: statisticsResponse } = useApprovalStatistics()
+
+  // Extract workflows from response
+  const workflows: ApprovalWorkflow[] = useMemo(() => {
+    return approvalsResponse?.data || []
+  }, [approvalsResponse])
+
+  // Compute local filter stats from all workflows
+  const filterStats = useMemo(() => {
+    const all = workflows
+    return {
+      pending: all.filter((w) => w.status === 'pending').length,
+      in_progress: all.filter((w) => w.status === 'in_progress').length,
+      approved: all.filter((w) => w.status === 'approved').length,
+      rejected: all.filter((w) => w.status === 'rejected').length,
+      warning: all.filter((w) => w.overallSLAStatus === 'warning').length,
+      critical: all.filter((w) => w.overallSLAStatus === 'critical').length,
+      breached: all.filter((w) => w.overallSLAStatus === 'breached').length,
+    }
+  }, [workflows])
+
+  // Filter workflows locally for display
+  const filteredWorkflows = useMemo(() => {
+    return workflows.filter((workflow) => {
+      // Search filter
+      if (searchQuery) {
+        const query = searchQuery.toLowerCase()
+        const matchesSearch =
+          workflow.fileName.toLowerCase().includes(query) ||
+          workflow.fileType.toLowerCase().includes(query) ||
+          workflow.afore.toLowerCase().includes(query) ||
+          workflow.submittedBy.name.toLowerCase().includes(query)
+
+        if (!matchesSearch) return false
+      }
+
+      // Status filter
+      if (selectedStatuses.length > 0 && !selectedStatuses.includes(workflow.status)) {
+        return false
+      }
+
+      // SLA filter
+      if (selectedSLAs.length > 0 && !selectedSLAs.includes(workflow.overallSLAStatus)) {
+        return false
+      }
+
+      return true
+    })
+  }, [workflows, searchQuery, selectedStatuses, selectedSLAs])
+
+  // Stats from server or computed locally
+  const stats = useMemo(() => {
+    if (statisticsResponse?.data) {
+      return {
+        total: statisticsResponse.data.total || workflows.length,
+        pending: statisticsResponse.data.pending || filterStats.pending,
+        approved: statisticsResponse.data.approved || filterStats.approved,
+        rejected: statisticsResponse.data.rejected || filterStats.rejected,
+        breached: statisticsResponse.data.breached || filterStats.breached,
+      }
+    }
+    return {
+      total: workflows.length,
+      pending: filterStats.pending,
+      approved: filterStats.approved,
+      rejected: filterStats.rejected,
+      breached: filterStats.breached,
+    }
+  }, [statisticsResponse, workflows, filterStats])
+
+  const handleExport = async () => {
+    setIsExporting(true)
+    try {
+      const response = await ExportService.generateReport({
+        name: `Approvals Export - ${new Date().toISOString().split('T')[0]}`,
+        type: 'custom',
+        format: 'xlsx',
+        filters: {
+          status: selectedStatuses.length > 0 ? selectedStatuses : undefined,
+          slaStatus: selectedSLAs.length > 0 ? selectedSLAs : undefined,
+          search: searchQuery || undefined,
+        },
+      })
+
+      if (response.success) {
+        console.log('Export started:', response.data)
+      }
+    } catch (error) {
+      console.error('Export failed:', error)
+    } finally {
+      setIsExporting(false)
+    }
   }
 
-  const handleExport = () => {
-    console.log('Exporting approvals data...')
-    // TODO: Implement export functionality
+  const handleRefresh = () => {
+    refetch()
+  }
+
+  const handleClearFilters = () => {
+    setSelectedStatuses([])
+    setSelectedSLAs([])
+    setSearchQuery('')
+  }
+
+  // Show skeleton on initial load
+  if (isLoading && workflows.length === 0) {
+    return <ApprovalsSkeleton />
   }
 
   return (
@@ -153,7 +208,7 @@ export function ApprovalsListVisionOS() {
                 <LottieIcon
                   animationData={approvalsAnimationData}
                   isActive={true}
-                  loop={true}
+                  loop={false}
                   autoplay={true}
                   speed={1.0}
                   className="transition-all duration-300"
@@ -187,7 +242,7 @@ export function ApprovalsListVisionOS() {
         {/* Action Buttons */}
         <div className="flex items-center gap-3">
           <button
-            onClick={() => loadWorkflows()}
+            onClick={handleRefresh}
             disabled={isLoading}
             className={cn(
               'flex h-10 w-10 items-center justify-center rounded-[12px]',
@@ -205,9 +260,10 @@ export function ApprovalsListVisionOS() {
           </button>
 
           <PremiumButtonV2
-            label="Exportar"
+            label={isExporting ? 'Exportando...' : 'Exportar'}
             icon={Download}
             size="lg"
+            loading={isExporting}
             onClick={handleExport}
           />
         </div>
@@ -351,7 +407,8 @@ export function ApprovalsListVisionOS() {
               { value: 'approved', label: 'Aprobado', color: 'green' },
               { value: 'rejected', label: 'Rechazado', color: 'red' },
             ].map((status) => {
-              const count = getWorkflowsByStatus(status.value as ApprovalStatus).length
+              const count =
+                filterStats[status.value as keyof typeof filterStats] || 0
               const isActive = selectedStatuses.includes(status.value as ApprovalStatus)
 
               return (
@@ -399,7 +456,7 @@ export function ApprovalsListVisionOS() {
               { value: 'critical', label: 'SLA Critical', color: 'orange' },
               { value: 'breached', label: 'SLA Vencido', color: 'red' },
             ].map((sla) => {
-              const count = getWorkflowsBySLA(sla.value as SLAStatus).length
+              const count = filterStats[sla.value as keyof typeof filterStats] || 0
               const isActive = selectedSLAs.includes(sla.value as SLAStatus)
 
               if (count === 0) return null
@@ -445,12 +502,7 @@ export function ApprovalsListVisionOS() {
             {/* Clear Filters */}
             {(selectedStatuses.length > 0 || selectedSLAs.length > 0 || searchQuery) && (
               <button
-                onClick={() => {
-                  setSelectedStatuses([])
-                  setSelectedSLAs([])
-                  setSearchQuery('')
-                  resetFilters()
-                }}
+                onClick={handleClearFilters}
                 className={cn(
                   'px-3 py-1.5 rounded-lg text-sm font-medium transition-colors',
                   isDark

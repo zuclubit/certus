@@ -7,6 +7,7 @@ node_modules
 /coverage
 playwright-report
 test-results
+.playwright
 
 # Production
 /dist
@@ -15,6 +16,8 @@ test-results
 # Environment variables
 .env
 .env.local
+.env.development
+.env.production
 .env.development.local
 .env.test.local
 .env.production.local
@@ -40,3 +43,11 @@ lerna-debug.log*
 # Misc
 *.log
 .cache
+
+# Wrangler (Cloudflare)
+.wrangler
+
+# Migration/Planning docs (internal only)
+*_PLAN.md
+*_COMPLETE.md
+HOMOLOGATION_PLAN.md

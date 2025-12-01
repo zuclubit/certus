@@ -12,6 +12,7 @@ import { useParams, useNavigate } from 'react-router-dom'
 import { cn } from '@/lib/utils'
 import { useAppStore, selectTheme } from '@/stores/appStore'
 import { useValidatorDetail, useValidatorTesting } from '@/hooks/useValidators'
+import { ValidatorService } from '@/lib/services/api/validator.service'
 import { ValidatorTestPlayground } from '@/components/validators'
 import {
   DeleteValidatorModal,
@@ -72,35 +73,55 @@ export default function ValidatorDetail() {
 
   // Action handlers
   const handleDelete = async (justification: string) => {
+    if (!id) return
     setIsActionLoading(true)
     try {
-      console.log('Deleting validator:', id, 'Justification:', justification)
-      // TODO: Implement API call
-      setShowDeleteModal(false)
-      navigate('/validators')
+      const response = await ValidatorService.deleteValidator(id, justification)
+      if (response.success) {
+        setShowDeleteModal(false)
+        navigate('/validators')
+      } else {
+        console.error('Failed to delete validator:', response.message)
+      }
+    } catch (error) {
+      console.error('Error deleting validator:', error)
     } finally {
       setIsActionLoading(false)
     }
   }
 
   const handleToggle = async () => {
+    if (!id) return
     setIsActionLoading(true)
     try {
-      console.log('Toggling validator:', id, 'New state:', !validator?.isEnabled)
-      // TODO: Implement API call
-      setShowToggleModal(false)
-      refresh()
+      const response = await ValidatorService.toggleValidator(id)
+      if (response.success) {
+        setShowToggleModal(false)
+        refresh()
+      } else {
+        console.error('Failed to toggle validator:', response.message)
+      }
+    } catch (error) {
+      console.error('Error toggling validator:', error)
     } finally {
       setIsActionLoading(false)
     }
   }
 
   const handleDuplicate = async (newName: string) => {
+    if (!id) return
     setIsActionLoading(true)
     try {
-      console.log('Duplicating validator:', id, 'New name:', newName)
-      // TODO: Implement API call
-      setShowDuplicateModal(false)
+      const response = await ValidatorService.duplicateValidator(id, newName)
+      if (response.success && response.data) {
+        setShowDuplicateModal(false)
+        // Navigate to the new duplicated validator
+        navigate(`/validators/${response.data.id}`)
+      } else {
+        console.error('Failed to duplicate validator:', response.message)
+      }
+    } catch (error) {
+      console.error('Error duplicating validator:', error)
     } finally {
       setIsActionLoading(false)
     }

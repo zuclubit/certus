@@ -1,0 +1,45 @@
+# Certus App Code Owners
+# These owners will be requested for review when someone opens a pull request.
+
+# Global owners
+* @sh-certus/frontend-team
+
+# Core application
+/src/App.tsx @sh-certus/frontend-leads
+/src/main.tsx @sh-certus/frontend-leads
+
+# Components
+/src/components/ @sh-certus/frontend-team
+/src/components/ui/ @sh-certus/design-system
+
+# Pages and features
+/src/pages/ @sh-certus/frontend-team
+/src/features/ @sh-certus/frontend-team
+
+# State management
+/src/stores/ @sh-certus/frontend-leads
+
+# Hooks and utilities
+/src/hooks/ @sh-certus/frontend-team
+/src/lib/ @sh-certus/frontend-team
+
+# Styling and design tokens
+/src/styles/ @sh-certus/design-system
+/tailwind.config.js @sh-certus/design-system
+
+# Authentication
+/src/components/auth/ @sh-certus/security
+
+# Configuration files
+/vite.config.ts @sh-certus/devops
+/tsconfig.json @sh-certus/frontend-leads
+/package.json @sh-certus/frontend-leads
+
+# CI/CD and Docker
+/.github/workflows/ @sh-certus/devops
+/Dockerfile @sh-certus/devops
+/nginx.conf @sh-certus/devops
+
+# Tests
+/tests/ @sh-certus/qa-team
+/playwright.config.ts @sh-certus/qa-team

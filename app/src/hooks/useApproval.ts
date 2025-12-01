@@ -2,434 +2,338 @@
  * useApproval Hook - CONSAR Compliance
  *
  * Custom React hook for approval workflow operations
- * Combines store state with service methods for easy component integration
+ * Uses TanStack Query for data fetching and caching
  */
 
-import { useCallback, useEffect } from 'react'
-import { useApprovalStore } from '@/stores/approvalStore'
-import { approvalService } from '@/services/approval.service'
-import type {
-  ApprovalWorkflow,
-  ApprovalUser,
-  ApprovalLevel,
-  ApprovalFilters,
-  ApprovalSort,
-  ApprovalConfiguration,
-} from '@/types/approval.types'
+import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
+import { ApprovalService } from '@/lib/services/approval.adapter'
+import type { ApprovalListParams } from '@/lib/services/approval.adapter'
+import type { ApprovalLevel, ApprovalStatus } from '@/types/approval.types'
 
 // ============================================
-// MAIN HOOK
+// QUERY KEYS
 // ============================================
 
+export const approvalKeys = {
+  all: ['approvals'] as const,
+  lists: () => [...approvalKeys.all, 'list'] as const,
+  list: (params: string) => [...approvalKeys.lists(), params] as const,
+  details: () => [...approvalKeys.all, 'detail'] as const,
+  detail: (id: string) => [...approvalKeys.details(), id] as const,
+  statistics: () => [...approvalKeys.all, 'statistics'] as const,
+  pending: (userId?: string) => [...approvalKeys.all, 'pending', userId] as const,
+  history: (validationId: string) => [...approvalKeys.all, 'history', validationId] as const,
+  metrics: (orgId: string, from: string, to: string) =>
+    [...approvalKeys.all, 'metrics', orgId, from, to] as const,
+}
+
+// ============================================
+// QUERY HOOKS
+// ============================================
+
+/**
+ * Hook for fetching paginated approvals with filters
+ */
+export function useApprovals(params: ApprovalListParams & { enabled?: boolean } = {}) {
+  const { enabled = true, ...filterParams } = params
+
+  return useQuery({
+    queryKey: approvalKeys.list(JSON.stringify(filterParams)),
+    queryFn: () => ApprovalService.getApprovals(filterParams),
+    enabled,
+    staleTime: 30000, // 30 seconds
+    refetchInterval: 10000, // Refetch every 10 seconds for real-time updates
+  })
+}
+
+/**
+ * Hook for fetching approval detail
+ */
+export function useApprovalDetail(id: string | undefined, enabled: boolean = true) {
+  return useQuery({
+    queryKey: approvalKeys.detail(id || ''),
+    queryFn: () => ApprovalService.getApprovalById(id!),
+    enabled: enabled && !!id,
+    staleTime: 60000, // 1 minute
+  })
+}
+
+/**
+ * Hook for fetching approval statistics
+ */
+export function useApprovalStatistics(enabled: boolean = true) {
+  return useQuery({
+    queryKey: approvalKeys.statistics(),
+    queryFn: () => ApprovalService.getStatistics(),
+    enabled,
+    staleTime: 10000, // 10 seconds
+    refetchInterval: 15000, // Refetch every 15 seconds
+  })
+}
+
+/**
+ * Hook for fetching pending approvals for current user
+ */
+export function usePendingApprovals(userId?: string, enabled: boolean = true) {
+  return useQuery({
+    queryKey: approvalKeys.pending(userId),
+    queryFn: () => ApprovalService.getPendingApprovals(userId),
+    enabled,
+    staleTime: 30000, // 30 seconds
+    refetchInterval: 10000, // Refetch every 10 seconds
+  })
+}
+
+/**
+ * Hook for fetching approval history for a validation
+ */
+export function useApprovalHistory(validationId: string | undefined, enabled: boolean = true) {
+  return useQuery({
+    queryKey: approvalKeys.history(validationId || ''),
+    queryFn: () => ApprovalService.getApprovalHistory(validationId!),
+    enabled: enabled && !!validationId,
+    staleTime: 60000, // 1 minute
+  })
+}
+
+/**
+ * Hook for fetching approval metrics
+ */
+export function useApprovalMetrics(
+  organizationId: string,
+  from: string,
+  to: string,
+  enabled: boolean = true
+) {
+  return useQuery({
+    queryKey: approvalKeys.metrics(organizationId, from, to),
+    queryFn: () => ApprovalService.getMetrics(organizationId, from, to),
+    enabled: enabled && !!organizationId && !!from && !!to,
+    staleTime: 60000, // 1 minute
+  })
+}
+
+// ============================================
+// MUTATION HOOKS
+// ============================================
+
+/**
+ * Hook for approving a workflow
+ */
+export function useApproveWorkflow() {
+  const queryClient = useQueryClient()
+
+  return useMutation({
+    mutationFn: ({ id, comment }: { id: string; comment: string }) =>
+      ApprovalService.approve(id, comment),
+    onMutate: async ({ id }) => {
+      // Cancel any outgoing refetches
+      await queryClient.cancelQueries({ queryKey: approvalKeys.detail(id) })
+
+      // Snapshot the previous value
+      const previousData = queryClient.getQueryData(approvalKeys.detail(id))
+
+      // Optimistically update
+      queryClient.setQueryData(approvalKeys.detail(id), (old: any) => {
+        if (!old) return old
+        return {
+          ...old,
+          data: {
+            ...old.data,
+            status: 'approved' as ApprovalStatus,
+          },
+        }
+      })
+
+      return { previousData }
+    },
+    onError: (_err, { id }, context) => {
+      // Rollback on error
+      if (context?.previousData) {
+        queryClient.setQueryData(approvalKeys.detail(id), context.previousData)
+      }
+    },
+    onSuccess: () => {
+      // Invalidate related queries
+      queryClient.invalidateQueries({ queryKey: approvalKeys.lists() })
+      queryClient.invalidateQueries({ queryKey: approvalKeys.statistics() })
+      queryClient.invalidateQueries({ queryKey: approvalKeys.pending() })
+    },
+  })
+}
+
+/**
+ * Hook for rejecting a workflow
+ */
+export function useRejectWorkflow() {
+  const queryClient = useQueryClient()
+
+  return useMutation({
+    mutationFn: ({ id, comment }: { id: string; comment: string }) =>
+      ApprovalService.reject(id, comment),
+    onMutate: async ({ id }) => {
+      await queryClient.cancelQueries({ queryKey: approvalKeys.detail(id) })
+      const previousData = queryClient.getQueryData(approvalKeys.detail(id))
+
+      queryClient.setQueryData(approvalKeys.detail(id), (old: any) => {
+        if (!old) return old
+        return {
+          ...old,
+          data: {
+            ...old.data,
+            status: 'rejected' as ApprovalStatus,
+          },
+        }
+      })
+
+      return { previousData }
+    },
+    onError: (_err, { id }, context) => {
+      if (context?.previousData) {
+        queryClient.setQueryData(approvalKeys.detail(id), context.previousData)
+      }
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: approvalKeys.lists() })
+      queryClient.invalidateQueries({ queryKey: approvalKeys.statistics() })
+      queryClient.invalidateQueries({ queryKey: approvalKeys.pending() })
+    },
+  })
+}
+
+/**
+ * Hook for requesting additional information
+ */
+export function useRequestInfo() {
+  const queryClient = useQueryClient()
+
+  return useMutation({
+    mutationFn: ({ id, message }: { id: string; message: string }) =>
+      ApprovalService.requestInfo(id, message),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: approvalKeys.lists() })
+      queryClient.invalidateQueries({ queryKey: approvalKeys.pending() })
+    },
+  })
+}
+
+/**
+ * Hook for bulk approving multiple workflows
+ */
+export function useBulkApprove() {
+  const queryClient = useQueryClient()
+
+  return useMutation({
+    mutationFn: ({ ids, comment }: { ids: string[]; comment: string }) =>
+      ApprovalService.bulkApprove(ids, comment),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: approvalKeys.lists() })
+      queryClient.invalidateQueries({ queryKey: approvalKeys.statistics() })
+      queryClient.invalidateQueries({ queryKey: approvalKeys.pending() })
+    },
+  })
+}
+
+/**
+ * Hook for bulk rejecting multiple workflows
+ */
+export function useBulkReject() {
+  const queryClient = useQueryClient()
+
+  return useMutation({
+    mutationFn: ({ ids, comment }: { ids: string[]; comment: string }) =>
+      ApprovalService.bulkReject(ids, comment),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: approvalKeys.lists() })
+      queryClient.invalidateQueries({ queryKey: approvalKeys.statistics() })
+      queryClient.invalidateQueries({ queryKey: approvalKeys.pending() })
+    },
+  })
+}
+
+/**
+ * Hook for escalating a workflow
+ */
+export function useEscalateWorkflow() {
+  const queryClient = useQueryClient()
+
+  return useMutation({
+    mutationFn: ({
+      id,
+      toLevel,
+      reason,
+    }: {
+      id: string
+      toLevel: ApprovalLevel
+      reason: string
+    }) => ApprovalService.escalate(id, toLevel, reason),
+    onSuccess: (_, { id }) => {
+      queryClient.invalidateQueries({ queryKey: approvalKeys.detail(id) })
+      queryClient.invalidateQueries({ queryKey: approvalKeys.lists() })
+      queryClient.invalidateQueries({ queryKey: approvalKeys.pending() })
+    },
+  })
+}
+
+/**
+ * Hook for reassigning a workflow
+ */
+export function useReassignWorkflow() {
+  const queryClient = useQueryClient()
+
+  return useMutation({
+    mutationFn: ({
+      id,
+      toUserId,
+      reason,
+    }: {
+      id: string
+      toUserId: string
+      reason: string
+    }) => ApprovalService.reassign(id, toUserId, reason),
+    onSuccess: (_, { id }) => {
+      queryClient.invalidateQueries({ queryKey: approvalKeys.detail(id) })
+      queryClient.invalidateQueries({ queryKey: approvalKeys.lists() })
+      queryClient.invalidateQueries({ queryKey: approvalKeys.pending() })
+    },
+  })
+}
+
+// ============================================
+// COMBINED HOOK FOR CONVENIENCE
+// ============================================
+
+/**
+ * Combined hook providing all approval operations
+ * Use individual hooks for better tree-shaking
+ */
 export function useApproval() {
-  const store = useApprovalStore()
-
-  // ============================================
-  // FETCH OPERATIONS
-  // ============================================
-
-  /**
-   * Load workflows from API
-   */
-  const loadWorkflows = useCallback(async () => {
-    store.setLoading(true)
-    store.setError(null)
-
-    try {
-      const { workflows, total } = await approvalService.getWorkflows(
-        store.filters,
-        store.sort,
-        store.pagination
-      )
-      store.setWorkflows(workflows)
-      store.setPagination({ total })
-    } catch (error) {
-      const message = error instanceof Error ? error.message : 'Error al cargar workflows'
-      store.setError(message)
-    } finally {
-      store.setLoading(false)
-    }
-  }, [store.filters, store.sort, store.pagination])
-
-  /**
-   * Load single workflow by ID
-   */
-  const loadWorkflowById = useCallback(async (id: string) => {
-    store.setLoading(true)
-    store.setError(null)
-
-    try {
-      const workflow = await approvalService.getWorkflowById(id)
-      store.setSelectedWorkflow(workflow)
-      return workflow
-    } catch (error) {
-      const message = error instanceof Error ? error.message : 'Error al cargar workflow'
-      store.setError(message)
-      throw error
-    } finally {
-      store.setLoading(false)
-    }
-  }, [])
-
-  /**
-   * Load configurations
-   */
-  const loadConfigurations = useCallback(async () => {
-    try {
-      const configs = await approvalService.getConfigurations()
-      store.setConfigurations(configs)
-    } catch (error) {
-      console.error('Error loading configurations:', error)
-    }
-  }, [])
-
-  /**
-   * Load metrics
-   */
-  const loadMetrics = useCallback(
-    async (organizationId: string, from: string, to: string) => {
-      try {
-        const metrics = await approvalService.getMetrics(organizationId, from, to)
-        store.setMetrics(metrics)
-      } catch (error) {
-        console.error('Error loading metrics:', error)
-      }
-    },
-    []
-  )
-
-  // ============================================
-  // APPROVAL ACTIONS
-  // ============================================
-
-  /**
-   * Submit workflow for approval
-   */
-  const submitForApproval = useCallback(
-    async (workflowId: string, comment: string) => {
-      if (!store.currentUser) {
-        throw new Error('No current user')
-      }
-
-      await store.submitForApproval(workflowId, comment)
-      await loadWorkflows() // Refresh list
-    },
-    [store.currentUser, loadWorkflows]
-  )
-
-  /**
-   * Approve workflow
-   */
-  const approve = useCallback(
-    async (workflowId: string, comment: string) => {
-      if (!store.currentUser) {
-        throw new Error('No current user')
-      }
-
-      await store.approveWorkflow(workflowId, comment)
-      await loadWorkflows() // Refresh list
-    },
-    [store.currentUser, loadWorkflows]
-  )
-
-  /**
-   * Reject workflow
-   */
-  const reject = useCallback(
-    async (workflowId: string, comment: string) => {
-      if (!store.currentUser) {
-        throw new Error('No current user')
-      }
-
-      await store.rejectWorkflow(workflowId, comment)
-      await loadWorkflows() // Refresh list
-    },
-    [store.currentUser, loadWorkflows]
-  )
-
-  /**
-   * Escalate workflow to higher level
-   */
-  const escalate = useCallback(
-    async (workflowId: string, toLevel: ApprovalLevel, reason: string) => {
-      if (!store.currentUser) {
-        throw new Error('No current user')
-      }
-
-      await store.escalateWorkflow(workflowId, toLevel, reason)
-      await loadWorkflows() // Refresh list
-    },
-    [store.currentUser, loadWorkflows]
-  )
-
-  /**
-   * Request additional information
-   */
-  const requestInfo = useCallback(
-    async (workflowId: string, message: string) => {
-      await store.requestInfo(workflowId, message)
-      await loadWorkflows() // Refresh list
-    },
-    [loadWorkflows]
-  )
-
-  /**
-   * Provide requested information
-   */
-  const provideInfo = useCallback(
-    async (workflowId: string, message: string) => {
-      await store.provideInfo(workflowId, message)
-      await loadWorkflows() // Refresh list
-    },
-    [loadWorkflows]
-  )
-
-  /**
-   * Bulk approve multiple workflows
-   */
-  const bulkApprove = useCallback(
-    async (workflowIds: string[], comment: string) => {
-      if (!store.currentUser) {
-        throw new Error('No current user')
-      }
-
-      store.setLoading(true)
-      try {
-        await approvalService.bulkApprove(workflowIds, comment, store.currentUser)
-        await loadWorkflows() // Refresh list
-      } finally {
-        store.setLoading(false)
-      }
-    },
-    [store.currentUser, loadWorkflows]
-  )
-
-  // ============================================
-  // FILTERS & SORTING
-  // ============================================
-
-  /**
-   * Update filters
-   */
-  const setFilters = useCallback(
-    (filters: Partial<ApprovalFilters>) => {
-      store.setFilters(filters)
-    },
-    []
-  )
-
-  /**
-   * Reset filters
-   */
-  const resetFilters = useCallback(() => {
-    store.resetFilters()
-  }, [])
-
-  /**
-   * Update sort
-   */
-  const setSort = useCallback((sort: ApprovalSort) => {
-    store.setSort(sort)
-  }, [])
-
-  /**
-   * Go to page
-   */
-  const goToPage = useCallback((page: number) => {
-    store.setPagination({ page })
-  }, [])
-
-  // ============================================
-  // UTILITY FUNCTIONS
-  // ============================================
-
-  /**
-   * Check if user can approve workflow
-   */
-  const canApprove = useCallback(
-    (workflow: ApprovalWorkflow): boolean => {
-      if (!store.currentUser) return false
-      return approvalService.canUserApprove(workflow, store.currentUser)
-    },
-    [store.currentUser]
-  )
-
-  /**
-   * Get SLA status for workflow
-   */
-  const getSLAStatus = useCallback((workflow: ApprovalWorkflow) => {
-    const currentStage = workflow.stages.find((s) => s.level === workflow.currentLevel)
-    if (!currentStage || !currentStage.startedAt) return null
-
-    return approvalService.calculateSLAStatus(currentStage.startedAt, currentStage.slaConfig)
-  }, [])
-
-  /**
-   * Get remaining minutes for SLA
-   */
-  const getRemainingMinutes = useCallback((workflow: ApprovalWorkflow): number | null => {
-    const currentStage = workflow.stages.find((s) => s.level === workflow.currentLevel)
-    if (!currentStage || !currentStage.startedAt) return null
-
-    return approvalService.getRemainingMinutes(currentStage.startedAt, currentStage.slaConfig)
-  }, [])
-
-  // ============================================
-  // RETURN API
-  // ============================================
+  const queryClient = useQueryClient()
 
   return {
-    // State
-    workflows: store.workflows,
-    selectedWorkflow: store.selectedWorkflow,
-    configurations: store.configurations,
-    activeConfiguration: store.activeConfiguration,
-    metrics: store.metrics,
-    notifications: store.notifications,
-    filters: store.filters,
-    sort: store.sort,
-    pagination: store.pagination,
-    isLoading: store.isLoading,
-    error: store.error,
-    currentUser: store.currentUser,
+    // Query hooks (returns full query object)
+    useApprovals,
+    useApprovalDetail,
+    useApprovalStatistics,
+    usePendingApprovals,
+    useApprovalHistory,
+    useApprovalMetrics,
 
-    // Selectors
-    getWorkflowById: store.getWorkflowById,
-    getWorkflowsByStatus: store.getWorkflowsByStatus,
-    getWorkflowsByLevel: store.getWorkflowsByLevel,
-    getWorkflowsBySLA: store.getWorkflowsBySLA,
-    getAssignedWorkflows: store.getAssignedWorkflows,
-    getPendingWorkflows: store.getPendingWorkflows,
-    getUnreadNotifications: store.getUnreadNotifications,
+    // Mutation hooks (returns full mutation object)
+    useApproveWorkflow,
+    useRejectWorkflow,
+    useRequestInfo,
+    useBulkApprove,
+    useBulkReject,
+    useEscalateWorkflow,
+    useReassignWorkflow,
 
-    // Actions - Data Loading
-    loadWorkflows,
-    loadWorkflowById,
-    loadConfigurations,
-    loadMetrics,
-
-    // Actions - Approval Operations
-    submitForApproval,
-    approve,
-    reject,
-    escalate,
-    requestInfo,
-    provideInfo,
-    bulkApprove,
-
-    // Actions - Selection
-    setSelectedWorkflow: store.setSelectedWorkflow,
-
-    // Actions - Filters & Sorting
-    setFilters,
-    resetFilters,
-    setSort,
-    goToPage,
-
-    // Actions - Configuration
-    setActiveConfiguration: store.setActiveConfiguration,
-    updateConfiguration: store.updateConfiguration,
-
-    // Actions - Notifications
-    markNotificationAsRead: store.markNotificationAsRead,
-    clearNotification: store.clearNotification,
-    clearAllNotifications: store.clearAllNotifications,
-
-    // Actions - User
-    setCurrentUser: store.setCurrentUser,
-
-    // Utility Functions
-    canApprove,
-    getSLAStatus,
-    getRemainingMinutes,
+    // Utility
+    invalidateAll: () => queryClient.invalidateQueries({ queryKey: approvalKeys.all }),
   }
 }
 
-// ============================================
-// SPECIALIZED HOOKS
-// ============================================
+// Alias for backwards compatibility
+export const useWorkflowDetail = useApprovalDetail
 
-/**
- * Hook for workflows assigned to current user
- */
-export function useMyWorkflows() {
-  const { currentUser, getAssignedWorkflows, loadWorkflows } = useApproval()
-
-  useEffect(() => {
-    loadWorkflows()
-  }, [loadWorkflows])
-
-  const myWorkflows = currentUser ? getAssignedWorkflows(currentUser.id) : []
-
-  return {
-    myWorkflows,
-    isLoading: useApprovalStore((s) => s.isLoading),
-    refresh: loadWorkflows,
-  }
-}
-
-/**
- * Hook for single workflow detail
- */
-export function useWorkflowDetail(workflowId: string) {
-  const { loadWorkflowById, selectedWorkflow, isLoading, error } = useApproval()
-
-  useEffect(() => {
-    if (workflowId) {
-      loadWorkflowById(workflowId)
-    }
-  }, [workflowId, loadWorkflowById])
-
-  return {
-    workflow: selectedWorkflow,
-    isLoading,
-    error,
-    refresh: () => loadWorkflowById(workflowId),
-  }
-}
-
-/**
- * Hook for approval metrics
- */
-export function useApprovalMetrics(organizationId: string, from: string, to: string) {
-  const { loadMetrics, metrics, isLoading } = useApproval()
-
-  useEffect(() => {
-    if (organizationId && from && to) {
-      loadMetrics(organizationId, from, to)
-    }
-  }, [organizationId, from, to, loadMetrics])
-
-  return {
-    metrics,
-    isLoading,
-    refresh: () => loadMetrics(organizationId, from, to),
-  }
-}
-
-/**
- * Hook for approval configuration
- */
-export function useApprovalConfiguration() {
-  const {
-    loadConfigurations,
-    configurations,
-    activeConfiguration,
-    setActiveConfiguration,
-    updateConfiguration,
-    isLoading,
-  } = useApproval()
-
-  useEffect(() => {
-    loadConfigurations()
-  }, [loadConfigurations])
-
-  return {
-    configurations,
-    activeConfiguration,
-    setActiveConfiguration,
-    updateConfiguration,
-    isLoading,
-    refresh: loadConfigurations,
-  }
-}
+export default useApproval

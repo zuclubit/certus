@@ -34,6 +34,7 @@ const ValidationDetail = lazy(() => import('@/pages/ValidationDetail').then(modu
 const Users = lazy(() => import('@/pages/Users.visionos').then(module => ({ default: module.UsersVisionOS })))
 const Settings = lazy(() => import('@/pages/Settings').then(module => ({ default: module.Settings })))
 const Login = lazy(() => import('@/pages/Login').then(module => ({ default: module.Login })))
+const Register = lazy(() => import('@/pages/Register').then(module => ({ default: module.Register })))
 
 // VisionOS Enhanced Modules (2025-2026)
 const CatalogsVisionOS = lazy(() => import('@/pages/Catalogs.visionos').then(module => ({ default: module.CatalogsVisionOS })))
@@ -59,6 +60,21 @@ const ApprovalDetail = lazy(() => import('@/pages/approvals/ApprovalDetail'))
 // Validators module
 const ValidatorsList = lazy(() => import('@/pages/validators/ValidatorsList'))
 const ValidatorDetail = lazy(() => import('@/pages/validators/ValidatorDetail'))
+
+// Tenants/AFORE Management module (SystemAdmin only)
+const TenantsList = lazy(() => import('@/pages/tenants/TenantsList').then(module => ({ default: module.TenantsList })))
+const TenantDetail = lazy(() => import('@/pages/tenants/TenantDetail').then(module => ({ default: module.TenantDetail })))
+
+// Scrapers module (SystemAdmin only)
+const ScrapersList = lazy(() => import('@/pages/scrapers/ScrapersList').then(module => ({ default: module.ScrapersList })))
+
+// Compliance Portal module (2025-2026)
+const ComplianceDashboard = lazy(() => import('@/pages/compliance/ComplianceDashboard').then(module => ({ default: module.ComplianceDashboard })))
+const ComplianceFrameworks = lazy(() => import('@/pages/compliance/ComplianceFrameworks').then(module => ({ default: module.ComplianceFrameworks })))
+const ComplianceControls = lazy(() => import('@/pages/compliance/ComplianceControls').then(module => ({ default: module.ComplianceControls })))
+const ComplianceEvidence = lazy(() => import('@/pages/compliance/ComplianceEvidence').then(module => ({ default: module.ComplianceEvidence })))
+const ComplianceRisks = lazy(() => import('@/pages/compliance/ComplianceRisks').then(module => ({ default: module.ComplianceRisks })))
+const ComplianceAudits = lazy(() => import('@/pages/compliance/ComplianceAudits').then(module => ({ default: module.ComplianceAudits })))
 
 // ============================================================================
 // QUERY CLIENT CONFIGURATION
@@ -145,6 +161,14 @@ function AppContent() {
               element={
                 <Suspense fallback={<LoadingScreen message="Cargando inicio de sesión" />}>
                   <Login />
+                </Suspense>
+              }
+            />
+            <Route
+              path="/register"
+              element={
+                <Suspense fallback={<LoadingScreen message="Cargando registro" />}>
+                  <Register />
                 </Suspense>
               }
             />
@@ -349,6 +373,102 @@ function AppContent() {
                   <AuthGuard requiredPermission="settings">
                     <Suspense fallback={<LoadingScreen message="Cargando configuración" fullScreen={false} />}>
                       <Settings />
+                    </Suspense>
+                  </AuthGuard>
+                }
+              />
+
+              {/* Tenants/AFORE Management Routes (SystemAdmin only) */}
+              <Route
+                path="/tenants"
+                element={
+                  <AuthGuard requiredPermission="settings">
+                    <Suspense fallback={<LoadingScreen message="Cargando AFOREs" fullScreen={false} />}>
+                      <TenantsList />
+                    </Suspense>
+                  </AuthGuard>
+                }
+              />
+              <Route
+                path="/tenants/:id"
+                element={
+                  <AuthGuard requiredPermission="settings">
+                    <Suspense fallback={<LoadingScreen message="Cargando detalle de AFORE" fullScreen={false} />}>
+                      <TenantDetail />
+                    </Suspense>
+                  </AuthGuard>
+                }
+              />
+
+              {/* Scrapers Management Routes (SystemAdmin only) */}
+              <Route
+                path="/scrapers"
+                element={
+                  <AuthGuard requiredPermission="settings">
+                    <Suspense fallback={<LoadingScreen message="Cargando scrapers" fullScreen={false} />}>
+                      <ScrapersList />
+                    </Suspense>
+                  </AuthGuard>
+                }
+              />
+
+              {/* Compliance Portal Routes */}
+              <Route
+                path="/compliance"
+                element={
+                  <AuthGuard requiredPermission="settings">
+                    <Suspense fallback={<LoadingScreen message="Cargando portal de cumplimiento" fullScreen={false} />}>
+                      <ComplianceDashboard />
+                    </Suspense>
+                  </AuthGuard>
+                }
+              />
+              <Route
+                path="/compliance/frameworks"
+                element={
+                  <AuthGuard requiredPermission="settings">
+                    <Suspense fallback={<LoadingScreen message="Cargando frameworks" fullScreen={false} />}>
+                      <ComplianceFrameworks />
+                    </Suspense>
+                  </AuthGuard>
+                }
+              />
+              <Route
+                path="/compliance/controls"
+                element={
+                  <AuthGuard requiredPermission="settings">
+                    <Suspense fallback={<LoadingScreen message="Cargando controles" fullScreen={false} />}>
+                      <ComplianceControls />
+                    </Suspense>
+                  </AuthGuard>
+                }
+              />
+              <Route
+                path="/compliance/evidence"
+                element={
+                  <AuthGuard requiredPermission="settings">
+                    <Suspense fallback={<LoadingScreen message="Cargando evidencias" fullScreen={false} />}>
+                      <ComplianceEvidence />
+                    </Suspense>
+                  </AuthGuard>
+                }
+              />
+              <Route
+                path="/compliance/risks"
+                element={
+                  <AuthGuard requiredPermission="settings">
+                    <Suspense fallback={<LoadingScreen message="Cargando riesgos" fullScreen={false} />}>
+                      <ComplianceRisks />
+                    </Suspense>
+                  </AuthGuard>
+                }
+              />
+              <Route
+                path="/compliance/audits"
+                element={
+                  <AuthGuard requiredPermission="settings">
+                    <Suspense fallback={<LoadingScreen message="Cargando auditorías" fullScreen={false} />}>
+                      <ComplianceAudits />
                     </Suspense>
                   </AuthGuard>
                 }

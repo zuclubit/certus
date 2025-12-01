@@ -1,0 +1,2117 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hergon Digital - Plan de Arquitectura y Cumplimiento Empresarial 2025</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #6366f1;
+            --primary-dark: #4f46e5;
+            --primary-light: #818cf8;
+            --secondary: #ec4899;
+            --success: #10b981;
+            --warning: #f59e0b;
+            --danger: #ef4444;
+            --info: #3b82f6;
+
+            --bg-primary: #0f172a;
+            --bg-secondary: #1e293b;
+            --bg-tertiary: #334155;
+            --bg-card: rgba(30, 41, 59, 0.8);
+
+            --text-primary: #f8fafc;
+            --text-secondary: #94a3b8;
+            --text-muted: #64748b;
+
+            --border-color: rgba(148, 163, 184, 0.1);
+            --glass-bg: rgba(15, 23, 42, 0.8);
+
+            --radius: 16px;
+            --radius-sm: 12px;
+            --radius-xs: 8px;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            line-height: 1.6;
+            min-height: 100vh;
+        }
+
+        /* Animated Background */
+        .animated-bg {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            overflow: hidden;
+        }
+
+        .animated-bg::before {
+            content: '';
+            position: absolute;
+            width: 150%;
+            height: 150%;
+            background:
+                radial-gradient(ellipse 600px 400px at 10% 20%, rgba(99, 102, 241, 0.15) 0%, transparent 50%),
+                radial-gradient(ellipse 500px 350px at 90% 80%, rgba(236, 72, 153, 0.1) 0%, transparent 50%),
+                radial-gradient(ellipse 400px 300px at 50% 50%, rgba(16, 185, 129, 0.08) 0%, transparent 50%);
+            animation: bgFloat 25s ease-in-out infinite;
+        }
+
+        @keyframes bgFloat {
+            0%, 100% { transform: translate(0, 0) scale(1); }
+            33% { transform: translate(-30px, 20px) scale(1.02); }
+            66% { transform: translate(20px, -15px) scale(0.98); }
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 32px 24px;
+        }
+
+        /* Hero */
+        .hero {
+            background: linear-gradient(135deg, var(--bg-secondary) 0%, var(--bg-tertiary) 100%);
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius);
+            padding: 48px;
+            margin-bottom: 32px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .hero::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: linear-gradient(90deg, var(--primary), var(--secondary), var(--success));
+        }
+
+        .hero-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+            padding: 8px 20px;
+            border-radius: 50px;
+            font-size: 12px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 20px;
+        }
+
+        .hero-title {
+            font-size: 3rem;
+            font-weight: 800;
+            background: linear-gradient(135deg, var(--text-primary) 0%, var(--primary-light) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 12px;
+        }
+
+        .hero-subtitle {
+            font-size: 1.25rem;
+            color: var(--text-secondary);
+            max-width: 800px;
+        }
+
+        .hero-meta {
+            display: flex;
+            gap: 24px;
+            margin-top: 28px;
+            flex-wrap: wrap;
+        }
+
+        .hero-meta-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            color: var(--text-secondary);
+            font-size: 14px;
+            background: var(--bg-primary);
+            padding: 10px 16px;
+            border-radius: var(--radius-xs);
+            border: 1px solid var(--border-color);
+        }
+
+        /* Navigation */
+        .nav-section {
+            background: var(--glass-bg);
+            backdrop-filter: blur(20px);
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-sm);
+            padding: 16px 20px;
+            margin-bottom: 32px;
+            position: sticky;
+            top: 16px;
+            z-index: 100;
+        }
+
+        .nav-list {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+            list-style: none;
+        }
+
+        .nav-list a {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 8px 16px;
+            background: var(--bg-tertiary);
+            color: var(--text-secondary);
+            text-decoration: none;
+            border-radius: var(--radius-xs);
+            font-size: 13px;
+            font-weight: 500;
+            transition: all 0.2s ease;
+            border: 1px solid transparent;
+        }
+
+        .nav-list a:hover {
+            background: var(--primary);
+            color: white;
+            transform: translateY(-2px);
+        }
+
+        /* Cards */
+        .card {
+            background: var(--bg-card);
+            backdrop-filter: blur(20px);
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius);
+            padding: 28px;
+            margin-bottom: 24px;
+            transition: all 0.3s ease;
+        }
+
+        .card:hover {
+            border-color: rgba(99, 102, 241, 0.3);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+        }
+
+        .card-header {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            margin-bottom: 24px;
+            padding-bottom: 20px;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .card-icon {
+            width: 52px;
+            height: 52px;
+            border-radius: 14px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+        }
+
+        .card-icon.purple { background: rgba(99, 102, 241, 0.2); color: var(--primary-light); }
+        .card-icon.pink { background: rgba(236, 72, 153, 0.2); color: var(--secondary); }
+        .card-icon.green { background: rgba(16, 185, 129, 0.2); color: var(--success); }
+        .card-icon.blue { background: rgba(59, 130, 246, 0.2); color: var(--info); }
+        .card-icon.orange { background: rgba(245, 158, 11, 0.2); color: var(--warning); }
+        .card-icon.red { background: rgba(239, 68, 68, 0.2); color: var(--danger); }
+
+        .card-title {
+            font-size: 1.4rem;
+            font-weight: 700;
+        }
+
+        .card-subtitle {
+            font-size: 0.875rem;
+            color: var(--text-muted);
+            margin-top: 4px;
+        }
+
+        /* Section Headers */
+        .section-header {
+            margin: 48px 0 24px;
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+
+        .section-number {
+            width: 44px;
+            height: 44px;
+            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 18px;
+            font-weight: 700;
+        }
+
+        .section-title {
+            font-size: 1.75rem;
+            font-weight: 700;
+        }
+
+        /* Grid */
+        .grid-2 { display: grid; grid-template-columns: repeat(auto-fit, minmax(400px, 1fr)); gap: 24px; }
+        .grid-3 { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 24px; }
+        .grid-4 { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 20px; }
+
+        /* Tables */
+        .table-container {
+            overflow-x: auto;
+            border-radius: var(--radius-xs);
+            margin: 20px 0;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        th {
+            background: var(--bg-tertiary);
+            padding: 14px 18px;
+            text-align: left;
+            font-size: 12px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            color: var(--text-secondary);
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        td {
+            padding: 14px 18px;
+            border-bottom: 1px solid var(--border-color);
+            font-size: 14px;
+            color: var(--text-secondary);
+        }
+
+        tr:hover td {
+            background: rgba(99, 102, 241, 0.05);
+        }
+
+        /* Badges */
+        .badge {
+            display: inline-flex;
+            align-items: center;
+            padding: 5px 12px;
+            border-radius: 50px;
+            font-size: 11px;
+            font-weight: 600;
+        }
+
+        .badge-primary { background: rgba(99, 102, 241, 0.2); color: var(--primary-light); }
+        .badge-success { background: rgba(16, 185, 129, 0.2); color: var(--success); }
+        .badge-warning { background: rgba(245, 158, 11, 0.2); color: var(--warning); }
+        .badge-danger { background: rgba(239, 68, 68, 0.2); color: var(--danger); }
+        .badge-info { background: rgba(59, 130, 246, 0.2); color: var(--info); }
+
+        /* Stats */
+        .stat-card {
+            background: var(--bg-secondary);
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-sm);
+            padding: 24px;
+            text-align: center;
+        }
+
+        .stat-value {
+            font-size: 2.5rem;
+            font-weight: 800;
+            background: linear-gradient(135deg, var(--primary-light), var(--secondary));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .stat-label {
+            font-size: 12px;
+            color: var(--text-muted);
+            margin-top: 8px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        /* Progress Bars */
+        .progress-container { margin: 12px 0; }
+        .progress-label {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 6px;
+            font-size: 13px;
+            color: var(--text-secondary);
+        }
+        .progress-bar {
+            height: 10px;
+            background: var(--bg-tertiary);
+            border-radius: 5px;
+            overflow: hidden;
+        }
+        .progress-fill {
+            height: 100%;
+            border-radius: 5px;
+            transition: width 1s ease;
+        }
+        .progress-fill.purple { background: linear-gradient(90deg, var(--primary), var(--primary-light)); }
+        .progress-fill.green { background: linear-gradient(90deg, var(--success), #34d399); }
+        .progress-fill.blue { background: linear-gradient(90deg, var(--info), #60a5fa); }
+        .progress-fill.orange { background: linear-gradient(90deg, var(--warning), #fbbf24); }
+        .progress-fill.red { background: linear-gradient(90deg, var(--danger), #f87171); }
+
+        /* Checklist */
+        .checklist { list-style: none; }
+        .checklist li {
+            display: flex;
+            align-items: flex-start;
+            gap: 12px;
+            padding: 12px 0;
+            border-bottom: 1px solid var(--border-color);
+        }
+        .checklist li:last-child { border-bottom: none; }
+        .check-icon {
+            width: 22px;
+            height: 22px;
+            background: linear-gradient(135deg, var(--success), #34d399);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 12px;
+            flex-shrink: 0;
+        }
+        .check-icon.pending {
+            background: var(--bg-tertiary);
+            border: 2px solid var(--text-muted);
+        }
+
+        /* Interactive Diagram Styles */
+        .diagram-container {
+            background: linear-gradient(135deg, var(--bg-secondary), var(--bg-tertiary));
+            border-radius: var(--radius);
+            padding: 32px;
+            margin: 24px 0;
+            overflow: hidden;
+        }
+
+        .diagram-title {
+            text-align: center;
+            font-size: 1.1rem;
+            font-weight: 600;
+            margin-bottom: 24px;
+            color: var(--text-secondary);
+        }
+
+        /* SVG Diagram */
+        .architecture-svg {
+            width: 100%;
+            max-width: 1000px;
+            margin: 0 auto;
+            display: block;
+        }
+
+        .architecture-svg .node {
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .architecture-svg .node:hover {
+            filter: brightness(1.2);
+            transform: scale(1.02);
+        }
+
+        .architecture-svg .node rect,
+        .architecture-svg .node circle {
+            transition: all 0.3s ease;
+        }
+
+        .architecture-svg .node:hover rect,
+        .architecture-svg .node:hover circle {
+            stroke-width: 3;
+        }
+
+        .architecture-svg text {
+            font-family: 'Inter', sans-serif;
+            font-size: 11px;
+            fill: var(--text-primary);
+        }
+
+        .architecture-svg .label {
+            font-size: 10px;
+            fill: var(--text-secondary);
+        }
+
+        .architecture-svg .connection {
+            stroke: var(--text-muted);
+            stroke-width: 1.5;
+            fill: none;
+            opacity: 0.6;
+        }
+
+        .architecture-svg .connection.animated {
+            stroke-dasharray: 8 4;
+            animation: flowAnimation 2s linear infinite;
+        }
+
+        @keyframes flowAnimation {
+            0% { stroke-dashoffset: 24; }
+            100% { stroke-dashoffset: 0; }
+        }
+
+        /* Tooltip */
+        .tooltip {
+            position: absolute;
+            background: var(--bg-primary);
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-xs);
+            padding: 12px 16px;
+            font-size: 13px;
+            color: var(--text-primary);
+            max-width: 280px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.4);
+            z-index: 1000;
+            pointer-events: none;
+            opacity: 0;
+            transition: opacity 0.2s ease;
+        }
+
+        .tooltip.visible {
+            opacity: 1;
+        }
+
+        .tooltip h4 {
+            font-weight: 600;
+            margin-bottom: 6px;
+            color: var(--primary-light);
+        }
+
+        /* Tabs */
+        .tabs {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 20px;
+            border-bottom: 1px solid var(--border-color);
+            padding-bottom: 12px;
+        }
+
+        .tab-btn {
+            background: transparent;
+            border: none;
+            padding: 10px 20px;
+            color: var(--text-secondary);
+            font-size: 14px;
+            font-weight: 500;
+            cursor: pointer;
+            border-radius: var(--radius-xs);
+            transition: all 0.2s ease;
+        }
+
+        .tab-btn:hover {
+            background: var(--bg-tertiary);
+            color: var(--text-primary);
+        }
+
+        .tab-btn.active {
+            background: var(--primary);
+            color: white;
+        }
+
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+            animation: fadeIn 0.3s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Feature Grid */
+        .feature-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 16px;
+        }
+
+        .feature-item {
+            display: flex;
+            align-items: flex-start;
+            gap: 14px;
+            padding: 18px;
+            background: var(--bg-secondary);
+            border-radius: var(--radius-xs);
+            border: 1px solid var(--border-color);
+            transition: all 0.2s ease;
+        }
+
+        .feature-item:hover {
+            border-color: var(--primary);
+            transform: translateY(-2px);
+        }
+
+        .feature-icon {
+            width: 40px;
+            height: 40px;
+            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 18px;
+            flex-shrink: 0;
+        }
+
+        .feature-content h4 {
+            font-weight: 600;
+            margin-bottom: 4px;
+            font-size: 14px;
+        }
+
+        .feature-content p {
+            font-size: 13px;
+            color: var(--text-muted);
+            line-height: 1.5;
+        }
+
+        /* Compliance Score */
+        .compliance-score {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 48px;
+            padding: 40px;
+            background: var(--bg-secondary);
+            border-radius: var(--radius);
+            margin: 24px 0;
+            flex-wrap: wrap;
+        }
+
+        .score-ring {
+            position: relative;
+            width: 180px;
+            height: 180px;
+        }
+
+        .score-ring svg {
+            transform: rotate(-90deg);
+        }
+
+        .score-ring circle {
+            fill: none;
+            stroke-width: 12;
+        }
+
+        .score-ring .bg {
+            stroke: var(--bg-tertiary);
+        }
+
+        .score-ring .progress {
+            stroke: url(#scoreGradient);
+            stroke-linecap: round;
+            stroke-dasharray: 440;
+            stroke-dashoffset: 440;
+            transition: stroke-dashoffset 2s ease;
+        }
+
+        .score-inner {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            text-align: center;
+        }
+
+        .score-value {
+            font-size: 3rem;
+            font-weight: 800;
+            color: var(--text-primary);
+        }
+
+        .score-label {
+            font-size: 12px;
+            color: var(--text-muted);
+            text-transform: uppercase;
+        }
+
+        /* Vendor Comparison */
+        .vendor-card {
+            background: var(--bg-secondary);
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-sm);
+            padding: 20px;
+            transition: all 0.3s ease;
+        }
+
+        .vendor-card:hover {
+            border-color: var(--success);
+            transform: translateY(-4px);
+        }
+
+        .vendor-card.recommended {
+            border-color: var(--success);
+            position: relative;
+        }
+
+        .vendor-card.recommended::before {
+            content: 'RECOMENDADO';
+            position: absolute;
+            top: -10px;
+            right: 16px;
+            background: var(--success);
+            color: white;
+            font-size: 10px;
+            font-weight: 700;
+            padding: 4px 12px;
+            border-radius: 4px;
+        }
+
+        .vendor-logo {
+            font-size: 24px;
+            margin-bottom: 12px;
+        }
+
+        .vendor-name {
+            font-weight: 700;
+            font-size: 1.1rem;
+            margin-bottom: 4px;
+        }
+
+        .vendor-type {
+            font-size: 12px;
+            color: var(--text-muted);
+            margin-bottom: 16px;
+        }
+
+        .vendor-price {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--success);
+        }
+
+        .vendor-price span {
+            font-size: 13px;
+            font-weight: 400;
+            color: var(--text-muted);
+        }
+
+        .vendor-features {
+            margin-top: 16px;
+            padding-top: 16px;
+            border-top: 1px solid var(--border-color);
+        }
+
+        .vendor-features li {
+            font-size: 13px;
+            color: var(--text-secondary);
+            padding: 6px 0;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        /* Timeline */
+        .timeline {
+            position: relative;
+            padding-left: 32px;
+        }
+
+        .timeline::before {
+            content: '';
+            position: absolute;
+            left: 11px;
+            top: 0;
+            bottom: 0;
+            width: 2px;
+            background: linear-gradient(180deg, var(--primary), var(--secondary), var(--success));
+        }
+
+        .timeline-item {
+            position: relative;
+            padding: 16px 0;
+        }
+
+        .timeline-dot {
+            position: absolute;
+            left: -28px;
+            width: 16px;
+            height: 16px;
+            background: var(--bg-primary);
+            border: 3px solid var(--primary);
+            border-radius: 50%;
+        }
+
+        .timeline-content {
+            background: var(--bg-secondary);
+            border-radius: var(--radius-xs);
+            padding: 18px;
+            border-left: 3px solid var(--primary);
+        }
+
+        .timeline-date {
+            font-weight: 600;
+            color: var(--primary-light);
+            margin-bottom: 8px;
+        }
+
+        /* Footer */
+        .footer {
+            text-align: center;
+            padding: 48px 24px;
+            color: var(--text-muted);
+            font-size: 13px;
+            border-top: 1px solid var(--border-color);
+            margin-top: 48px;
+        }
+
+        .footer-logo {
+            font-size: 1.5rem;
+            font-weight: 800;
+            background: linear-gradient(135deg, var(--primary-light), var(--secondary));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 12px;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .hero-title { font-size: 2rem; }
+            .hero { padding: 32px 20px; }
+            .grid-2, .grid-3 { grid-template-columns: 1fr; }
+            .compliance-score { flex-direction: column; gap: 32px; }
+        }
+
+        /* Print */
+        @media print {
+            body { background: white; color: black; }
+            .nav-section { display: none; }
+            .card { border: 1px solid #ddd; box-shadow: none; }
+        }
+    </style>
+</head>
+<body>
+    <div class="animated-bg"></div>
+    <div id="tooltip" class="tooltip"></div>
+
+    <div class="container">
+        <!-- Hero Section -->
+        <header class="hero">
+            <div class="hero-badge">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+                </svg>
+                PLAN DE ARQUITECTURA EMPRESARIAL 2025
+            </div>
+            <h1 class="hero-title">Hergon Digital</h1>
+            <p class="hero-subtitle">
+                Marco Integral de Arquitectura y Cumplimiento para Certificacion SOC 2 Type II, ISO 27001:2022 y Regulaciones Financieras de Mexico (CONSAR/CNBV)
+            </p>
+            <div class="hero-meta">
+                <div class="hero-meta-item">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <rect x="3" y="4" width="18" height="18" rx="2" ry="2"/>
+                        <line x1="16" y1="2" x2="16" y2="6"/>
+                        <line x1="8" y1="2" x2="8" y2="6"/>
+                    </svg>
+                    <span><strong>Version:</strong> 2.0 | Noviembre 2025</span>
+                </div>
+                <div class="hero-meta-item">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/>
+                        <polyline points="22 4 12 14.01 9 11.01"/>
+                    </svg>
+                    <span><strong>Estado:</strong> Fase Inicial de Cumplimiento</span>
+                </div>
+                <div class="hero-meta-item">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <circle cx="12" cy="12" r="10"/>
+                        <polyline points="12 6 12 12 16 14"/>
+                    </svg>
+                    <span><strong>Objetivo:</strong> Certificacion SOC 2 Type II</span>
+                </div>
+            </div>
+        </header>
+
+        <!-- Navigation -->
+        <nav class="nav-section">
+            <ul class="nav-list">
+                <li><a href="#resumen">Resumen</a></li>
+                <li><a href="#portafolio">Portafolio</a></li>
+                <li><a href="#arquitectura">Arquitectura</a></li>
+                <li><a href="#soc2">SOC 2</a></li>
+                <li><a href="#zerotrust">Zero Trust</a></li>
+                <li><a href="#proveedores">Proveedores</a></li>
+                <li><a href="#roadmap">Roadmap</a></li>
+            </ul>
+        </nav>
+
+        <!-- Section 1: Executive Summary -->
+        <section id="resumen">
+            <div class="section-header">
+                <span class="section-number">1</span>
+                <h2 class="section-title">Resumen Ejecutivo</h2>
+            </div>
+
+            <!-- Compliance Score at 0% -->
+            <div class="compliance-score">
+                <div class="score-ring">
+                    <svg width="180" height="180" viewBox="0 0 180 180">
+                        <defs>
+                            <linearGradient id="scoreGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+                                <stop offset="0%" style="stop-color:#6366f1"/>
+                                <stop offset="100%" style="stop-color:#ec4899"/>
+                            </linearGradient>
+                        </defs>
+                        <circle class="bg" cx="90" cy="90" r="70"/>
+                        <circle class="progress" cx="90" cy="90" r="70" style="stroke-dashoffset: 440;"/>
+                    </svg>
+                    <div class="score-inner">
+                        <div class="score-value">0%</div>
+                        <div class="score-label">Compliance</div>
+                    </div>
+                </div>
+                <div style="max-width: 400px;">
+                    <h3 style="font-size: 1.4rem; margin-bottom: 16px;">Estado Actual de Cumplimiento</h3>
+                    <p style="color: var(--text-secondary); margin-bottom: 20px;">
+                        El proceso de certificacion SOC 2 Type II aun no ha iniciado formalmente.
+                        Este documento establece el plan y roadmap para alcanzar el cumplimiento.
+                    </p>
+                    <div class="progress-container">
+                        <div class="progress-label">
+                            <span>SOC 2 Type II</span>
+                            <span>0%</span>
+                        </div>
+                        <div class="progress-bar">
+                            <div class="progress-fill red" style="width: 0%;"></div>
+                        </div>
+                    </div>
+                    <div class="progress-container">
+                        <div class="progress-label">
+                            <span>ISO 27001:2022</span>
+                            <span>0%</span>
+                        </div>
+                        <div class="progress-bar">
+                            <div class="progress-fill red" style="width: 0%;"></div>
+                        </div>
+                    </div>
+                    <div class="progress-container">
+                        <div class="progress-label">
+                            <span>Infraestructura Base</span>
+                            <span>0%</span>
+                        </div>
+                        <div class="progress-bar">
+                            <div class="progress-fill red" style="width: 0%;"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Section 2: Product Portfolio -->
+        <section id="portafolio">
+            <div class="section-header">
+                <span class="section-number">2</span>
+                <h2 class="section-title">Portafolio de Productos</h2>
+            </div>
+
+            <div class="grid-3">
+                <!-- Sistema Contable - PRIORITY -->
+                <div class="card" style="border: 2px solid var(--success); position: relative;">
+                    <div style="position: absolute; top: -12px; right: 16px; background: var(--success); color: white; font-size: 10px; font-weight: 700; padding: 4px 12px; border-radius: 4px;">
+                        PRIORIDAD #1
+                    </div>
+                    <div class="card-header">
+                        <div class="card-icon green">
+                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <rect x="2" y="3" width="20" height="14" rx="2" ry="2"/>
+                                <line x1="8" y1="21" x2="16" y2="21"/>
+                                <line x1="12" y1="17" x2="12" y2="21"/>
+                            </svg>
+                        </div>
+                        <div>
+                            <h3 class="card-title">Sistema Contable</h3>
+                            <p class="card-subtitle">Contabilidad Empresarial</p>
+                        </div>
+                    </div>
+                    <p style="color: var(--text-secondary); margin-bottom: 16px;">
+                        Sistema integral de contabilidad para empresas del sector financiero con cumplimiento NIF y generacion de reportes regulatorios.
+                    </p>
+                    <ul class="checklist">
+                        <li>
+                            <span class="check-icon pending"></span>
+                            <span>Catalogo de cuentas configurable (NIF)</span>
+                        </li>
+                        <li>
+                            <span class="check-icon pending"></span>
+                            <span>Polizas y movimientos contables</span>
+                        </li>
+                        <li>
+                            <span class="check-icon pending"></span>
+                            <span>Balanza de comprobacion automatica</span>
+                        </li>
+                        <li>
+                            <span class="check-icon pending"></span>
+                            <span>Estados financieros (Balance, P&L)</span>
+                        </li>
+                        <li>
+                            <span class="check-icon pending"></span>
+                            <span>Integracion SAT (CFDI 4.0)</span>
+                        </li>
+                    </ul>
+                    <div style="margin-top: 16px;">
+                        <span class="badge badge-warning">En Desarrollo</span>
+                    </div>
+                </div>
+
+                <!-- Motor de Validacion CONSAR -->
+                <div class="card">
+                    <div class="card-header">
+                        <div class="card-icon purple">
+                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M9 11l3 3L22 4"/>
+                                <path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/>
+                            </svg>
+                        </div>
+                        <div>
+                            <h3 class="card-title">Motor de Validacion</h3>
+                            <p class="card-subtitle">Validaciones CONSAR</p>
+                        </div>
+                    </div>
+                    <p style="color: var(--text-secondary); margin-bottom: 16px;">
+                        Motor de reglas para validacion automatizada de archivos regulatorios CONSAR antes de su envio oficial.
+                    </p>
+                    <ul class="checklist">
+                        <li>
+                            <span class="check-icon pending"></span>
+                            <span>37 validaciones configurables</span>
+                        </li>
+                        <li>
+                            <span class="check-icon pending"></span>
+                            <span>Procesamiento batch paralelo</span>
+                        </li>
+                        <li>
+                            <span class="check-icon pending"></span>
+                            <span>Trazabilidad y auditoria completa</span>
+                        </li>
+                        <li>
+                            <span class="check-icon pending"></span>
+                            <span>Reportes PDF, Excel, CSV</span>
+                        </li>
+                    </ul>
+                    <div style="margin-top: 16px;">
+                        <span class="badge badge-info">Planificado</span>
+                    </div>
+                </div>
+
+            </div>
+
+            <!-- Tech Stack -->
+            <div class="card" style="margin-top: 24px;">
+                <div class="card-header">
+                    <div class="card-icon orange">
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <polygon points="12 2 22 8.5 22 15.5 12 22 2 15.5 2 8.5 12 2"/>
+                        </svg>
+                    </div>
+                    <div>
+                        <h3 class="card-title">Stack Tecnologico Propuesto</h3>
+                        <p class="card-subtitle">Tecnologias modernas y escalables</p>
+                    </div>
+                </div>
+
+                <div class="feature-grid">
+                    <div class="feature-item">
+                        <div class="feature-icon">FE</div>
+                        <div class="feature-content">
+                            <h4>Frontend</h4>
+                            <p>React 19 + TypeScript + Vite + Tailwind CSS + Radix UI</p>
+                        </div>
+                    </div>
+                    <div class="feature-item">
+                        <div class="feature-icon">BE</div>
+                        <div class="feature-content">
+                            <h4>Backend</h4>
+                            <p>.NET 8 + Clean Architecture + Entity Framework Core</p>
+                        </div>
+                    </div>
+                    <div class="feature-item">
+                        <div class="feature-icon">DB</div>
+                        <div class="feature-content">
+                            <h4>Base de Datos</h4>
+                            <p>PostgreSQL + Redis Cache + Event Store</p>
+                        </div>
+                    </div>
+                    <div class="feature-item">
+                        <div class="feature-icon">CL</div>
+                        <div class="feature-content">
+                            <h4>Cloud</h4>
+                            <p>AWS / Azure (por definir segun costos)</p>
+                        </div>
+                    </div>
+                    <div class="feature-item">
+                        <div class="feature-icon">ID</div>
+                        <div class="feature-content">
+                            <h4>Identidad</h4>
+                            <p>Azure AD / Auth0 / Keycloak (por evaluar)</p>
+                        </div>
+                    </div>
+                    <div class="feature-item">
+                        <div class="feature-icon">CI</div>
+                        <div class="feature-content">
+                            <h4>DevOps</h4>
+                            <p>GitHub Actions + Terraform + Docker</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Section 3: Architecture -->
+        <section id="arquitectura">
+            <div class="section-header">
+                <span class="section-number">3</span>
+                <h2 class="section-title">Arquitectura del Sistema</h2>
+            </div>
+
+            <!-- Interactive Architecture Diagram -->
+            <div class="diagram-container">
+                <div class="diagram-title">Arquitectura de Alto Nivel - Infraestructura Cloud</div>
+
+                <svg class="architecture-svg" viewBox="0 0 900 600" xmlns="http://www.w3.org/2000/svg">
+                    <!-- Gradient Definitions -->
+                    <defs>
+                        <linearGradient id="gradPurple" x1="0%" y1="0%" x2="100%" y2="100%">
+                            <stop offset="0%" style="stop-color:#6366f1"/>
+                            <stop offset="100%" style="stop-color:#4f46e5"/>
+                        </linearGradient>
+                        <linearGradient id="gradGreen" x1="0%" y1="0%" x2="100%" y2="100%">
+                            <stop offset="0%" style="stop-color:#10b981"/>
+                            <stop offset="100%" style="stop-color:#059669"/>
+                        </linearGradient>
+                        <linearGradient id="gradBlue" x1="0%" y1="0%" x2="100%" y2="100%">
+                            <stop offset="0%" style="stop-color:#3b82f6"/>
+                            <stop offset="100%" style="stop-color:#2563eb"/>
+                        </linearGradient>
+                        <linearGradient id="gradOrange" x1="0%" y1="0%" x2="100%" y2="100%">
+                            <stop offset="0%" style="stop-color:#f59e0b"/>
+                            <stop offset="100%" style="stop-color:#d97706"/>
+                        </linearGradient>
+                        <linearGradient id="gradPink" x1="0%" y1="0%" x2="100%" y2="100%">
+                            <stop offset="0%" style="stop-color:#ec4899"/>
+                            <stop offset="100%" style="stop-color:#db2777"/>
+                        </linearGradient>
+
+                        <filter id="glow">
+                            <feGaussianBlur stdDeviation="2" result="coloredBlur"/>
+                            <feMerge>
+                                <feMergeNode in="coloredBlur"/>
+                                <feMergeNode in="SourceGraphic"/>
+                            </feMerge>
+                        </filter>
+                    </defs>
+
+                    <!-- Background Sections -->
+                    <rect x="20" y="20" width="860" height="80" rx="8" fill="rgba(99, 102, 241, 0.1)" stroke="rgba(99, 102, 241, 0.3)"/>
+                    <text x="450" y="35" text-anchor="middle" class="label" fill="#94a3b8">CAPA DE ACCESO</text>
+
+                    <rect x="20" y="120" width="860" height="160" rx="8" fill="rgba(16, 185, 129, 0.1)" stroke="rgba(16, 185, 129, 0.3)"/>
+                    <text x="450" y="135" text-anchor="middle" class="label" fill="#94a3b8">CAPA DE APLICACION</text>
+
+                    <rect x="20" y="300" width="860" height="140" rx="8" fill="rgba(59, 130, 246, 0.1)" stroke="rgba(59, 130, 246, 0.3)"/>
+                    <text x="450" y="315" text-anchor="middle" class="label" fill="#94a3b8">CAPA DE DATOS</text>
+
+                    <rect x="20" y="460" width="860" height="120" rx="8" fill="rgba(236, 72, 153, 0.1)" stroke="rgba(236, 72, 153, 0.3)"/>
+                    <text x="450" y="475" text-anchor="middle" class="label" fill="#94a3b8">CAPA DE SEGURIDAD Y OBSERVABILIDAD</text>
+
+                    <!-- Users -->
+                    <g class="node" data-tooltip="Usuarios finales accediendo via HTTPS con MFA obligatorio">
+                        <circle cx="100" cy="60" r="25" fill="url(#gradPurple)" filter="url(#glow)"/>
+                        <text x="100" y="65" text-anchor="middle" fill="white" font-weight="600">Users</text>
+                    </g>
+
+                    <!-- CDN/WAF -->
+                    <g class="node" data-tooltip="CloudFront/Cloudflare CDN con WAF para proteccion DDoS y caching global">
+                        <rect x="200" y="40" width="120" height="45" rx="8" fill="url(#gradPurple)" filter="url(#glow)"/>
+                        <text x="260" y="67" text-anchor="middle" fill="white" font-weight="600">CDN + WAF</text>
+                    </g>
+
+                    <!-- Load Balancer -->
+                    <g class="node" data-tooltip="Application Load Balancer con SSL termination, health checks y auto-scaling">
+                        <rect x="380" y="40" width="140" height="45" rx="8" fill="url(#gradPurple)" filter="url(#glow)"/>
+                        <text x="450" y="67" text-anchor="middle" fill="white" font-weight="600">Load Balancer</text>
+                    </g>
+
+                    <!-- Identity Provider -->
+                    <g class="node" data-tooltip="Proveedor de identidad: Azure AD, Auth0 o Keycloak con MFA, RBAC y SSO">
+                        <rect x="580" y="40" width="140" height="45" rx="8" fill="url(#gradPink)" filter="url(#glow)"/>
+                        <text x="650" y="67" text-anchor="middle" fill="white" font-weight="600">Identity (IdP)</text>
+                    </g>
+
+                    <!-- API Gateway -->
+                    <g class="node" data-tooltip="API Gateway con rate limiting, request validation y API versioning">
+                        <rect x="780" y="40" width="80" height="45" rx="8" fill="url(#gradPurple)" filter="url(#glow)"/>
+                        <text x="820" y="67" text-anchor="middle" fill="white" font-weight="600">API GW</text>
+                    </g>
+
+                    <!-- Application Layer -->
+                    <!-- Sistema Contable -->
+                    <g class="node" data-tooltip="Sistema Contable: Catalogo de cuentas, polizas, balanzas, estados financieros. PRIORIDAD #1">
+                        <rect x="50" y="160" width="180" height="100" rx="10" fill="url(#gradGreen)" filter="url(#glow)" stroke="#10b981" stroke-width="2"/>
+                        <text x="140" y="195" text-anchor="middle" fill="white" font-weight="700">Sistema Contable</text>
+                        <text x="140" y="215" text-anchor="middle" fill="rgba(255,255,255,0.8)" font-size="10">PRIORIDAD #1</text>
+                        <text x="140" y="235" text-anchor="middle" fill="rgba(255,255,255,0.7)" font-size="9">Catalogo | Polizas | Balanza</text>
+                        <text x="140" y="250" text-anchor="middle" fill="rgba(255,255,255,0.7)" font-size="9">Estados Financieros</text>
+                    </g>
+
+                    <!-- Motor de Validacion -->
+                    <g class="node" data-tooltip="Motor de Validacion CONSAR: 37 validaciones configurables, procesamiento batch, auditoria">
+                        <rect x="260" y="160" width="180" height="100" rx="10" fill="url(#gradBlue)" filter="url(#glow)"/>
+                        <text x="350" y="195" text-anchor="middle" fill="white" font-weight="700">Motor Validacion</text>
+                        <text x="350" y="215" text-anchor="middle" fill="rgba(255,255,255,0.8)" font-size="10">CONSAR</text>
+                        <text x="350" y="235" text-anchor="middle" fill="rgba(255,255,255,0.7)" font-size="9">37 Validaciones</text>
+                        <text x="350" y="250" text-anchor="middle" fill="rgba(255,255,255,0.7)" font-size="9">Batch Processing</text>
+                    </g>
+
+                    <!-- Portal Cumplimiento -->
+                    <g class="node" data-tooltip="Portal de Cumplimiento: Dashboard, gestion de evidencias, calendario regulatorio">
+                        <rect x="470" y="160" width="180" height="100" rx="10" fill="url(#gradOrange)" filter="url(#glow)"/>
+                        <text x="560" y="195" text-anchor="middle" fill="white" font-weight="700">Portal Cumplimiento</text>
+                        <text x="560" y="215" text-anchor="middle" fill="rgba(255,255,255,0.8)" font-size="10">Regulatorio</text>
+                        <text x="560" y="235" text-anchor="middle" fill="rgba(255,255,255,0.7)" font-size="9">Dashboard | Evidencias</text>
+                        <text x="560" y="250" text-anchor="middle" fill="rgba(255,255,255,0.7)" font-size="9">Calendario | Alertas</text>
+                    </g>
+
+                    <!-- Background Workers -->
+                    <g class="node" data-tooltip="Workers asincrónos: procesamiento de archivos, generacion de reportes, notificaciones">
+                        <rect x="680" y="160" width="180" height="100" rx="10" fill="url(#gradPurple)" filter="url(#glow)"/>
+                        <text x="770" y="195" text-anchor="middle" fill="white" font-weight="700">Workers</text>
+                        <text x="770" y="215" text-anchor="middle" fill="rgba(255,255,255,0.8)" font-size="10">Background Jobs</text>
+                        <text x="770" y="235" text-anchor="middle" fill="rgba(255,255,255,0.7)" font-size="9">File Processing</text>
+                        <text x="770" y="250" text-anchor="middle" fill="rgba(255,255,255,0.7)" font-size="9">Reports | Notifications</text>
+                    </g>
+
+                    <!-- Data Layer -->
+                    <!-- PostgreSQL -->
+                    <g class="node" data-tooltip="PostgreSQL: Base de datos relacional principal con Multi-AZ, backups automaticos y encriptacion">
+                        <rect x="80" y="340" width="150" height="80" rx="8" fill="url(#gradBlue)" filter="url(#glow)"/>
+                        <text x="155" y="375" text-anchor="middle" fill="white" font-weight="600">PostgreSQL</text>
+                        <text x="155" y="395" text-anchor="middle" fill="rgba(255,255,255,0.7)" font-size="9">Multi-AZ | Encrypted</text>
+                    </g>
+
+                    <!-- Redis -->
+                    <g class="node" data-tooltip="Redis: Cache distribuido para sesiones, datos de catalogo y locks distribuidos">
+                        <rect x="260" y="340" width="150" height="80" rx="8" fill="url(#gradOrange)" filter="url(#glow)"/>
+                        <text x="335" y="375" text-anchor="middle" fill="white" font-weight="600">Redis Cache</text>
+                        <text x="335" y="395" text-anchor="middle" fill="rgba(255,255,255,0.7)" font-size="9">Sessions | Catalog</text>
+                    </g>
+
+                    <!-- Object Storage -->
+                    <g class="node" data-tooltip="Object Storage: Almacenamiento de archivos con lifecycle policies y encriptacion SSE">
+                        <rect x="440" y="340" width="150" height="80" rx="8" fill="url(#gradGreen)" filter="url(#glow)"/>
+                        <text x="515" y="375" text-anchor="middle" fill="white" font-weight="600">Object Storage</text>
+                        <text x="515" y="395" text-anchor="middle" fill="rgba(255,255,255,0.7)" font-size="9">S3 / Blob | Encrypted</text>
+                    </g>
+
+                    <!-- Event Store -->
+                    <g class="node" data-tooltip="Event Store: Almacenamiento inmutable de eventos para auditoria con retencion de 7 anos">
+                        <rect x="620" y="340" width="150" height="80" rx="8" fill="url(#gradPink)" filter="url(#glow)"/>
+                        <text x="695" y="375" text-anchor="middle" fill="white" font-weight="600">Event Store</text>
+                        <text x="695" y="395" text-anchor="middle" fill="rgba(255,255,255,0.7)" font-size="9">Audit | 7 Years</text>
+                    </g>
+
+                    <!-- Security Layer -->
+                    <!-- KMS -->
+                    <g class="node" data-tooltip="KMS: Gestion de claves de encriptacion con rotacion automatica y politicas de acceso">
+                        <rect x="80" y="500" width="120" height="60" rx="8" fill="url(#gradPink)" filter="url(#glow)"/>
+                        <text x="140" y="535" text-anchor="middle" fill="white" font-weight="600">KMS</text>
+                    </g>
+
+                    <!-- Secrets Manager -->
+                    <g class="node" data-tooltip="Secrets Manager: Almacenamiento seguro de credenciales, API keys y secretos de aplicacion">
+                        <rect x="220" y="500" width="140" height="60" rx="8" fill="url(#gradPink)" filter="url(#glow)"/>
+                        <text x="290" y="535" text-anchor="middle" fill="white" font-weight="600">Secrets Mgr</text>
+                    </g>
+
+                    <!-- SIEM/Logs -->
+                    <g class="node" data-tooltip="SIEM/Logging: Centralizacion de logs, alertas de seguridad y correlacion de eventos">
+                        <rect x="380" y="500" width="140" height="60" rx="8" fill="url(#gradPurple)" filter="url(#glow)"/>
+                        <text x="450" y="535" text-anchor="middle" fill="white" font-weight="600">SIEM / Logs</text>
+                    </g>
+
+                    <!-- Monitoring -->
+                    <g class="node" data-tooltip="Monitoring: Metricas de infraestructura, APM, dashboards y alertas operativas">
+                        <rect x="540" y="500" width="140" height="60" rx="8" fill="url(#gradBlue)" filter="url(#glow)"/>
+                        <text x="610" y="535" text-anchor="middle" fill="white" font-weight="600">Monitoring</text>
+                    </g>
+
+                    <!-- Backup/DR -->
+                    <g class="node" data-tooltip="Backup/DR: Respaldos automatizados, replicacion geografica y plan de recuperacion ante desastres">
+                        <rect x="700" y="500" width="140" height="60" rx="8" fill="url(#gradGreen)" filter="url(#glow)"/>
+                        <text x="770" y="535" text-anchor="middle" fill="white" font-weight="600">Backup / DR</text>
+                    </g>
+
+                    <!-- Connections -->
+                    <path class="connection animated" d="M125 60 L200 60"/>
+                    <path class="connection animated" d="M320 60 L380 60"/>
+                    <path class="connection animated" d="M520 60 L580 60"/>
+                    <path class="connection animated" d="M720 60 L780 60"/>
+
+                    <path class="connection" d="M450 85 L450 120"/>
+                    <path class="connection" d="M450 120 L140 160"/>
+                    <path class="connection" d="M450 120 L350 160"/>
+                    <path class="connection" d="M450 120 L560 160"/>
+                    <path class="connection" d="M450 120 L770 160"/>
+
+                    <path class="connection" d="M140 260 L155 340"/>
+                    <path class="connection" d="M350 260 L335 340"/>
+                    <path class="connection" d="M560 260 L515 340"/>
+                    <path class="connection" d="M770 260 L695 340"/>
+
+                    <path class="connection" d="M155 420 L140 500"/>
+                    <path class="connection" d="M335 420 L290 500"/>
+                    <path class="connection" d="M515 420 L450 500"/>
+                    <path class="connection" d="M695 420 L610 500"/>
+                </svg>
+            </div>
+
+            <!-- Tabs for different views -->
+            <div class="card">
+                <div class="tabs">
+                    <button class="tab-btn active" onclick="showTab('overview')">Vista General</button>
+                    <button class="tab-btn" onclick="showTab('security')">Seguridad</button>
+                    <button class="tab-btn" onclick="showTab('data')">Flujo de Datos</button>
+                </div>
+
+                <div id="overview" class="tab-content active">
+                    <h4 style="margin-bottom: 16px;">Arquitectura Multi-Capa</h4>
+                    <div class="table-container">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Capa</th>
+                                    <th>Componentes</th>
+                                    <th>Responsabilidad</th>
+                                    <th>Tecnologias</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td><span class="badge badge-primary">Acceso</span></td>
+                                    <td>CDN, WAF, Load Balancer, IdP</td>
+                                    <td>Distribucion, proteccion, autenticacion</td>
+                                    <td>CloudFront/Cloudflare, ALB, Azure AD</td>
+                                </tr>
+                                <tr>
+                                    <td><span class="badge badge-success">Aplicacion</span></td>
+                                    <td>APIs, Workers, Microservicios</td>
+                                    <td>Logica de negocio, procesamiento</td>
+                                    <td>.NET 8, React, Containers</td>
+                                </tr>
+                                <tr>
+                                    <td><span class="badge badge-info">Datos</span></td>
+                                    <td>PostgreSQL, Redis, Storage</td>
+                                    <td>Persistencia, cache, archivos</td>
+                                    <td>RDS, ElastiCache, S3/Blob</td>
+                                </tr>
+                                <tr>
+                                    <td><span class="badge badge-danger">Seguridad</span></td>
+                                    <td>KMS, Secrets, SIEM, Monitoring</td>
+                                    <td>Encriptacion, auditoria, observabilidad</td>
+                                    <td>CloudWatch, Sentinel, Datadog</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <div id="security" class="tab-content">
+                    <h4 style="margin-bottom: 16px;">Controles de Seguridad por Capa</h4>
+                    <div class="feature-grid">
+                        <div class="feature-item">
+                            <div class="feature-icon" style="background: var(--danger);">1</div>
+                            <div class="feature-content">
+                                <h4>Perimetro</h4>
+                                <p>WAF, DDoS Protection, Geo-blocking, Rate Limiting, Bot Detection</p>
+                            </div>
+                        </div>
+                        <div class="feature-item">
+                            <div class="feature-icon" style="background: var(--warning);">2</div>
+                            <div class="feature-content">
+                                <h4>Identidad</h4>
+                                <p>MFA obligatorio, SSO, RBAC, Conditional Access, PIM para admins</p>
+                            </div>
+                        </div>
+                        <div class="feature-item">
+                            <div class="feature-icon" style="background: var(--info);">3</div>
+                            <div class="feature-content">
+                                <h4>Aplicacion</h4>
+                                <p>JWT validation, Input sanitization, CORS, CSP headers, Rate limiting</p>
+                            </div>
+                        </div>
+                        <div class="feature-item">
+                            <div class="feature-icon" style="background: var(--success);">4</div>
+                            <div class="feature-content">
+                                <h4>Datos</h4>
+                                <p>Encryption at-rest (AES-256), TLS 1.3 in-transit, Key rotation</p>
+                            </div>
+                        </div>
+                        <div class="feature-item">
+                            <div class="feature-icon" style="background: var(--primary);">5</div>
+                            <div class="feature-content">
+                                <h4>Red</h4>
+                                <p>VPC isolation, Private subnets, Security Groups, Network ACLs</p>
+                            </div>
+                        </div>
+                        <div class="feature-item">
+                            <div class="feature-icon" style="background: var(--secondary);">6</div>
+                            <div class="feature-content">
+                                <h4>Monitoreo</h4>
+                                <p>SIEM integration, Audit logs 7yr, Real-time alerts, Incident response</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="data" class="tab-content">
+                    <h4 style="margin-bottom: 16px;">Flujo de Datos - Sistema Contable</h4>
+                    <div style="background: var(--bg-secondary); border-radius: var(--radius-xs); padding: 24px; font-family: monospace; font-size: 13px; line-height: 1.8; overflow-x: auto;">
+                        <pre style="color: var(--text-secondary);">
+<span style="color: var(--success);">1. Usuario</span> --> [HTTPS/TLS 1.3] --> <span style="color: var(--primary);">CDN + WAF</span>
+     |
+     v
+<span style="color: var(--primary);">2. Load Balancer</span> --> [JWT Validation] --> <span style="color: var(--warning);">Identity Provider</span>
+     |
+     v
+<span style="color: var(--info);">3. API Gateway</span> --> [Rate Limit, Validation] --> <span style="color: var(--success);">Sistema Contable API</span>
+     |
+     +---> <span style="color: var(--primary);">PostgreSQL</span> (Transacciones, Polizas, Catalogo)
+     |
+     +---> <span style="color: var(--warning);">Redis</span> (Cache de Catalogo, Sesiones)
+     |
+     +---> <span style="color: var(--success);">Object Storage</span> (Archivos adjuntos, Reportes)
+     |
+     +---> <span style="color: var(--secondary);">Event Store</span> (Audit Trail, Inmutable)
+     |
+     v
+<span style="color: var(--danger);">4. SIEM/Logs</span> <-- [Todos los eventos son registrados]
+                        </pre>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Section 4: SOC 2 -->
+        <section id="soc2">
+            <div class="section-header">
+                <span class="section-number">4</span>
+                <h2 class="section-title">Marco de Cumplimiento SOC 2 Type II</h2>
+            </div>
+
+            <div class="card">
+                <div class="card-header">
+                    <div class="card-icon purple">
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+                        </svg>
+                    </div>
+                    <div>
+                        <h3 class="card-title">Trust Services Criteria (TSC)</h3>
+                        <p class="card-subtitle">Criterios de Confianza AICPA - Estado: No Iniciado</p>
+                    </div>
+                </div>
+
+                <div class="grid-3" style="margin-top: 20px;">
+                    <div class="feature-item" style="border-left: 4px solid var(--danger);">
+                        <div class="feature-content">
+                            <h4>CC1-CC9: Seguridad (Obligatorio)</h4>
+                            <p>Gobernanza, control de acceso, operaciones del sistema, gestion de cambios.</p>
+                            <span class="badge badge-danger" style="margin-top: 8px;">No Iniciado</span>
+                        </div>
+                    </div>
+                    <div class="feature-item" style="border-left: 4px solid var(--danger);">
+                        <div class="feature-content">
+                            <h4>A1: Disponibilidad</h4>
+                            <p>El sistema esta disponible segun compromisos. SLA 99.9% objetivo.</p>
+                            <span class="badge badge-danger" style="margin-top: 8px;">No Iniciado</span>
+                        </div>
+                    </div>
+                    <div class="feature-item" style="border-left: 4px solid var(--danger);">
+                        <div class="feature-content">
+                            <h4>C1: Confidencialidad</h4>
+                            <p>Informacion confidencial protegida segun compromisos.</p>
+                            <span class="badge badge-danger" style="margin-top: 8px;">No Iniciado</span>
+                        </div>
+                    </div>
+                    <div class="feature-item" style="border-left: 4px solid var(--danger);">
+                        <div class="feature-content">
+                            <h4>PI1: Integridad del Procesamiento</h4>
+                            <p>Procesamiento completo, valido, preciso, oportuno y autorizado.</p>
+                            <span class="badge badge-danger" style="margin-top: 8px;">No Iniciado</span>
+                        </div>
+                    </div>
+                    <div class="feature-item" style="border-left: 4px solid var(--danger);">
+                        <div class="feature-content">
+                            <h4>P1: Privacidad</h4>
+                            <p>Informacion personal manejada segun compromisos y regulaciones.</p>
+                            <span class="badge badge-danger" style="margin-top: 8px;">No Iniciado</span>
+                        </div>
+                    </div>
+                    <div class="feature-item" style="border-left: 4px solid var(--warning);">
+                        <div class="feature-content">
+                            <h4>Tiempo Estimado</h4>
+                            <p>12-18 meses para certificacion SOC 2 Type II completa.</p>
+                            <span class="badge badge-warning" style="margin-top: 8px;">Por Planificar</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Section 5: Zero Trust -->
+        <section id="zerotrust">
+            <div class="section-header">
+                <span class="section-number">5</span>
+                <h2 class="section-title">Arquitectura Zero Trust</h2>
+            </div>
+
+            <div class="card">
+                <div class="card-header">
+                    <div class="card-icon pink">
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <rect x="3" y="11" width="18" height="11" rx="2" ry="2"/>
+                            <path d="M7 11V7a5 5 0 0 1 10 0v4"/>
+                        </svg>
+                    </div>
+                    <div>
+                        <h3 class="card-title">Principios Zero Trust</h3>
+                        <p class="card-subtitle">"Never Trust, Always Verify"</p>
+                    </div>
+                </div>
+
+                <div class="grid-3" style="margin-top: 20px;">
+                    <div class="card" style="margin-bottom: 0; text-align: center; padding: 24px; background: var(--bg-secondary);">
+                        <div style="font-size: 40px; margin-bottom: 16px;">&#128269;</div>
+                        <h4>Verificar Explicitamente</h4>
+                        <p style="font-size: 13px; color: var(--text-muted); margin-top: 8px;">
+                            Autenticar y autorizar cada solicitud con multiples senales de contexto.
+                        </p>
+                    </div>
+                    <div class="card" style="margin-bottom: 0; text-align: center; padding: 24px; background: var(--bg-secondary);">
+                        <div style="font-size: 40px; margin-bottom: 16px;">&#128274;</div>
+                        <h4>Minimo Privilegio</h4>
+                        <p style="font-size: 13px; color: var(--text-muted); margin-top: 8px;">
+                            Acceso Just-In-Time (JIT), Just-Enough-Access (JEA), RBAC estricto.
+                        </p>
+                    </div>
+                    <div class="card" style="margin-bottom: 0; text-align: center; padding: 24px; background: var(--bg-secondary);">
+                        <div style="font-size: 40px; margin-bottom: 16px;">&#128679;</div>
+                        <h4>Asumir Brecha</h4>
+                        <p style="font-size: 13px; color: var(--text-muted); margin-top: 8px;">
+                            Segmentacion, cifrado extremo a extremo, monitoreo continuo.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Section 6: Vendor Comparison -->
+        <section id="proveedores">
+            <div class="section-header">
+                <span class="section-number">6</span>
+                <h2 class="section-title">Comparativa de Proveedores</h2>
+            </div>
+
+            <!-- Cloud Providers -->
+            <div class="card">
+                <div class="card-header">
+                    <div class="card-icon blue">
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M18 10h-1.26A8 8 0 1 0 9 20h9a5 5 0 0 0 0-10z"/>
+                        </svg>
+                    </div>
+                    <div>
+                        <h3 class="card-title">Proveedores Cloud</h3>
+                        <p class="card-subtitle">Comparativa de costos mensuales estimados</p>
+                    </div>
+                </div>
+
+                <div class="table-container">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Proveedor</th>
+                                <th>Compute</th>
+                                <th>Database</th>
+                                <th>Storage</th>
+                                <th>Total Est.</th>
+                                <th>SOC 2</th>
+                                <th>Recomendacion</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><strong>AWS</strong></td>
+                                <td>$150</td>
+                                <td>$400</td>
+                                <td>$50</td>
+                                <td><strong>$600/mes</strong></td>
+                                <td><span class="badge badge-success">Si</span></td>
+                                <td><span class="badge badge-info">Recomendado</span></td>
+                            </tr>
+                            <tr>
+                                <td><strong>Azure</strong></td>
+                                <td>$180</td>
+                                <td>$450</td>
+                                <td>$45</td>
+                                <td><strong>$675/mes</strong></td>
+                                <td><span class="badge badge-success">Si</span></td>
+                                <td><span class="badge badge-info">Buena opcion</span></td>
+                            </tr>
+                            <tr>
+                                <td><strong>Google Cloud</strong></td>
+                                <td>$140</td>
+                                <td>$380</td>
+                                <td>$40</td>
+                                <td><strong>$560/mes</strong></td>
+                                <td><span class="badge badge-success">Si</span></td>
+                                <td><span class="badge badge-warning">Menos enterprise</span></td>
+                            </tr>
+                            <tr style="background: rgba(16, 185, 129, 0.1);">
+                                <td><strong>DigitalOcean</strong></td>
+                                <td>$80</td>
+                                <td>$150</td>
+                                <td>$25</td>
+                                <td><strong style="color: var(--success);">$255/mes</strong></td>
+                                <td><span class="badge badge-success">Si</span></td>
+                                <td><span class="badge badge-success">Mas economico</span></td>
+                            </tr>
+                            <tr>
+                                <td><strong>Linode (Akamai)</strong></td>
+                                <td>$75</td>
+                                <td>$140</td>
+                                <td>$20</td>
+                                <td><strong style="color: var(--success);">$235/mes</strong></td>
+                                <td><span class="badge badge-success">Si</span></td>
+                                <td><span class="badge badge-success">Muy economico</span></td>
+                            </tr>
+                            <tr>
+                                <td><strong>Vultr</strong></td>
+                                <td>$70</td>
+                                <td>$120</td>
+                                <td>$20</td>
+                                <td><strong style="color: var(--success);">$210/mes</strong></td>
+                                <td><span class="badge badge-warning">Parcial</span></td>
+                                <td><span class="badge badge-warning">Menos compliance</span></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Identity Providers -->
+            <div class="card">
+                <div class="card-header">
+                    <div class="card-icon pink">
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/>
+                            <circle cx="9" cy="7" r="4"/>
+                            <path d="M23 21v-2a4 4 0 0 0-3-3.87"/>
+                            <path d="M16 3.13a4 4 0 0 1 0 7.75"/>
+                        </svg>
+                    </div>
+                    <div>
+                        <h3 class="card-title">Proveedores de Identidad (IdP)</h3>
+                        <p class="card-subtitle">Autenticacion y autorizacion</p>
+                    </div>
+                </div>
+
+                <div class="grid-4">
+                    <div class="vendor-card">
+                        <div class="vendor-logo">&#128274;</div>
+                        <div class="vendor-name">Azure AD B2C</div>
+                        <div class="vendor-type">Enterprise IdP</div>
+                        <div class="vendor-price">$0.00325<span>/MAU</span></div>
+                        <ul class="vendor-features">
+                            <li>&#10003; MFA incluido</li>
+                            <li>&#10003; Conditional Access</li>
+                            <li>&#10003; SOC 2 compliant</li>
+                            <li>&#10003; SAML/OIDC</li>
+                        </ul>
+                    </div>
+                    <div class="vendor-card recommended">
+                        <div class="vendor-logo">&#128272;</div>
+                        <div class="vendor-name">Auth0</div>
+                        <div class="vendor-type">Developer-friendly IdP</div>
+                        <div class="vendor-price">$23<span>/mes (7K MAU)</span></div>
+                        <ul class="vendor-features">
+                            <li>&#10003; Free tier 7,500 MAU</li>
+                            <li>&#10003; SDKs excelentes</li>
+                            <li>&#10003; SOC 2 Type II</li>
+                            <li>&#10003; Facil integracion</li>
+                        </ul>
+                    </div>
+                    <div class="vendor-card">
+                        <div class="vendor-logo">&#128273;</div>
+                        <div class="vendor-name">Keycloak</div>
+                        <div class="vendor-type">Open Source IdP</div>
+                        <div class="vendor-price">$0<span>/licencia</span></div>
+                        <ul class="vendor-features">
+                            <li>&#10003; Completamente gratis</li>
+                            <li>&#10003; Self-hosted</li>
+                            <li>&#9747; Requiere ops</li>
+                            <li>&#10003; SAML/OIDC</li>
+                        </ul>
+                    </div>
+                    <div class="vendor-card">
+                        <div class="vendor-logo">&#128736;</div>
+                        <div class="vendor-name">Clerk</div>
+                        <div class="vendor-type">Modern Auth</div>
+                        <div class="vendor-price">$25<span>/mes (10K MAU)</span></div>
+                        <ul class="vendor-features">
+                            <li>&#10003; UI components</li>
+                            <li>&#10003; React/Next.js</li>
+                            <li>&#10003; SOC 2 Type II</li>
+                            <li>&#10003; Muy facil setup</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Monitoring & Security -->
+            <div class="card">
+                <div class="card-header">
+                    <div class="card-icon orange">
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/>
+                        </svg>
+                    </div>
+                    <div>
+                        <h3 class="card-title">Monitoreo y Seguridad</h3>
+                        <p class="card-subtitle">Alternativas economicas</p>
+                    </div>
+                </div>
+
+                <div class="table-container">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Categoria</th>
+                                <th>Premium</th>
+                                <th>Costo Premium</th>
+                                <th>Alternativa Economica</th>
+                                <th>Costo Alternativa</th>
+                                <th>Ahorro</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><strong>APM/Monitoring</strong></td>
+                                <td>Datadog</td>
+                                <td>$150/mes</td>
+                                <td style="color: var(--success);">Grafana Cloud Free + Prometheus</td>
+                                <td style="color: var(--success);">$0/mes</td>
+                                <td><span class="badge badge-success">$150</span></td>
+                            </tr>
+                            <tr>
+                                <td><strong>Logging</strong></td>
+                                <td>Splunk</td>
+                                <td>$200/mes</td>
+                                <td style="color: var(--success);">Loki + Grafana</td>
+                                <td style="color: var(--success);">$0/mes</td>
+                                <td><span class="badge badge-success">$200</span></td>
+                            </tr>
+                            <tr>
+                                <td><strong>Error Tracking</strong></td>
+                                <td>Sentry Pro</td>
+                                <td>$26/mes</td>
+                                <td style="color: var(--success);">Sentry Developer (Free)</td>
+                                <td style="color: var(--success);">$0/mes</td>
+                                <td><span class="badge badge-success">$26</span></td>
+                            </tr>
+                            <tr>
+                                <td><strong>SIEM</strong></td>
+                                <td>Azure Sentinel</td>
+                                <td>$300/mes</td>
+                                <td style="color: var(--success);">Wazuh (Open Source)</td>
+                                <td style="color: var(--success);">$0/mes</td>
+                                <td><span class="badge badge-success">$300</span></td>
+                            </tr>
+                            <tr>
+                                <td><strong>Vulnerability Scan</strong></td>
+                                <td>Qualys</td>
+                                <td>$400/mes</td>
+                                <td style="color: var(--success);">Trivy + OWASP ZAP</td>
+                                <td style="color: var(--success);">$0/mes</td>
+                                <td><span class="badge badge-success">$400</span></td>
+                            </tr>
+                            <tr>
+                                <td><strong>Secret Management</strong></td>
+                                <td>HashiCorp Vault Cloud</td>
+                                <td>$50/mes</td>
+                                <td style="color: var(--success);">Infisical / Doppler Free</td>
+                                <td style="color: var(--success);">$0/mes</td>
+                                <td><span class="badge badge-success">$50</span></td>
+                            </tr>
+                            <tr style="background: rgba(16, 185, 129, 0.1);">
+                                <td colspan="4"><strong>TOTAL AHORRO POTENCIAL MENSUAL</strong></td>
+                                <td colspan="2"><strong style="color: var(--success); font-size: 1.2rem;">$1,126/mes</strong></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Database Options -->
+            <div class="card">
+                <div class="card-header">
+                    <div class="card-icon green">
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <ellipse cx="12" cy="5" rx="9" ry="3"/>
+                            <path d="M21 12c0 1.66-4 3-9 3s-9-1.34-9-3"/>
+                            <path d="M3 5v14c0 1.66 4 3 9 3s9-1.34 9-3V5"/>
+                        </svg>
+                    </div>
+                    <div>
+                        <h3 class="card-title">Opciones de Base de Datos</h3>
+                        <p class="card-subtitle">PostgreSQL managed services</p>
+                    </div>
+                </div>
+
+                <div class="table-container">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Proveedor</th>
+                                <th>Plan</th>
+                                <th>vCPU</th>
+                                <th>RAM</th>
+                                <th>Storage</th>
+                                <th>Precio/mes</th>
+                                <th>HA/Backups</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><strong>AWS RDS</strong></td>
+                                <td>db.t3.medium</td>
+                                <td>2</td>
+                                <td>4 GB</td>
+                                <td>100 GB</td>
+                                <td>$120</td>
+                                <td><span class="badge badge-success">Si</span></td>
+                            </tr>
+                            <tr>
+                                <td><strong>Azure Database</strong></td>
+                                <td>General Purpose</td>
+                                <td>2</td>
+                                <td>4 GB</td>
+                                <td>100 GB</td>
+                                <td>$130</td>
+                                <td><span class="badge badge-success">Si</span></td>
+                            </tr>
+                            <tr style="background: rgba(16, 185, 129, 0.1);">
+                                <td><strong>Neon</strong></td>
+                                <td>Launch</td>
+                                <td>2</td>
+                                <td>4 GB</td>
+                                <td>50 GB</td>
+                                <td style="color: var(--success);">$19</td>
+                                <td><span class="badge badge-success">Si</span></td>
+                            </tr>
+                            <tr style="background: rgba(16, 185, 129, 0.1);">
+                                <td><strong>Supabase</strong></td>
+                                <td>Pro</td>
+                                <td>2</td>
+                                <td>4 GB</td>
+                                <td>8 GB</td>
+                                <td style="color: var(--success);">$25</td>
+                                <td><span class="badge badge-success">Si</span></td>
+                            </tr>
+                            <tr>
+                                <td><strong>PlanetScale</strong></td>
+                                <td>Scaler</td>
+                                <td>-</td>
+                                <td>-</td>
+                                <td>10 GB</td>
+                                <td>$29</td>
+                                <td><span class="badge badge-success">Si</span></td>
+                            </tr>
+                            <tr>
+                                <td><strong>DigitalOcean</strong></td>
+                                <td>Basic</td>
+                                <td>2</td>
+                                <td>4 GB</td>
+                                <td>38 GB</td>
+                                <td>$60</td>
+                                <td><span class="badge badge-success">Si</span></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </section>
+
+        <!-- Section 7: Roadmap -->
+        <section id="roadmap">
+            <div class="section-header">
+                <span class="section-number">7</span>
+                <h2 class="section-title">Roadmap de Implementacion</h2>
+            </div>
+
+            <div class="card">
+                <div class="card-header">
+                    <div class="card-icon purple">
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <circle cx="12" cy="12" r="10"/>
+                            <polyline points="12 6 12 12 16 14"/>
+                        </svg>
+                    </div>
+                    <div>
+                        <h3 class="card-title">Plan de Certificacion SOC 2 Type II</h3>
+                        <p class="card-subtitle">Timeline 12-18 meses</p>
+                    </div>
+                </div>
+
+                <div class="timeline">
+                    <div class="timeline-item">
+                        <div class="timeline-dot"></div>
+                        <div class="timeline-content">
+                            <div class="timeline-date">Fase 1: Fundamentos (Meses 1-3)</div>
+                            <ul style="padding-left: 20px; margin-top: 8px; color: var(--text-secondary);">
+                                <li>Definir arquitectura e infraestructura cloud</li>
+                                <li>Configurar entornos (dev, staging, prod)</li>
+                                <li>Implementar Identity Provider (Auth0/Azure AD)</li>
+                                <li>Setup inicial de monitoreo y logging</li>
+                                <li>Documentar politicas de seguridad base</li>
+                            </ul>
+                        </div>
+                    </div>
+                    <div class="timeline-item">
+                        <div class="timeline-dot" style="border-color: var(--secondary);"></div>
+                        <div class="timeline-content" style="border-left-color: var(--secondary);">
+                            <div class="timeline-date" style="color: var(--secondary);">Fase 2: Sistema Contable MVP (Meses 4-6)</div>
+                            <ul style="padding-left: 20px; margin-top: 8px; color: var(--text-secondary);">
+                                <li>Desarrollar Sistema Contable core</li>
+                                <li>Implementar catalogo de cuentas NIF</li>
+                                <li>Polizas y movimientos contables</li>
+                                <li>Balanza de comprobacion automatica</li>
+                                <li>Primer cliente piloto interno</li>
+                            </ul>
+                        </div>
+                    </div>
+                    <div class="timeline-item">
+                        <div class="timeline-dot" style="border-color: var(--success);"></div>
+                        <div class="timeline-content" style="border-left-color: var(--success);">
+                            <div class="timeline-date" style="color: var(--success);">Fase 3: Controles SOC 2 (Meses 7-12)</div>
+                            <ul style="padding-left: 20px; margin-top: 8px; color: var(--text-secondary);">
+                                <li>Implementar todos los controles TSC</li>
+                                <li>Gap analysis con auditor externo</li>
+                                <li>Evidencia continua automatizada</li>
+                                <li>Auditorias internas trimestrales</li>
+                                <li>Capacitacion de todo el equipo</li>
+                            </ul>
+                        </div>
+                    </div>
+                    <div class="timeline-item">
+                        <div class="timeline-dot" style="border-color: var(--warning);"></div>
+                        <div class="timeline-content" style="border-left-color: var(--warning);">
+                            <div class="timeline-date" style="color: var(--warning);">Fase 4: Auditoria Externa (Meses 12-18)</div>
+                            <ul style="padding-left: 20px; margin-top: 8px; color: var(--text-secondary);">
+                                <li>Seleccion de auditor SOC 2</li>
+                                <li>Periodo de observacion (6 meses minimo)</li>
+                                <li>Remediacion de hallazgos</li>
+                                <li>Emision del informe SOC 2 Type II</li>
+                                <li>Certificacion obtenida</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Estimated Costs -->
+            <div class="card">
+                <div class="card-header">
+                    <div class="card-icon green">
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <line x1="12" y1="1" x2="12" y2="23"/>
+                            <path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/>
+                        </svg>
+                    </div>
+                    <div>
+                        <h3 class="card-title">Estimacion de Costos - Opcion Economica</h3>
+                        <p class="card-subtitle">Usando alternativas de bajo costo</p>
+                    </div>
+                </div>
+
+                <div class="table-container">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Categoria</th>
+                                <th>Proveedor Recomendado</th>
+                                <th>Costo Mensual</th>
+                                <th>Costo Anual</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>Cloud Infrastructure</td>
+                                <td>DigitalOcean / Linode</td>
+                                <td>$250</td>
+                                <td>$3,000</td>
+                            </tr>
+                            <tr>
+                                <td>Base de Datos</td>
+                                <td>Neon / Supabase</td>
+                                <td>$25</td>
+                                <td>$300</td>
+                            </tr>
+                            <tr>
+                                <td>Identity Provider</td>
+                                <td>Auth0 Essential</td>
+                                <td>$23</td>
+                                <td>$276</td>
+                            </tr>
+                            <tr>
+                                <td>Monitoreo</td>
+                                <td>Grafana Cloud Free</td>
+                                <td>$0</td>
+                                <td>$0</td>
+                            </tr>
+                            <tr>
+                                <td>SIEM/Security</td>
+                                <td>Wazuh Self-hosted</td>
+                                <td>$0</td>
+                                <td>$0</td>
+                            </tr>
+                            <tr>
+                                <td>CI/CD</td>
+                                <td>GitHub Actions Free</td>
+                                <td>$0</td>
+                                <td>$0</td>
+                            </tr>
+                            <tr>
+                                <td>Auditoria SOC 2</td>
+                                <td>Firma de auditoria</td>
+                                <td>-</td>
+                                <td>$15,000</td>
+                            </tr>
+                            <tr style="background: rgba(16, 185, 129, 0.1);">
+                                <td colspan="2"><strong>TOTAL ESTIMADO</strong></td>
+                                <td><strong style="color: var(--success);">~$298/mes</strong></td>
+                                <td><strong style="color: var(--success);">~$18,576/ano</strong></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <p style="margin-top: 16px; color: var(--text-muted); font-size: 13px;">
+                    * Los costos de auditoria SOC 2 son un estimado y pueden variar segun la firma seleccionada.
+                    Los costos de infraestructura escalaran conforme crezca el numero de usuarios y transacciones.
+                </p>
+            </div>
+        </section>
+
+        <!-- Footer -->
+        <footer class="footer">
+            <div class="footer-logo">Hergon Digital</div>
+            <p>Plan de Arquitectura y Cumplimiento Empresarial | Version 2.0 | Noviembre 2025</p>
+            <p style="margin-top: 8px;">
+                Fuentes:
+                <a href="https://learn.microsoft.com/en-us/azure/compliance/offerings/offering-soc-2" target="_blank" style="color: var(--primary-light);">Microsoft Learn</a> |
+                <a href="https://www.nist.gov/cyberframework" target="_blank" style="color: var(--primary-light);">NIST CSF</a> |
+                <a href="https://www.cisecurity.org/controls/v8" target="_blank" style="color: var(--primary-light);">CIS Controls</a>
+            </p>
+            <p style="margin-top: 16px;">&copy; 2025 Hergon Digital. Todos los derechos reservados.</p>
+        </footer>
+    </div>
+
+    <script>
+        // Tab functionality
+        function showTab(tabId) {
+            document.querySelectorAll('.tab-content').forEach(tab => {
+                tab.classList.remove('active');
+            });
+            document.querySelectorAll('.tab-btn').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            document.getElementById(tabId).classList.add('active');
+            event.target.classList.add('active');
+        }
+
+        // Tooltip functionality for diagram
+        const tooltip = document.getElementById('tooltip');
+        const nodes = document.querySelectorAll('.architecture-svg .node');
+
+        nodes.forEach(node => {
+            node.addEventListener('mouseenter', (e) => {
+                const text = node.getAttribute('data-tooltip');
+                if (text) {
+                    tooltip.innerHTML = `<h4>${node.querySelector('text').textContent}</h4><p>${text}</p>`;
+                    tooltip.classList.add('visible');
+                }
+            });
+
+            node.addEventListener('mousemove', (e) => {
+                tooltip.style.left = e.pageX + 15 + 'px';
+                tooltip.style.top = e.pageY + 15 + 'px';
+            });
+
+            node.addEventListener('mouseleave', () => {
+                tooltip.classList.remove('visible');
+            });
+        });
+
+        // Smooth scroll for navigation
+        document.querySelectorAll('.nav-list a').forEach(anchor => {
+            anchor.addEventListener('click', function(e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+            });
+        });
+
+        // Animate progress bars on scroll
+        const observerOptions = {
+            threshold: 0.5
+        };
+
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    const progressFills = entry.target.querySelectorAll('.progress-fill');
+                    progressFills.forEach(fill => {
+                        const width = fill.style.width;
+                        fill.style.width = '0%';
+                        setTimeout(() => {
+                            fill.style.width = width;
+                        }, 100);
+                    });
+                }
+            });
+        }, observerOptions);
+
+        document.querySelectorAll('.compliance-score').forEach(el => observer.observe(el));
+    </script>
+</body>
+</html>

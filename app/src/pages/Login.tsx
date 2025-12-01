@@ -13,7 +13,7 @@
  */
 
 import { useState, useEffect } from 'react'
-import { useNavigate } from 'react-router-dom'
+import { useNavigate, Link } from 'react-router-dom'
 import { PremiumButtonV2 } from '@/components/ui'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
@@ -22,6 +22,7 @@ import { useAppStore, selectTheme } from '@/stores/appStore'
 import { toast } from 'sonner'
 import { LogIn, Shield, Mail, Lock, AlertCircle, CheckCircle2 } from 'lucide-react'
 import { cn } from '@/lib/utils'
+import { AuthService } from '@/lib/services/api/auth.service'
 
 interface ValidationError {
   email?: string
@@ -126,41 +127,48 @@ export function Login() {
 
     setLoading(true)
 
-    // Simulate login delay
-    setTimeout(() => {
-      // Mock user and tenant data for demo
-      const mockUser = {
-        id: '1',
-        email,
-        name: 'Usuario Demo',
-        role: 'AFORE_ADMIN' as const,
-        tenantId: '1',
-        createdAt: new Date().toISOString(),
-        updatedAt: new Date().toISOString(),
-      }
+    try {
+      // Call real API
+      const response = await AuthService.login({ email, password })
 
-      const mockTenant = {
-        id: '1',
-        name: 'AFORE Demo',
-        afore: 'DEMO01',
-        settings: {
-          notifications: {
-            email: true,
-            sms: false,
-            inApp: true,
+      if (response.success && response.data) {
+        const { user } = response.data
+
+        // Create tenant object from user data
+        const tenant = {
+          id: user.tenantId,
+          name: user.tenantName || 'Default',
+          afore: user.tenantName || 'DEFAULT',
+          settings: {
+            notifications: {
+              email: true,
+              sms: false,
+              inApp: true,
+            },
+            timezone: 'America/Mexico_City',
+            language: 'es',
           },
-          timezone: 'America/Mexico_City',
-          language: 'es',
-        },
-      }
+        }
 
-      login(mockUser, mockTenant)
-      toast.success('Sesión iniciada correctamente', {
-        description: `Bienvenido, ${mockUser.name}`,
+        // Update store with authenticated user
+        login(user, tenant)
+
+        toast.success('Sesión iniciada correctamente', {
+          description: `Bienvenido, ${user.name}`,
+        })
+
+        // Navigate to dashboard
+        navigate('/')
+      }
+    } catch (error) {
+      // Error toast is handled by apiClient interceptor
+      console.error('Login error:', error)
+      toast.error('Error al iniciar sesión', {
+        description: 'Credenciales inválidas o error de servidor',
       })
+    } finally {
       setLoading(false)
-      navigate('/')
-    }, 1000)
+    }
   }
 
   const isEmailValid = touched.email && !errors.email
@@ -541,35 +549,30 @@ export function Login() {
                 />
               </div>
 
-              {/* Demo Notice */}
-              <div
-                className={cn(
-                  'glass-ultra-clear depth-layer-2',
-                  'rounded-lg sm:rounded-xl',
-                  'p-3 sm:p-4',
-                  'text-center border transition-all duration-300'
-                )}
-                style={{
-                  background: isDark
-                    ? 'rgba(30, 30, 40, 0.4)'
-                    : 'rgba(59, 130, 246, 0.05)',
-                  border: isDark
-                    ? '1px solid rgba(255,255,255,0.08)'
-                    : '1px solid rgba(59, 130, 246, 0.2)',
-                }}
-              >
+              {/* Register Link */}
+              <div className="text-center pt-2 sm:pt-3">
                 <p
                   className={cn(
                     'ios-font-regular',
-                    'text-[10px] xs:text-xs',
-                    'leading-relaxed',
+                    'text-xs sm:text-sm',
                     isDark ? 'text-neutral-400' : 'text-neutral-600'
                   )}
                 >
-                  <span className="font-semibold">Modo Demo:</span> Usa cualquier email
-                  válido y contraseña de 6+ caracteres
+                  ¿No tienes cuenta?{' '}
+                  <Link
+                    to="/register"
+                    className={cn(
+                      'ios-font-semibold transition-colors duration-200',
+                      isDark
+                        ? 'text-blue-400 hover:text-blue-300'
+                        : 'text-blue-600 hover:text-blue-500'
+                    )}
+                  >
+                    Crear cuenta
+                  </Link>
                 </p>
               </div>
+
             </form>
           </div>
 

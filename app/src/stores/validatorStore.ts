@@ -21,6 +21,8 @@ import type {
   ValidationReport,
 } from '@/types/validator.types'
 import { ValidatorStatus, ValidatorCriticality } from '@/types/validator.types'
+import { ValidatorService } from '@/lib/services/api/validator.service'
+import { ValidationServiceReal } from '@/lib/services/api/validation.service'
 
 // ============================================
 // STATE INTERFACE
@@ -471,21 +473,26 @@ export const useValidatorStore = create<ValidatorState>()(
               throw new Error('Validator not found')
             }
 
-            // In real implementation, call validation service
-            // const result = await validatorService.runTest(testCase, validator)
+            // Call real API to test validator
+            const startTime = performance.now()
+            const response = await ValidatorService.testValidator(
+              testCase.validatorId,
+              testCase.inputData
+            )
+            const executionTimeMs = performance.now() - startTime
 
-            // Mock result for now
+            const passed = response.data?.passed ?? false
             const result: ValidatorTestResult = {
               id: `result-${Date.now()}`,
               testCaseId: testCase.id,
               validatorId: testCase.validatorId,
-              status: testCase.expectedResult,
-              actualResult: 'pass',
-              actualMessage: 'Test passed',
+              status: passed ? 'pass' : 'fail',
+              actualResult: passed ? 'pass' : 'fail',
+              actualMessage: response.data?.message || (passed ? 'Test passed' : 'Test failed'),
               expectedResult: testCase.expectedResult,
               expectedMessage: testCase.expectedMessage,
-              matched: true,
-              executionTimeMs: Math.random() * 100,
+              matched: (passed && testCase.expectedResult === 'pass') || (!passed && testCase.expectedResult === 'fail'),
+              executionTimeMs,
               executedAt: new Date().toISOString(),
             }
 
@@ -607,32 +614,37 @@ export const useValidatorStore = create<ValidatorState>()(
         validateFile: async (fileId: string, presetId?: string) => {
           set({ validationInProgress: true, error: null }, false, 'validateFile:start')
           try {
-            // In real implementation, call validation service
-            // const report = await validatorService.validateFile(fileId, presetId)
+            // Get validation detail from API
+            const response = await ValidationServiceReal.getValidationById(fileId)
+            const validation = response.data
 
-            // Mock report for now
+            if (!validation) {
+              throw new Error('Validation not found')
+            }
+
+            // Transform API response to ValidationReport format
             const report: ValidationReport = {
-              fileId,
-              fileName: 'mock-file.txt',
-              fileType: 'NOMINA',
-              totalRecords: 100,
-              validatedRecords: 100,
-              passedRecords: 95,
-              failedRecords: 5,
+              fileId: validation.id,
+              fileName: validation.fileName,
+              fileType: validation.fileType,
+              totalRecords: validation.totalRecords || 0,
+              validatedRecords: validation.validatedRecords || 0,
+              passedRecords: validation.passedRecords || 0,
+              failedRecords: validation.failedRecords || 0,
               results: {
-                critical: [],
-                errors: [],
-                warnings: [],
-                informational: [],
+                critical: validation.errors?.filter(e => e.severity === 'critical') || [],
+                errors: validation.errors?.filter(e => e.severity === 'error') || [],
+                warnings: validation.errors?.filter(e => e.severity === 'warning') || [],
+                informational: validation.errors?.filter(e => e.severity === 'info') || [],
               },
-              totalValidators: 10,
-              executedValidators: 10,
-              failedValidators: 2,
-              totalExecutionTimeMs: 1500,
-              overallStatus: 'warning',
-              isCompliant: true,
-              validatedAt: new Date().toISOString(),
-              validatedBy: 'current-user',
+              totalValidators: validation.summary?.totalValidators || 0,
+              executedValidators: validation.summary?.executedValidators || 0,
+              failedValidators: validation.summary?.failedValidators || 0,
+              totalExecutionTimeMs: validation.processingTimeMs || 0,
+              overallStatus: validation.status === 'completed' ? 'success' : validation.status === 'error' ? 'error' : 'warning',
+              isCompliant: validation.status === 'completed' && (validation.summary?.failedValidators || 0) === 0,
+              validatedAt: validation.processedAt || new Date().toISOString(),
+              validatedBy: validation.uploadedBy || 'current-user',
               validatorPresetId: presetId,
             }
 
@@ -669,14 +681,27 @@ export const useValidatorStore = create<ValidatorState>()(
           set({ metrics }, false, 'setMetrics')
         },
 
-        refreshMetrics: async (validatorId?: string) => {
+        refreshMetrics: async (_validatorId?: string) => {
           set({ isLoading: true, error: null }, false, 'refreshMetrics:start')
           try {
-            // In real implementation, call API
-            // const metrics = await validatorService.getMetrics(validatorId)
-            // set({ metrics, isLoading: false }, false, 'refreshMetrics:success')
+            // Call real API to get metrics
+            const response = await ValidatorService.getMetrics()
 
-            set({ isLoading: false }, false, 'refreshMetrics:success')
+            if (response.success && response.data) {
+              // Transform API metrics to store format if needed
+              const apiMetrics = response.data
+              const storeMetrics: ValidatorMetrics[] = [{
+                validatorId: 'global',
+                executionCount: apiMetrics.totalExecutions,
+                passCount: Math.round(apiMetrics.totalExecutions * apiMetrics.passRate),
+                failCount: Math.round(apiMetrics.totalExecutions * apiMetrics.failRate),
+                avgExecutionTimeMs: apiMetrics.averageExecutionTimeMs,
+                lastExecutedAt: new Date().toISOString(),
+              }]
+              set({ metrics: storeMetrics, isLoading: false }, false, 'refreshMetrics:success')
+            } else {
+              set({ isLoading: false }, false, 'refreshMetrics:success')
+            }
           } catch (error) {
             const message = error instanceof Error ? error.message : 'Error al actualizar métricas'
             set({ isLoading: false, error: message }, false, 'refreshMetrics:error')
@@ -710,8 +735,24 @@ export const useValidatorStore = create<ValidatorState>()(
         saveEditorState: async () => {
           set({ isLoading: true, error: null }, false, 'saveEditorState:start')
           try {
-            // In real implementation, convert editor state to validator rule and save
-            // await validatorService.saveFromEditor(get().editorState)
+            const editorState = get().editorState
+            if (!editorState?.validatorId) {
+              throw new Error('No validator selected for editing')
+            }
+
+            // Call API to update validator configuration
+            const config = {
+              isEnabled: editorState.isEnabled ?? true,
+              criticality: editorState.criticality,
+              parameters: editorState.parameters,
+            }
+
+            const response = await ValidatorService.updateConfig(editorState.validatorId, config)
+
+            if (response.success && response.data) {
+              // Update local state with API response
+              get().updateValidator(editorState.validatorId, response.data)
+            }
 
             set({ isLoading: false, isEditorDirty: false }, false, 'saveEditorState:success')
           } catch (error) {

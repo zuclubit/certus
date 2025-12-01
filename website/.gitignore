@@ -1,0 +1,36 @@
+# Dependencies
+node_modules
+
+# Build output
+.svelte-kit
+build
+dist
+
+# Environment variables
+.env
+.env.*
+!.env.example
+
+# IDE
+.vscode
+.idea
+*.swp
+*.swo
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+npm-debug.log*
+
+# Wrangler (Cloudflare)
+.wrangler
+
+# Vercel
+.vercel
+
+# Internal docs
+INSTRUCCIONES.md
+PROPUESTA_DISEÑO.md

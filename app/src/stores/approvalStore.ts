@@ -18,7 +18,7 @@ import type {
   ApprovalNotification,
 } from '@/types/approval.types'
 import { ApprovalStatus, ApprovalLevel, SLAStatus } from '@/types/approval.types'
-import mockApprovalWorkflows, { mockApprovalUsers } from '@/lib/mock/approval.mock'
+import { ApprovalServiceReal } from '@/lib/services/api/approval.service'
 
 // ============================================
 // STATE INTERFACE
@@ -129,7 +129,7 @@ const initialPagination: ApprovalPagination = {
 }
 
 const initialState = {
-  workflows: mockApprovalWorkflows, // Load mock data
+  workflows: [] as ApprovalWorkflow[], // Data loaded from API
   selectedWorkflow: null,
   configurations: [],
   activeConfiguration: null,
@@ -140,7 +140,7 @@ const initialState = {
   pagination: initialPagination,
   isLoading: false,
   error: null,
-  currentUser: mockApprovalUsers[0], // Set first analyst as current user for testing
+  currentUser: null as ApprovalUser | null, // Set from auth context
 }
 
 // ============================================
@@ -244,15 +244,14 @@ export const useApprovalStore = create<ApprovalState>()(
         submitForApproval: async (workflowId, comment) => {
           set({ isLoading: true, error: null }, false, 'submitForApproval:start')
           try {
-            // In real implementation, call API
-            // await approvalService.submitForApproval(workflowId, comment)
+            // Call real API
+            const response = await ApprovalServiceReal.approve(workflowId, comment)
 
-            // For now, update local state (mock)
-            const workflow = get().getWorkflowById(workflowId)
-            if (workflow) {
+            if (response.success && response.data) {
+              // Update local state with API response
               get().updateWorkflow(workflowId, {
-                status: ApprovalStatus.IN_PROGRESS,
-                currentLevel: ApprovalLevel.ANALYST,
+                status: response.data.status as ApprovalStatus,
+                currentLevel: response.data.currentLevel as ApprovalLevel,
               })
             }
 
@@ -267,18 +266,14 @@ export const useApprovalStore = create<ApprovalState>()(
         approveWorkflow: async (workflowId, comment) => {
           set({ isLoading: true, error: null }, false, 'approveWorkflow:start')
           try {
-            // In real implementation, call API
-            // await approvalService.approve(workflowId, comment)
+            // Call real API
+            const response = await ApprovalServiceReal.approve(workflowId, comment)
 
-            // For now, update local state (mock)
-            const workflow = get().getWorkflowById(workflowId)
-            if (workflow) {
-              const nextLevel = workflow.currentLevel + 1
-              const isComplete = nextLevel > ApprovalLevel.DIRECTOR
-
+            if (response.success && response.data) {
+              // Update local state with API response
               get().updateWorkflow(workflowId, {
-                status: isComplete ? ApprovalStatus.APPROVED : ApprovalStatus.IN_PROGRESS,
-                currentLevel: isComplete ? workflow.currentLevel : nextLevel,
+                status: response.data.status as ApprovalStatus,
+                currentLevel: response.data.currentLevel as ApprovalLevel,
               })
             }
 
@@ -293,12 +288,14 @@ export const useApprovalStore = create<ApprovalState>()(
         rejectWorkflow: async (workflowId, comment) => {
           set({ isLoading: true, error: null }, false, 'rejectWorkflow:start')
           try {
-            // In real implementation, call API
-            // await approvalService.reject(workflowId, comment)
+            // Call real API
+            const response = await ApprovalServiceReal.reject(workflowId, comment)
 
-            get().updateWorkflow(workflowId, {
-              status: ApprovalStatus.REJECTED,
-            })
+            if (response.success && response.data) {
+              get().updateWorkflow(workflowId, {
+                status: response.data.status as ApprovalStatus,
+              })
+            }
 
             set({ isLoading: false }, false, 'rejectWorkflow:success')
           } catch (error) {
@@ -311,13 +308,15 @@ export const useApprovalStore = create<ApprovalState>()(
         escalateWorkflow: async (workflowId, toLevel, reason) => {
           set({ isLoading: true, error: null }, false, 'escalateWorkflow:start')
           try {
-            // In real implementation, call API
-            // await approvalService.escalate(workflowId, toLevel, reason)
+            // Call real API
+            const response = await ApprovalServiceReal.escalate(workflowId, toLevel, reason)
 
-            get().updateWorkflow(workflowId, {
-              status: ApprovalStatus.ESCALATED,
-              currentLevel: toLevel,
-            })
+            if (response.success && response.data) {
+              get().updateWorkflow(workflowId, {
+                status: response.data.status as ApprovalStatus,
+                currentLevel: response.data.currentLevel as ApprovalLevel,
+              })
+            }
 
             set({ isLoading: false }, false, 'escalateWorkflow:success')
           } catch (error) {
@@ -330,8 +329,8 @@ export const useApprovalStore = create<ApprovalState>()(
         reassignWorkflow: async (workflowId, toUserId, reason) => {
           set({ isLoading: true, error: null }, false, 'reassignWorkflow:start')
           try {
-            // In real implementation, call API
-            // await approvalService.reassign(workflowId, toUserId, reason)
+            // Call real API
+            await ApprovalServiceReal.reassign(workflowId, toUserId, reason)
 
             set({ isLoading: false }, false, 'reassignWorkflow:success')
           } catch (error) {
@@ -341,29 +340,31 @@ export const useApprovalStore = create<ApprovalState>()(
           }
         },
 
-        requestInfo: async (workflowId, message) => {
+        requestInfo: async (workflowId, infoMessage) => {
           set({ isLoading: true, error: null }, false, 'requestInfo:start')
           try {
-            // In real implementation, call API
-            // await approvalService.requestInfo(workflowId, message)
+            // Call real API
+            const response = await ApprovalServiceReal.requestInfo(workflowId, infoMessage)
 
-            get().updateWorkflow(workflowId, {
-              status: ApprovalStatus.ON_HOLD,
-            })
+            if (response.success) {
+              get().updateWorkflow(workflowId, {
+                status: ApprovalStatus.ON_HOLD,
+              })
+            }
 
             set({ isLoading: false }, false, 'requestInfo:success')
           } catch (error) {
-            const message = error instanceof Error ? error.message : 'Error al solicitar información'
-            set({ isLoading: false, error: message }, false, 'requestInfo:error')
+            const errorMessage = error instanceof Error ? error.message : 'Error al solicitar información'
+            set({ isLoading: false, error: errorMessage }, false, 'requestInfo:error')
             throw error
           }
         },
 
-        provideInfo: async (workflowId, message) => {
+        provideInfo: async (workflowId, infoMessage) => {
           set({ isLoading: true, error: null }, false, 'provideInfo:start')
           try {
-            // In real implementation, call API
-            // await approvalService.provideInfo(workflowId, message)
+            // Call real API - using addComment as provideInfo endpoint
+            await ApprovalServiceReal.addComment(workflowId, infoMessage)
 
             get().updateWorkflow(workflowId, {
               status: ApprovalStatus.IN_PROGRESS,
@@ -371,8 +372,8 @@ export const useApprovalStore = create<ApprovalState>()(
 
             set({ isLoading: false }, false, 'provideInfo:success')
           } catch (error) {
-            const message = error instanceof Error ? error.message : 'Error al proporcionar información'
-            set({ isLoading: false, error: message }, false, 'provideInfo:error')
+            const errorMessage = error instanceof Error ? error.message : 'Error al proporcionar información'
+            set({ isLoading: false, error: errorMessage }, false, 'provideInfo:error')
             throw error
           }
         },

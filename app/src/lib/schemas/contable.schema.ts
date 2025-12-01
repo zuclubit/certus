@@ -417,6 +417,9 @@ const validators: ValidatorDefinition[] = [
 
 /**
  * CONTABLE Schema
+ *
+ * Line length: 115 characters for detail records (position 1-115)
+ * Based on field definitions where 'currency' ends at position 115
  */
 export const contableSchema: CONSARSchema = {
   type: 'CONTABLE',
@@ -428,5 +431,5 @@ export const contableSchema: CONSARSchema = {
     '03': footerFields,
   },
   validators,
-  lineLength: 77,
+  lineLength: 115, // Based on detail record ending at position 115
 }

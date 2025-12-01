@@ -20,6 +20,9 @@
 /* Modal System - VisionOS Premium Design System */
 @import './styles/modal-system.css';
 
+/* Skeleton System - VisionOS Enterprise 2025 */
+@import './components/ui/skeleton/skeleton.css';
+
 @layer base {
   :root {
     --radius: 0.5rem;
@@ -70,6 +73,74 @@
 @layer utilities {
   .text-balance {
     text-wrap: balance;
+  }
+
+  /* ========================================
+   * App Shell Scrollbar - visionOS 2025
+   * Premium thin scrollbar that blends with UI
+   * ======================================== */
+
+  /* Webkit browsers (Chrome, Safari, Edge) */
+  .overflow-y-auto::-webkit-scrollbar {
+    width: 8px;
+  }
+
+  .overflow-y-auto::-webkit-scrollbar-track {
+    background: transparent;
+  }
+
+  .overflow-y-auto::-webkit-scrollbar-thumb {
+    background: rgba(128, 128, 128, 0.3);
+    border-radius: 4px;
+    border: 2px solid transparent;
+    background-clip: padding-box;
+  }
+
+  .overflow-y-auto::-webkit-scrollbar-thumb:hover {
+    background: rgba(128, 128, 128, 0.5);
+    border: 2px solid transparent;
+    background-clip: padding-box;
+  }
+
+  /* Dark mode scrollbar */
+  .dark .overflow-y-auto::-webkit-scrollbar-thumb {
+    background: rgba(255, 255, 255, 0.15);
+  }
+
+  .dark .overflow-y-auto::-webkit-scrollbar-thumb:hover {
+    background: rgba(255, 255, 255, 0.25);
+  }
+
+  /* Firefox scrollbar */
+  .overflow-y-auto {
+    scrollbar-width: thin;
+    scrollbar-color: rgba(128, 128, 128, 0.3) transparent;
+  }
+
+  .dark .overflow-y-auto {
+    scrollbar-color: rgba(255, 255, 255, 0.15) transparent;
+  }
+
+  /* ========================================
+   * Safe Area Insets - Mobile Notch Support
+   * ======================================== */
+  .pb-safe {
+    padding-bottom: env(safe-area-inset-bottom, 0);
+  }
+
+  .pt-safe {
+    padding-top: env(safe-area-inset-top, 0);
+  }
+
+  /* ========================================
+   * Dynamic Viewport Height Fallback
+   * For browsers that don't support dvh
+   * ======================================== */
+  @supports not (height: 100dvh) {
+    .h-dvh {
+      height: 100vh;
+      height: calc(var(--vh, 1vh) * 100);
+    }
   }
 
   /* Collapsible Animations */

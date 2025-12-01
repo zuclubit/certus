@@ -380,6 +380,9 @@ const validators: ValidatorDefinition[] = [
 
 /**
  * NOMINA Schema
+ *
+ * Line length: 100 characters for detail records (position 1-100)
+ * Based on field definitions where 'account' ends at position 100
  */
 export const nominaSchema: CONSARSchema = {
   type: 'NOMINA',
@@ -391,5 +394,5 @@ export const nominaSchema: CONSARSchema = {
     '03': footerFields,
   },
   validators,
-  lineLength: 77,
+  lineLength: 100, // Based on detail record ending at position 100
 }

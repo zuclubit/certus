@@ -3,13 +3,14 @@
  *
  * Main page for viewing and managing validator rules
  * Features: Filtering, search, toggle active/inactive, metrics display
+ * Uses TanStack Query for data fetching (Real API)
  */
 
-import React, { useEffect, useState } from 'react'
+import { useMemo, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { cn } from '@/lib/utils'
 import { useAppStore, selectTheme } from '@/stores/appStore'
-import { useValidators } from '@/hooks/useValidators'
+import { useValidators, useToggleValidator } from '@/hooks/useValidators'
 import { ValidatorCard } from '@/components/validators'
 import { SearchBar, FilterChip, PremiumButtonV2 } from '@/components/ui'
 import {
@@ -24,7 +25,7 @@ import {
   AlertTriangle,
 } from 'lucide-react'
 import { ValidatorStatus, ValidatorCriticality } from '@/types'
-import type { ValidatorType } from '@/types'
+import type { ValidatorRule } from '@/types/validator.types'
 
 // ============================================
 // MAIN COMPONENT
@@ -35,54 +36,67 @@ export default function ValidatorsList() {
   const theme = useAppStore(selectTheme)
   const isDark = theme === 'dark'
 
-  const {
-    validators,
-    filters,
-    isLoading,
-    loadValidators,
-    setFilters,
-    resetFilters,
-    toggleValidator,
-    getActiveValidators,
-    getValidatorsByStatus,
-    getValidatorsByCriticality,
-  } = useValidators()
-
+  // Local filter state
   const [searchQuery, setSearchQuery] = useState('')
   const [selectedStatuses, setSelectedStatuses] = useState<ValidatorStatus[]>([])
   const [selectedCriticalities, setSelectedCriticalities] = useState<ValidatorCriticality[]>([])
 
-  // Load validators on mount
-  useEffect(() => {
-    loadValidators()
-  }, [loadValidators])
+  // TanStack Query hooks
+  const {
+    validators,
+    isLoading,
+    loadValidators,
+    getActiveValidators,
+    getValidatorsByStatus,
+    getValidatorsByCriticality,
+  } = useValidators({
+    search: searchQuery || undefined,
+    status: selectedStatuses.length > 0 ? selectedStatuses : undefined,
+    criticality: selectedCriticalities.length > 0 ? selectedCriticalities : undefined,
+  })
+
+  // Toggle mutation
+  const toggleMutation = useToggleValidator()
 
   // Filter validators locally for display
-  const filteredValidators = validators.filter((validator) => {
-    // Search filter
-    if (searchQuery) {
-      const query = searchQuery.toLowerCase()
-      const matchesSearch =
-        validator.name.toLowerCase().includes(query) ||
-        validator.code.toLowerCase().includes(query) ||
-        validator.description.toLowerCase().includes(query) ||
-        validator.category.toLowerCase().includes(query)
+  const filteredValidators = useMemo(() => {
+    return validators.filter((validator: ValidatorRule) => {
+      // Search filter
+      if (searchQuery) {
+        const query = searchQuery.toLowerCase()
+        const matchesSearch =
+          validator.name.toLowerCase().includes(query) ||
+          validator.code.toLowerCase().includes(query) ||
+          validator.description.toLowerCase().includes(query) ||
+          validator.category.toLowerCase().includes(query)
 
-      if (!matchesSearch) return false
+        if (!matchesSearch) return false
+      }
+
+      // Status filter
+      if (selectedStatuses.length > 0 && !selectedStatuses.includes(validator.status)) {
+        return false
+      }
+
+      // Criticality filter
+      if (selectedCriticalities.length > 0 && !selectedCriticalities.includes(validator.criticality)) {
+        return false
+      }
+
+      return true
+    })
+  }, [validators, searchQuery, selectedStatuses, selectedCriticalities])
+
+  // Compute filter stats from validators
+  const filterStats = useMemo(() => {
+    return {
+      active: validators.filter((v: ValidatorRule) => v.status === ValidatorStatus.ACTIVE).length,
+      draft: validators.filter((v: ValidatorRule) => v.status === ValidatorStatus.DRAFT).length,
+      critical: validators.filter((v: ValidatorRule) => v.criticality === ValidatorCriticality.CRITICAL).length,
+      error: validators.filter((v: ValidatorRule) => v.criticality === ValidatorCriticality.ERROR).length,
+      warning: validators.filter((v: ValidatorRule) => v.criticality === ValidatorCriticality.WARNING).length,
     }
-
-    // Status filter
-    if (selectedStatuses.length > 0 && !selectedStatuses.includes(validator.status)) {
-      return false
-    }
-
-    // Criticality filter
-    if (selectedCriticalities.length > 0 && !selectedCriticalities.includes(validator.criticality)) {
-      return false
-    }
-
-    return true
-  })
+  }, [validators])
 
   // Stats
   const stats = {
@@ -91,6 +105,27 @@ export default function ValidatorsList() {
     critical: getValidatorsByCriticality(ValidatorCriticality.CRITICAL).length,
     errors: getValidatorsByCriticality(ValidatorCriticality.ERROR).length,
     warnings: getValidatorsByCriticality(ValidatorCriticality.WARNING).length,
+  }
+
+  // Handle toggle validator
+  const handleToggleValidator = async (id: string) => {
+    try {
+      await toggleMutation.mutateAsync(id)
+    } catch (error) {
+      console.error('Error toggling validator:', error)
+    }
+  }
+
+  // Handle refresh
+  const handleRefresh = () => {
+    loadValidators()
+  }
+
+  // Handle clear filters
+  const handleClearFilters = () => {
+    setSelectedStatuses([])
+    setSelectedCriticalities([])
+    setSearchQuery('')
   }
 
   return (
@@ -112,7 +147,7 @@ export default function ValidatorsList() {
               isDark ? 'text-neutral-400' : 'text-neutral-600'
             )}
           >
-            Gestión de reglas de validación CONSAR
+            Gestión de reglas de validación CONSAR (API Real)
           </p>
         </div>
 
@@ -120,7 +155,7 @@ export default function ValidatorsList() {
         <div className="grid grid-cols-4 xs:flex xs:flex-wrap gap-2 sm:gap-3">
           <PremiumButtonV2
             icon={RefreshCw}
-            onClick={() => loadValidators()}
+            onClick={handleRefresh}
             disabled={isLoading}
             loading={isLoading}
             size="md"
@@ -342,7 +377,7 @@ export default function ValidatorsList() {
           {/* Status Filters */}
           <FilterChip
             label="Activo"
-            count={getValidatorsByStatus(ValidatorStatus.ACTIVE).length}
+            count={filterStats.active}
             active={selectedStatuses.includes(ValidatorStatus.ACTIVE)}
             onToggle={() =>
               setSelectedStatuses((prev) =>
@@ -355,7 +390,7 @@ export default function ValidatorsList() {
 
           <FilterChip
             label="Borrador"
-            count={getValidatorsByStatus(ValidatorStatus.DRAFT).length}
+            count={filterStats.draft}
             active={selectedStatuses.includes(ValidatorStatus.DRAFT)}
             onToggle={() =>
               setSelectedStatuses((prev) =>
@@ -369,7 +404,7 @@ export default function ValidatorsList() {
           {/* Criticality Filters */}
           <FilterChip
             label="Crítico"
-            count={stats.critical}
+            count={filterStats.critical}
             active={selectedCriticalities.includes(ValidatorCriticality.CRITICAL)}
             onToggle={() =>
               setSelectedCriticalities((prev) =>
@@ -382,7 +417,7 @@ export default function ValidatorsList() {
 
           <FilterChip
             label="Error"
-            count={stats.errors}
+            count={filterStats.error}
             active={selectedCriticalities.includes(ValidatorCriticality.ERROR)}
             onToggle={() =>
               setSelectedCriticalities((prev) =>
@@ -396,12 +431,7 @@ export default function ValidatorsList() {
           {/* Clear Filters */}
           {(selectedStatuses.length > 0 || selectedCriticalities.length > 0 || searchQuery) && (
             <button
-              onClick={() => {
-                setSelectedStatuses([])
-                setSelectedCriticalities([])
-                setSearchQuery('')
-                resetFilters()
-              }}
+              onClick={handleClearFilters}
               className={cn(
                 'px-3 py-1.5 rounded-lg text-sm font-medium transition-colors',
                 isDark
@@ -423,7 +453,7 @@ export default function ValidatorsList() {
               className={cn('h-10 w-10 sm:h-12 sm:w-12 animate-spin mx-auto mb-3 sm:mb-4', isDark ? 'text-neutral-500' : 'text-neutral-400')}
             />
             <p className={cn('text-sm sm:ios-text-body font-medium', isDark ? 'text-neutral-500' : 'text-neutral-600')}>
-              Cargando validadores...
+              Cargando validadores desde API...
             </p>
           </div>
         ) : filteredValidators.length === 0 ? (
@@ -442,17 +472,17 @@ export default function ValidatorsList() {
             <p className={cn('text-xs sm:ios-text-footnote font-normal', isDark ? 'text-neutral-600' : 'text-neutral-500')}>
               {searchQuery || selectedStatuses.length > 0 || selectedCriticalities.length > 0
                 ? 'Intenta ajustar los filtros de búsqueda'
-                : 'Crea tu primer validador para comenzar'}
+                : 'No hay validadores configurados en el servidor'}
             </p>
           </div>
         ) : (
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-2 xl:grid-cols-3 gap-3 sm:gap-4">
-            {filteredValidators.map((validator) => (
+            {filteredValidators.map((validator: ValidatorRule) => (
               <ValidatorCard
                 key={validator.id}
                 validator={validator}
                 isDark={isDark}
-                onToggle={toggleValidator}
+                onToggle={handleToggleValidator}
                 onClick={(v) => navigate(`/validators/${v.id}`)}
               />
             ))}

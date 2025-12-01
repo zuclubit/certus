@@ -10,7 +10,7 @@
  * - Navigation cards premium
  */
 
-import { useState } from 'react'
+import { useState, useMemo } from 'react'
 import { useNavigate } from 'react-router-dom'
 import {
   Database,
@@ -29,6 +29,7 @@ import {
   Zap,
   Shield,
   BarChart3,
+  Loader2,
 } from 'lucide-react'
 import { Card, CardHeader, CardTitle, CardDescription, CardContent } from '@/components/ui/card'
 import { PremiumButtonV2 } from '@/components/ui'
@@ -41,6 +42,7 @@ import {
   CreateCatalogModal,
   type CatalogFormData,
 } from '@/components/catalogs/CatalogModals.visionos'
+import { useCatalogs, useCreateCatalog, useDeleteCatalog } from '@/hooks/useCatalogs'
 
 export function CatalogsVisionOS() {
   const theme = useAppStore(selectTheme)
@@ -53,17 +55,30 @@ export function CatalogsVisionOS() {
   const [catalogToDelete, setCatalogToDelete] = useState<any>(null)
 
   // ============================================================================
-  // MOCK DATA - Matching Dashboard/Validations patterns
+  // REAL API DATA - Using useCatalogs hook
   // ============================================================================
 
-  const statistics = {
-    total: 12,
-    active: 10,
-    outdated: 2,
-    records: 4523,
-    updatesPending: 3,
-    automationEnabled: 8,
-  }
+  const { data: catalogs = [], isLoading, error, refetch } = useCatalogs()
+  const createCatalog = useCreateCatalog()
+  const deleteCatalog = useDeleteCatalog()
+
+  // Compute statistics from real data
+  const statistics = useMemo(() => {
+    const total = catalogs.length
+    const active = catalogs.filter(c => c.isActive).length
+    const outdated = total - active
+    // Estimate records from entries (if available) or use a placeholder
+    const records = catalogs.reduce((sum, c) => sum + (c.entries?.length || 0), 0)
+
+    return {
+      total,
+      active,
+      outdated,
+      records: records || total * 100, // Fallback estimate
+      updatesPending: outdated,
+      automationEnabled: active,
+    }
+  }, [catalogs])
 
   const catalogModules = [
     {
@@ -121,8 +136,23 @@ export function CatalogsVisionOS() {
   // ============================================================================
 
   const handleCreateCatalog = (data: CatalogFormData) => {
-    console.log('Creating catalog:', data)
-    // TODO: Implement API call
+    createCatalog.mutate(
+      {
+        code: data.code,
+        name: data.name,
+        description: data.description,
+        version: data.version,
+        source: data.source,
+      },
+      {
+        onSuccess: () => {
+          setShowCreateModal(false)
+        },
+        onError: (error) => {
+          console.error('Error creating catalog:', error)
+        },
+      }
+    )
   }
 
   const handleDeleteCatalog = (catalog: any) => {
@@ -131,10 +161,23 @@ export function CatalogsVisionOS() {
   }
 
   const handleConfirmDelete = (justification: string) => {
-    console.log('Deleting catalog:', catalogToDelete?.code, 'Justification:', justification)
-    // TODO: Implement API call with audit trail
-    setShowDeleteModal(false)
-    setCatalogToDelete(null)
+    if (!catalogToDelete?.id) return
+
+    deleteCatalog.mutate(
+      {
+        id: catalogToDelete.id,
+        justification,
+      },
+      {
+        onSuccess: () => {
+          setShowDeleteModal(false)
+          setCatalogToDelete(null)
+        },
+        onError: (error) => {
+          console.error('Error deleting catalog:', error)
+        },
+      }
+    )
   }
 
   const handleModuleClick = (module: typeof catalogModules[0]) => {
@@ -186,7 +229,7 @@ export function CatalogsVisionOS() {
                 <LottieIcon
                   animationData={catalogsAnimationData}
                   isActive={true}
-                  loop={true}
+                  loop={false}
                   autoplay={true}
                   speed={1.0}
                   className="transition-all duration-300"
@@ -397,49 +440,54 @@ export function CatalogsVisionOS() {
       {/* QUICK STATS GRID (Additional info) */}
       {/* ================================================================ */}
       <div className="grid gap-4 md:grid-cols-3">
-        {/* Recent Activity */}
+        {/* Recent Activity - Shows real catalogs from API */}
         <Card>
           <CardHeader>
             <CardTitle className="text-base flex items-center gap-2">
               <Activity className="h-4 w-4" />
-              Actividad Reciente
+              Catálogos Recientes
             </CardTitle>
           </CardHeader>
           <CardContent>
             <div className="space-y-3">
-              {[
-                { catalog: 'CAT_AFORES', action: 'Actualizado', time: 'Hace 2h', status: 'success' },
-                { catalog: 'CAT_MUNICIPIOS', action: 'Importado', time: 'Hace 5h', status: 'success' },
-                { catalog: 'CAT_TIPOS_TRABAJADOR', action: 'Validación', time: 'Hace 1d', status: 'warning' },
-              ].map((activity, idx) => (
-                <div
-                  key={idx}
-                  className={cn(
-                    'flex items-center justify-between p-3 rounded-lg',
-                    isDark ? 'bg-neutral-800/50' : 'bg-neutral-50'
-                  )}
-                >
-                  <div className="flex-1 min-w-0">
-                    <p className={cn('text-sm font-medium truncate', isDark ? 'text-neutral-200' : 'text-neutral-900')}>
-                      {activity.catalog}
-                    </p>
-                    <p className={cn('text-xs', isDark ? 'text-neutral-500' : 'text-neutral-500')}>
-                      {activity.action} • {activity.time}
-                    </p>
-                  </div>
-                  {activity.status === 'success' && (
-                    <CheckCircle2 className="h-4 w-4 text-green-500 flex-shrink-0" />
-                  )}
-                  {activity.status === 'warning' && (
-                    <AlertTriangle className="h-4 w-4 text-yellow-500 flex-shrink-0" />
-                  )}
+              {isLoading ? (
+                <div className="flex items-center justify-center py-8">
+                  <Loader2 className="h-6 w-6 animate-spin text-primary" />
                 </div>
-              ))}
+              ) : catalogs.length === 0 ? (
+                <p className={cn('text-sm text-center py-4', isDark ? 'text-neutral-500' : 'text-neutral-500')}>
+                  No hay catálogos disponibles
+                </p>
+              ) : (
+                catalogs.slice(0, 3).map((catalog) => (
+                  <div
+                    key={catalog.id}
+                    className={cn(
+                      'flex items-center justify-between p-3 rounded-lg',
+                      isDark ? 'bg-neutral-800/50' : 'bg-neutral-50'
+                    )}
+                  >
+                    <div className="flex-1 min-w-0">
+                      <p className={cn('text-sm font-medium truncate', isDark ? 'text-neutral-200' : 'text-neutral-900')}>
+                        {catalog.code}
+                      </p>
+                      <p className={cn('text-xs', isDark ? 'text-neutral-500' : 'text-neutral-500')}>
+                        {catalog.name} • {catalog.source || 'CONSAR'}
+                      </p>
+                    </div>
+                    {catalog.isActive ? (
+                      <CheckCircle2 className="h-4 w-4 text-green-500 flex-shrink-0" />
+                    ) : (
+                      <AlertTriangle className="h-4 w-4 text-yellow-500 flex-shrink-0" />
+                    )}
+                  </div>
+                ))
+              )}
             </div>
           </CardContent>
         </Card>
 
-        {/* System Health */}
+        {/* System Health - Shows real API connection status */}
         <Card>
           <CardHeader>
             <CardTitle className="text-base flex items-center gap-2">
@@ -450,9 +498,21 @@ export function CatalogsVisionOS() {
           <CardContent>
             <div className="space-y-4">
               {[
-                { label: 'Sincronización', status: 'Activa', color: 'green' },
-                { label: 'Validación', status: 'Normal', color: 'green' },
-                { label: 'Respaldo', status: 'OK', color: 'green' },
+                {
+                  label: 'Conexión API',
+                  status: error ? 'Error' : isLoading ? 'Cargando...' : 'Conectado',
+                  color: error ? 'red' : isLoading ? 'yellow' : 'green'
+                },
+                {
+                  label: 'Catálogos',
+                  status: catalogs.length > 0 ? `${catalogs.length} disponibles` : 'Sin datos',
+                  color: catalogs.length > 0 ? 'green' : 'yellow'
+                },
+                {
+                  label: 'Estado',
+                  status: error ? 'Verificar conexión' : 'OK',
+                  color: error ? 'red' : 'green'
+                },
               ].map((item, idx) => (
                 <div key={idx} className="flex items-center justify-between">
                   <span className={cn('text-sm', isDark ? 'text-neutral-400' : 'text-neutral-600')}>
@@ -462,10 +522,15 @@ export function CatalogsVisionOS() {
                     <div
                       className={cn(
                         'w-2 h-2 rounded-full',
-                        item.color === 'green' && 'bg-green-500'
+                        item.color === 'green' && 'bg-green-500',
+                        item.color === 'yellow' && 'bg-yellow-500',
+                        item.color === 'red' && 'bg-red-500'
                       )}
                       style={{
-                        boxShadow: item.color === 'green' ? '0 0 8px rgba(34, 197, 94, 0.6)' : undefined,
+                        boxShadow:
+                          item.color === 'green' ? '0 0 8px rgba(34, 197, 94, 0.6)' :
+                          item.color === 'yellow' ? '0 0 8px rgba(234, 179, 8, 0.6)' :
+                          item.color === 'red' ? '0 0 8px rgba(239, 68, 68, 0.6)' : undefined,
                       }}
                     />
                     <span className={cn('text-sm font-medium', isDark ? 'text-neutral-200' : 'text-neutral-900')}>
@@ -489,17 +554,18 @@ export function CatalogsVisionOS() {
           <CardContent>
             <div className="space-y-2">
               <button
-                onClick={() => console.log('Sync all')}
+                onClick={() => refetch()}
+                disabled={isLoading}
                 className={cn(
                   'w-full p-3 rounded-lg text-left transition-colors text-sm font-medium',
                   isDark
-                    ? 'bg-neutral-800 hover:bg-neutral-700 text-neutral-200'
-                    : 'bg-neutral-50 hover:bg-neutral-100 text-neutral-900'
+                    ? 'bg-neutral-800 hover:bg-neutral-700 text-neutral-200 disabled:opacity-50'
+                    : 'bg-neutral-50 hover:bg-neutral-100 text-neutral-900 disabled:opacity-50'
                 )}
               >
                 <div className="flex items-center gap-2">
-                  <RefreshCw className="h-4 w-4" />
-                  Sincronizar Todos
+                  <RefreshCw className={cn('h-4 w-4', isLoading && 'animate-spin')} />
+                  {isLoading ? 'Actualizando...' : 'Actualizar Catálogos'}
                 </div>
               </button>
               <button
@@ -557,7 +623,7 @@ export function CatalogsVisionOS() {
         justificationPlaceholder="Por favor proporciona una razón detallada para eliminar este catálogo. Esta información se registrará en el historial de auditoría y es requerida por las regulaciones de CONSAR y cumplimiento normativo."
         minJustificationLength={20}
         onConfirm={handleConfirmDelete}
-        isLoading={false}
+        isLoading={deleteCatalog.isPending}
       />
     </div>
   )

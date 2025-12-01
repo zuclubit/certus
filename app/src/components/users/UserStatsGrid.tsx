@@ -21,7 +21,7 @@ import {
 } from 'lucide-react'
 import { cn } from '@/lib/utils'
 import { useAppStore, selectTheme } from '@/stores/appStore'
-import type { UserStatistics } from '@/lib/mockData/users'
+import type { UserStatistics } from '@/hooks/useUsers'
 
 // ============================================================================
 // TYPES
@@ -208,7 +208,7 @@ export const UserStatsGrid = memo(function UserStatsGrid({
   if (isLoading || !statistics) {
     return (
       <div
-        className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4"
+        className="grid grid-cols-1 xxs:grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4"
         role="region"
         aria-label="Cargando estadísticas"
       >
@@ -262,7 +262,7 @@ export const UserStatsGrid = memo(function UserStatsGrid({
 
   return (
     <div
-      className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4"
+      className="grid grid-cols-1 xxs:grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4"
       role="region"
       aria-label="Estadísticas de usuarios"
     >

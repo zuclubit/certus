@@ -1,0 +1,171 @@
+/**
+ * Skeleton CSS - VisionOS Enterprise 2025
+ *
+ * Sistema de animaciones shimmer para skeletons.
+ * Soporta modo claro/oscuro y glassmorphism.
+ *
+ * @see https://blog.logrocket.com/improve-react-ux-skeleton-ui/
+ * @see https://flowbite.com/docs/components/skeleton/
+ */
+
+/* ============================================================================
+ * SHIMMER ANIMATION KEYFRAMES
+ * ============================================================================ */
+
+@keyframes skeleton-shimmer {
+  0% {
+    background-position: -200% 0;
+  }
+  100% {
+    background-position: 200% 0;
+  }
+}
+
+@keyframes skeleton-pulse {
+  0%, 100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.4;
+  }
+}
+
+@keyframes skeleton-wave {
+  0% {
+    transform: translateX(-100%);
+  }
+  100% {
+    transform: translateX(100%);
+  }
+}
+
+/* ============================================================================
+ * BASE SKELETON STYLES
+ * ============================================================================ */
+
+.skeleton-base {
+  position: relative;
+  overflow: hidden;
+  background-color: var(--skeleton-base-color);
+  border-radius: var(--skeleton-radius, 8px);
+}
+
+/* ============================================================================
+ * SHIMMER EFFECT - Premium Glass Style
+ * ============================================================================ */
+
+.skeleton-shimmer {
+  background: linear-gradient(
+    90deg,
+    var(--skeleton-from) 0%,
+    var(--skeleton-via) 50%,
+    var(--skeleton-to) 100%
+  );
+  background-size: 200% 100%;
+  animation: skeleton-shimmer 1.5s ease-in-out infinite;
+}
+
+/* ============================================================================
+ * PULSE EFFECT - Simple fade
+ * ============================================================================ */
+
+.skeleton-pulse {
+  animation: skeleton-pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+}
+
+/* ============================================================================
+ * WAVE EFFECT - Overlay wave
+ * ============================================================================ */
+
+.skeleton-wave::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    90deg,
+    transparent 0%,
+    var(--skeleton-wave-color) 50%,
+    transparent 100%
+  );
+  animation: skeleton-wave 1.5s ease-in-out infinite;
+}
+
+/* ============================================================================
+ * DARK MODE COLORS (Default)
+ * ============================================================================ */
+
+:root {
+  --skeleton-base-color: rgba(255, 255, 255, 0.05);
+  --skeleton-from: rgba(255, 255, 255, 0.02);
+  --skeleton-via: rgba(255, 255, 255, 0.08);
+  --skeleton-to: rgba(255, 255, 255, 0.02);
+  --skeleton-wave-color: rgba(255, 255, 255, 0.06);
+  --skeleton-border: rgba(255, 255, 255, 0.06);
+  --skeleton-radius: 8px;
+}
+
+/* ============================================================================
+ * LIGHT MODE COLORS
+ * ============================================================================ */
+
+:root:not(.dark) .skeleton-base,
+.light .skeleton-base {
+  --skeleton-base-color: rgba(0, 0, 0, 0.06);
+  --skeleton-from: rgba(0, 0, 0, 0.04);
+  --skeleton-via: rgba(0, 0, 0, 0.10);
+  --skeleton-to: rgba(0, 0, 0, 0.04);
+  --skeleton-wave-color: rgba(0, 0, 0, 0.08);
+  --skeleton-border: rgba(0, 0, 0, 0.08);
+}
+
+/* Explicit dark class for specificity */
+.dark .skeleton-base {
+  --skeleton-base-color: rgba(255, 255, 255, 0.05);
+  --skeleton-from: rgba(255, 255, 255, 0.02);
+  --skeleton-via: rgba(255, 255, 255, 0.08);
+  --skeleton-to: rgba(255, 255, 255, 0.02);
+  --skeleton-wave-color: rgba(255, 255, 255, 0.06);
+  --skeleton-border: rgba(255, 255, 255, 0.06);
+}
+
+/* ============================================================================
+ * GLASSMORPHISM SKELETON CARD
+ * ============================================================================ */
+
+.skeleton-glass-card {
+  position: relative;
+  border-radius: 20px;
+  backdrop-filter: blur(16px) saturate(140%);
+  -webkit-backdrop-filter: blur(16px) saturate(140%);
+  border: 1px solid var(--skeleton-border);
+  background: var(--skeleton-base-color);
+}
+
+.dark .skeleton-glass-card {
+  box-shadow:
+    0 4px 16px rgba(0, 0, 0, 0.3),
+    inset 0 1px 0 rgba(255, 255, 255, 0.04);
+}
+
+.light .skeleton-glass-card,
+:root:not(.dark) .skeleton-glass-card {
+  box-shadow:
+    0 4px 16px rgba(0, 0, 0, 0.06),
+    inset 0 1px 0 rgba(255, 255, 255, 0.5);
+}
+
+/* ============================================================================
+ * REDUCED MOTION SUPPORT
+ * ============================================================================ */
+
+@media (prefers-reduced-motion: reduce) {
+  .skeleton-shimmer,
+  .skeleton-pulse,
+  .skeleton-wave::after {
+    animation: none;
+  }
+
+  .skeleton-pulse {
+    opacity: 0.6;
+  }
+}
