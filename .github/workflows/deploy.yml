@@ -61,7 +61,9 @@ jobs:
         with:
           apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
           accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
-          command: pages deploy app/dist --project-name=certus-admin --branch=${{ github.ref_name }}
+          workingDirectory: ./app
+          # Deploy from app directory so functions/ is included
+          command: pages deploy dist --project-name=certus-admin --branch=${{ github.ref_name }}
 
       - name: Comment deployment URL on PR
         if: github.event_name == 'pull_request'
@@ -119,7 +121,9 @@ jobs:
         with:
           apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
           accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
-          command: pages deploy app/dist --project-name=certus-admin --branch=main
+          workingDirectory: ./app
+          # Deploy from app directory so functions/ is included
+          command: pages deploy dist --project-name=certus-admin --branch=main
 
       - name: Create Sentry release
         uses: getsentry/action-release@v1

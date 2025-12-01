@@ -1,0 +1,17 @@
+{
+  "version": 1,
+  "description": "Cloudflare Pages routing configuration for Certus",
+  "include": [
+    "/api/*"
+  ],
+  "exclude": [
+    "/assets/*",
+    "/*.js",
+    "/*.css",
+    "/*.ico",
+    "/*.png",
+    "/*.svg",
+    "/*.woff",
+    "/*.woff2"
+  ]
+}
