@@ -11,8 +11,8 @@
  * @architecture Clean Architecture + Component Composition
  */
 
-import { useState } from 'react'
-import { FileEdit, AlertCircle, Info, FileText, XCircle } from 'lucide-react'
+import { useState, useRef, useCallback } from 'react'
+import { FileEdit, AlertCircle, Info, FileText, XCircle, Upload, File, X } from 'lucide-react'
 import { cn } from '@/lib/utils'
 import { useAppStore, selectTheme } from '@/stores/appStore'
 import type { Validation } from '@/types'
@@ -294,7 +294,7 @@ export interface CreateCorrectedVersionModalProps {
   open: boolean
   onOpenChange: (open: boolean) => void
   validation: Validation | null
-  onConfirm: (reason: string) => void | Promise<void>
+  onConfirm: (reason: string, file: File) => void | Promise<void>
   isLoading?: boolean
 }
 
@@ -310,12 +310,20 @@ export function CreateCorrectedVersionModal({
 
   const [reason, setReason] = useState('')
   const [error, setError] = useState('')
+  const [selectedFile, setSelectedFile] = useState<File | null>(null)
+  const [fileError, setFileError] = useState('')
+  const [isDragging, setIsDragging] = useState(false)
+  const fileInputRef = useRef<HTMLInputElement>(null)
 
   const minReasonLength = CONFIG.minReasonLength
   const isConfirmDisabled =
-    isLoading || !reason.trim() || reason.trim().length < minReasonLength
+    isLoading || !reason.trim() || reason.trim().length < minReasonLength || !selectedFile
 
   const handleConfirm = async () => {
+    if (!selectedFile) {
+      setFileError('Debe seleccionar un archivo corregido')
+      return
+    }
     if (!reason.trim()) {
       setError('La razón de corrección es requerida')
       return
@@ -326,15 +334,41 @@ export function CreateCorrectedVersionModal({
     }
 
     setError('')
-    await onConfirm(reason)
+    setFileError('')
+    await onConfirm(reason, selectedFile)
     setReason('')
+    setSelectedFile(null)
   }
 
   const handleCancel = () => {
     setReason('')
     setError('')
+    setSelectedFile(null)
+    setFileError('')
     onOpenChange(false)
   }
+
+  const handleFileSelect = useCallback((file: File) => {
+    setSelectedFile(file)
+    setFileError('')
+  }, [])
+
+  const handleDrop = useCallback((e: React.DragEvent) => {
+    e.preventDefault()
+    setIsDragging(false)
+    const file = e.dataTransfer.files[0]
+    if (file) handleFileSelect(file)
+  }, [handleFileSelect])
+
+  const handleDragOver = useCallback((e: React.DragEvent) => {
+    e.preventDefault()
+    setIsDragging(true)
+  }, [])
+
+  const handleDragLeave = useCallback((e: React.DragEvent) => {
+    e.preventDefault()
+    setIsDragging(false)
+  }, [])
 
   const handleOpenChange = (newOpen: boolean) => {
     if (!newOpen) {
@@ -376,27 +410,161 @@ export function CreateCorrectedVersionModal({
         </ResponsiveModalHeader>
 
         <ResponsiveModalBody>
-          <div className="grid grid-cols-1 lg:grid-cols-[40%_1fr] gap-5 lg:gap-6">
-            {/* Left Column: File Info */}
-            <div className="lg:sticky lg:top-0">
-              <FileInfoCard
-                fileName={validation.fileName}
-                errorCount={validation.errorCount}
-                warningCount={validation.warningCount}
-              />
+          <div className="space-y-6">
+            {/* File Info Card */}
+            <FileInfoCard
+              fileName={validation.fileName}
+              errorCount={validation.errorCount}
+              warningCount={validation.warningCount}
+            />
+
+            {/* File Upload Section */}
+            <div className="space-y-3">
+              <div className="space-y-1">
+                <h3
+                  className={cn(
+                    'text-xs xs:text-sm font-semibold',
+                    isDark ? 'text-neutral-200' : 'text-neutral-700'
+                  )}
+                >
+                  Archivo Corregido
+                  <span className="ml-1 text-red-500">*</span>
+                </h3>
+                <p
+                  className={cn(
+                    'text-[10px] xs:text-xs leading-relaxed',
+                    isDark ? 'text-neutral-500' : 'text-neutral-500'
+                  )}
+                >
+                  Seleccione el archivo con las correcciones aplicadas
+                </p>
+              </div>
+
+              {/* Dropzone */}
+              <div
+                onClick={() => fileInputRef.current?.click()}
+                onDrop={handleDrop}
+                onDragOver={handleDragOver}
+                onDragLeave={handleDragLeave}
+                className={cn(
+                  'relative rounded-xl border-2 border-dashed p-6 cursor-pointer transition-all duration-200',
+                  isDragging
+                    ? 'border-blue-500 bg-blue-500/10'
+                    : selectedFile
+                      ? 'border-green-500 bg-green-500/5'
+                      : fileError
+                        ? 'border-red-500 bg-red-500/5'
+                        : isDark
+                          ? 'border-neutral-600 bg-neutral-800/30 hover:border-blue-500/50 hover:bg-blue-500/5'
+                          : 'border-neutral-300 bg-neutral-50 hover:border-blue-500/50 hover:bg-blue-50'
+                )}
+              >
+                <input
+                  ref={fileInputRef}
+                  type="file"
+                  className="hidden"
+                  onChange={(e) => {
+                    const file = e.target.files?.[0]
+                    if (file) handleFileSelect(file)
+                  }}
+                  disabled={isLoading}
+                  accept=".txt,.csv,.xlsx,.xls"
+                />
+
+                {selectedFile ? (
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-center gap-3">
+                      <div
+                        className={cn(
+                          'w-10 h-10 rounded-lg flex items-center justify-center',
+                          isDark ? 'bg-green-500/20' : 'bg-green-100'
+                        )}
+                      >
+                        <File className="h-5 w-5 text-green-500" strokeWidth={2} />
+                      </div>
+                      <div>
+                        <p
+                          className={cn(
+                            'text-sm font-medium truncate max-w-[200px] sm:max-w-[300px]',
+                            isDark ? 'text-neutral-100' : 'text-neutral-900'
+                          )}
+                        >
+                          {selectedFile.name}
+                        </p>
+                        <p className="text-xs text-neutral-500">
+                          {(selectedFile.size / 1024).toFixed(1)} KB
+                        </p>
+                      </div>
+                    </div>
+                    <button
+                      type="button"
+                      onClick={(e) => {
+                        e.stopPropagation()
+                        setSelectedFile(null)
+                      }}
+                      className={cn(
+                        'p-2 rounded-lg transition-colors',
+                        isDark
+                          ? 'hover:bg-neutral-700 text-neutral-400'
+                          : 'hover:bg-neutral-200 text-neutral-500'
+                      )}
+                    >
+                      <X className="h-4 w-4" />
+                    </button>
+                  </div>
+                ) : (
+                  <div className="flex flex-col items-center gap-3 text-center">
+                    <div
+                      className={cn(
+                        'w-12 h-12 rounded-xl flex items-center justify-center',
+                        isDark ? 'bg-blue-500/15' : 'bg-blue-100'
+                      )}
+                    >
+                      <Upload className="h-5 w-5 text-blue-500" strokeWidth={2} />
+                    </div>
+                    <div>
+                      <p
+                        className={cn(
+                          'text-sm font-medium',
+                          isDark ? 'text-neutral-200' : 'text-neutral-700'
+                        )}
+                      >
+                        Arrastra tu archivo aquí o{' '}
+                        <span className="text-blue-500">haz clic para seleccionar</span>
+                      </p>
+                      <p className="text-xs text-neutral-500 mt-1">
+                        Formatos soportados: TXT, CSV, XLSX
+                      </p>
+                    </div>
+                  </div>
+                )}
+              </div>
+
+              {/* File Error */}
+              {fileError && (
+                <div
+                  role="alert"
+                  className={cn(
+                    'flex items-center gap-2 px-3 py-2 rounded-lg',
+                    isDark ? 'bg-red-950/30' : 'bg-red-50'
+                  )}
+                  style={{ border: '1px solid rgba(239, 68, 68, 0.3)' }}
+                >
+                  <XCircle className="h-4 w-4 flex-shrink-0 text-red-500" strokeWidth={2} />
+                  <p className="text-xs font-medium text-red-500">{fileError}</p>
+                </div>
+              )}
             </div>
 
-            {/* Right Column: Reason Input */}
-            <div>
-              <ReasonTextarea
-                value={reason}
-                onChange={setReason}
-                error={error}
-                onClearError={() => setError('')}
-                disabled={isLoading}
-                minLength={minReasonLength}
-              />
-            </div>
+            {/* Reason Input */}
+            <ReasonTextarea
+              value={reason}
+              onChange={setReason}
+              error={error}
+              onClearError={() => setError('')}
+              disabled={isLoading}
+              minLength={minReasonLength}
+            />
           </div>
         </ResponsiveModalBody>
 

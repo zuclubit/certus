@@ -5,10 +5,11 @@
  * Features: Stage indicator, timeline, audit log, action panel
  */
 
-import React, { useEffect } from 'react'
+import React, { useEffect, useState } from 'react'
 import { useParams, useNavigate } from 'react-router-dom'
 import { cn } from '@/lib/utils'
 import { useAppStore, selectTheme } from '@/stores/appStore'
+import { useApprovalStore } from '@/stores/approvalStore'
 import { useWorkflowDetail } from '@/hooks/useApproval'
 import {
   ApprovalStageIndicator,
@@ -24,6 +25,8 @@ import {
   TrendingUp,
   AlertCircle,
 } from 'lucide-react'
+import { AuditLogService } from '@/lib/services/api/audit-log.service'
+import type { AuditLogEntry } from '@/types'
 
 // ============================================
 // MAIN COMPONENT
@@ -36,6 +39,30 @@ export default function ApprovalDetail() {
   const isDark = theme === 'dark'
 
   const { workflow, isLoading, error, refresh } = useWorkflowDetail(id!)
+  const [auditLogEntries, setAuditLogEntries] = useState<AuditLogEntry[]>([])
+  const [auditLoading, setAuditLoading] = useState(false)
+
+  // Get approval store actions
+  const { approveWorkflow, rejectWorkflow, escalateWorkflow, requestInfo } = useApprovalStore()
+
+  // Load audit logs from API
+  useEffect(() => {
+    if (id) {
+      setAuditLoading(true)
+      AuditLogService.getApprovalLogs(id)
+        .then((response) => {
+          if (response.success && response.data) {
+            setAuditLogEntries(response.data)
+          }
+        })
+        .catch((err) => {
+          console.error('Failed to load audit logs:', err)
+        })
+        .finally(() => {
+          setAuditLoading(false)
+        })
+    }
+  }, [id])
 
   if (isLoading) {
     return (
@@ -82,7 +109,7 @@ export default function ApprovalDetail() {
     )
   }
 
-  // Mock timeline and audit log (in real app, these would come from the workflow)
+  // Timeline from workflow history
   const timeline = workflow.history.map((entry) => ({
     id: entry.id,
     timestamp: entry.timestamp,
@@ -91,17 +118,28 @@ export default function ApprovalDetail() {
     user: entry.performedBy.name,
   }))
 
-  const auditLog = workflow.history.map((entry) => ({
-    id: entry.id,
-    timestamp: entry.timestamp,
-    user: entry.performedBy.name,
-    action: entry.action,
-    resource: `Workflow ${workflow.id}`,
-    details: entry.comment || 'Sin comentarios',
-    ipAddress: '192.168.1.1', // Mock IP
-  }))
+  // Audit log from API or fallback to workflow history
+  const auditLog = auditLogEntries.length > 0
+    ? auditLogEntries.map((entry) => ({
+        id: entry.id,
+        timestamp: entry.timestamp,
+        user: entry.userName || entry.userId,
+        action: entry.action,
+        resource: entry.entityType ? `${entry.entityType} ${entry.entityId}` : `Workflow ${workflow.id}`,
+        details: entry.description || 'Sin comentarios',
+        ipAddress: entry.ipAddress || '-',
+      }))
+    : workflow.history.map((entry) => ({
+        id: entry.id,
+        timestamp: entry.timestamp,
+        user: entry.performedBy.name,
+        action: entry.action,
+        resource: `Workflow ${workflow.id}`,
+        details: entry.comment || 'Sin comentarios',
+        ipAddress: '-',
+      }))
 
-  const canApprove = true // In real app: approvalService.canUserApprove(workflow, currentUser)
+  const canApprove = workflow.status === 'pending' || workflow.status === 'in_review'
 
   return (
     <div className="min-h-screen p-4 sm:p-6 space-y-4 sm:space-y-6">
@@ -272,20 +310,20 @@ export default function ApprovalDetail() {
             workflow={workflow}
             canApprove={canApprove}
             onApprove={async (comment) => {
-              console.log('Approve:', comment)
-              // In real app: await approvalStore.approveWorkflow(workflow.id, comment)
+              await approveWorkflow(workflow.id, comment)
+              refresh()
             }}
             onReject={async (comment) => {
-              console.log('Reject:', comment)
-              // In real app: await approvalStore.rejectWorkflow(workflow.id, comment)
+              await rejectWorkflow(workflow.id, comment)
+              refresh()
             }}
             onEscalate={async (toLevel, reason) => {
-              console.log('Escalate:', toLevel, reason)
-              // In real app: await approvalStore.escalateWorkflow(workflow.id, toLevel, reason)
+              await escalateWorkflow(workflow.id, toLevel, reason)
+              refresh()
             }}
             onRequestInfo={async (message) => {
-              console.log('Request info:', message)
-              // In real app: await approvalStore.requestInfo(workflow.id, message)
+              await requestInfo(workflow.id, message)
+              refresh()
             }}
             isDark={isDark}
           />

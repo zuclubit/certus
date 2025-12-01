@@ -18,6 +18,7 @@ export interface User {
   name: string
   role: UserRole
   tenantId: string
+  tenantName?: string
   avatar?: string
   phone?: string
   createdAt: string
@@ -76,8 +77,8 @@ export interface Validation {
   validatedAt?: string
   errorCount: number
   warningCount: number
-  recordCount: number
-  validRecordCount: number
+  recordCount?: number
+  validRecordCount?: number
   progress?: number
 
   // Versioning fields (CONSAR compliance)
@@ -181,24 +182,30 @@ export interface ReportFilters {
   severity?: ErrorSeverity[]
 }
 
-// Catalog types
+// Catalog types - matches CatalogSummaryDto from backend
 export interface Catalog {
   id: string
-  name: string
   code: string
-  description: string
-  version: string
-  entryCount: number
-  lastUpdatedAt: string
-  lastUpdatedBy: string
+  name: string
+  description?: string
+  version?: string
+  source?: string
+  isActive: boolean
+  effectiveFrom?: string
+  effectiveTo?: string
+  entries?: CatalogEntry[]
 }
 
+// CatalogEntry - matches CatalogEntryDto from backend
 export interface CatalogEntry {
   id: string
-  code: string
-  description: string
-  status: 'active' | 'inactive'
-  metadata?: Record<string, string>
+  key: string
+  value: string
+  displayName?: string
+  description?: string
+  sortOrder?: number
+  parentKey?: string
+  isActive: boolean
 }
 
 // Dashboard types

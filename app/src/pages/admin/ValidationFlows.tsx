@@ -6,8 +6,8 @@ import { Card, CardHeader, CardTitle, CardContent, CardFooter } from '@/componen
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
 
-// Mock data de flujos de validación
-const mockFlows = [
+// Placeholder data - TODO: Connect to validation flows API when available
+const initialFlows = [
   {
     id: '1',
     name: 'Flujo NOMINA Estándar',
@@ -51,7 +51,7 @@ const mockFlows = [
 ]
 
 export function ValidationFlows() {
-  const [flows, setFlows] = useState(mockFlows)
+  const [flows, setFlows] = useState(initialFlows)
 
   const handleCreateFlow = () => {
     // TODO: Implementar creación de flujo

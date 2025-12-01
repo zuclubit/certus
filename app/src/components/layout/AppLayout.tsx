@@ -5,13 +5,38 @@ import { Footer } from './Footer'
 import { BottomNav } from './BottomNav'
 import { useAppStore, selectTheme } from '@/stores/appStore'
 
+/**
+ * AppLayout - Enterprise App Shell 2025
+ *
+ * Implementa el patrón "App Shell" moderno:
+ * - Viewport fijo (h-screen) con overflow controlado
+ * - Sidebar fijo en desktop, BottomNav en mobile
+ * - Área de contenido scrolleable independiente
+ * - Header sticky que flota con el scroll
+ *
+ * @architecture
+ * ┌─────────────────────────────────────────────────┐
+ * │ ROOT: h-dvh overflow-hidden                     │
+ * ├────────────┬────────────────────────────────────┤
+ * │            │ SCROLL CONTAINER: overflow-y-auto  │
+ * │  SIDEBAR   │ ┌────────────────────────────────┐ │
+ * │  (fixed)   │ │ HEADER: sticky top-0           │ │
+ * │            │ ├────────────────────────────────┤ │
+ * │            │ │ MAIN: content area             │ │
+ * │            │ ├────────────────────────────────┤ │
+ * │            │ │ FOOTER: (desktop only)         │ │
+ * │            │ └────────────────────────────────┘ │
+ * ├────────────┴────────────────────────────────────┤
+ * │ BOTTOM NAV: fixed (mobile only)                 │
+ * └─────────────────────────────────────────────────┘
+ */
 export function AppLayout() {
   const theme = useAppStore(selectTheme)
   const isDark = theme === 'dark'
 
   return (
     <div
-      className="flex min-h-screen"
+      className="flex h-dvh overflow-hidden"
       style={{
         background: isDark ? `
           linear-gradient(
@@ -33,21 +58,34 @@ export function AppLayout() {
       {/* Sidebar - hidden on mobile/tablet, shown on desktop */}
       <Sidebar />
 
-      {/* Main content area */}
-      <div className="flex flex-1 flex-col">
-        {/* Header - scrolls with content */}
-        <Header />
+      {/* Scrollable content area */}
+      <div
+        className="flex-1 min-w-0 overflow-y-auto overflow-x-hidden"
+        style={{
+          WebkitOverflowScrolling: 'touch',
+          scrollbarGutter: 'stable',
+        }}
+      >
+        {/*
+         * Inner wrapper with min-h-full ensures:
+         * - If content < viewport: footer stays at bottom of viewport
+         * - If content > viewport: footer appears after scrolling past content
+         */}
+        <div className="flex flex-col min-h-full">
+          {/* Header - sticky floating card */}
+          <Header />
 
-        {/* Page content with bottom padding for BottomNav on mobile */}
-        <main className="flex-1 pb-24 xs:pb-26 sm:pb-28 md:pb-32 lg:pb-6">
-          <div className="container mx-auto p-6">
-            <Outlet />
+          {/* Page content - grows to fill available space */}
+          <main className="flex-1 pb-24 xs:pb-26 sm:pb-28 md:pb-32 lg:pb-6">
+            <div className="container mx-auto p-4 sm:p-6">
+              <Outlet />
+            </div>
+          </main>
+
+          {/* Footer - always at the bottom, hidden on mobile */}
+          <div className="hidden lg:block shrink-0 mt-auto">
+            <Footer />
           </div>
-        </main>
-
-        {/* Footer - hidden on mobile when BottomNav is present */}
-        <div className="hidden lg:block">
-          <Footer />
         </div>
       </div>
 

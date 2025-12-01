@@ -1,26 +1,17 @@
 /**
  * Dashboard Enterprise - CONSAR Regulatory Compliance 2025
  *
- * Dashboard completo basado en:
- * - Normativa CONSAR: Circular 19-8, 19-31 (machine learning, real-time analytics)
- * - Best Practices Fintech/Regulatory 2025: KPIs, real-time monitoring, ML detection
- * - UX/UI Compliance Standards: WCAG 2.2 AA, minimalist design, progressive disclosure
- * - Estándares de la industria: RegTech, smart dashboards, AI-powered insights
+ * Dashboard conectado al backend real mediante DashboardController
+ * Endpoints utilizados:
+ * - GET /v1/dashboard/statistics - Estadísticas generales
+ * - GET /v1/dashboard/recent-validations - Validaciones recientes
+ * - GET /v1/dashboard/alerts - Alertas de cumplimiento
+ * - GET /v1/dashboard/trends - Datos de tendencia
  *
- * Características principales:
- * - 12 KPIs críticos con trends
- * - Gráficos de tendencia histórica
- * - Distribución por tipo de archivo y errores
- * - Alertas de cumplimiento normativo
- * - Validadores por grupo (37 total)
- * - Machine Learning insights
- * - Real-time monitoring con SignalR
- * - Compliance score avanzado
- * - RBAC visualization
- * - Quick actions por módulo
+ * Sin datos hardcodeados - Todo proviene del API
  */
 
-import { useState, useMemo, useEffect } from 'react'
+import { useMemo } from 'react'
 import { useNavigate } from 'react-router-dom'
 import {
   LayoutDashboard,
@@ -32,33 +23,31 @@ import {
   XCircle,
   Upload,
   FileText,
-  BarChart3,
   Activity,
   Calendar,
   Shield,
   Database,
-  Users as UsersIcon,
   Settings as SettingsIcon,
   Bell,
-  Zap,
   Target,
-  TrendingDown,
+  RefreshCw,
+  Loader2,
+  AlertCircle,
 } from 'lucide-react'
 import { cn } from '@/lib/utils'
 import { useAppStore, selectTheme } from '@/stores/appStore'
 import { LottieIcon } from '@/components/ui/LottieIcon'
 import { getAnimation } from '@/lib/lottiePreloader'
 import { PremiumButtonV2 } from '@/components/ui'
-import { DashboardSkeleton } from '@/components/loaders/SkeletonLoader.premium'
+import { DashboardSkeleton } from '@/components/ui/skeleton'
 import { TrendChart, type TrendDataPoint } from '@/components/charts/TrendChart'
 import { DistributionChart, type DistributionData } from '@/components/charts/DistributionChart'
 import {
-  useValidationStatistics,
-  useRecentValidations,
-  useValidations
-} from '@/hooks/useValidations'
-import type { Validation } from '@/types'
-import { VALIDATOR_GROUPS } from '@/lib/constants'
+  useDashboard,
+  useDashboardStatistics,
+  useDashboardAlerts,
+} from '@/hooks/useDashboard'
+import type { DashboardAlert as DashboardAlertType } from '@/lib/services/api/dashboard.service'
 
 // ============================================================================
 // TYPES
@@ -75,16 +64,6 @@ interface StatCardProps {
   }
   loading?: boolean
   onClick?: () => void
-}
-
-interface Alert {
-  id: string
-  title: string
-  message: string
-  severity: 'info' | 'warning' | 'critical'
-  timestamp: string
-  actionLabel?: string
-  actionPath?: string
 }
 
 interface QuickAction {
@@ -178,9 +157,9 @@ function StatCard({ label, value, icon: Icon, color, trend, loading, onClick }: 
               isDark ? 'text-neutral-100' : 'text-neutral-900'
             )}
           >
-            {loading ? '...' : value}
+            {loading ? <Loader2 className="h-8 w-8 animate-spin" /> : value}
           </p>
-          {trend && (
+          {trend && !loading && (
             <div className="flex items-center gap-1 mt-2">
               <span
                 className={cn(
@@ -193,7 +172,7 @@ function StatCard({ label, value, icon: Icon, color, trend, loading, onClick }: 
                 {trend.isPositive ? '↗' : '↘'} {trend.value}
               </span>
               <span className={cn('text-xs', isDark ? 'text-neutral-500' : 'text-neutral-400')}>
-                vs ayer
+                vs periodo anterior
               </span>
             </div>
           )}
@@ -220,10 +199,10 @@ function StatCard({ label, value, icon: Icon, color, trend, loading, onClick }: 
 }
 
 // ============================================================================
-// ALERT CARD COMPONENT
+// ALERT CARD COMPONENT - Connected to Backend
 // ============================================================================
 
-function AlertCard({ alert, onClick }: { alert: Alert; onClick?: () => void }) {
+function AlertCard({ alert, onClick }: { alert: DashboardAlertType; onClick?: () => void }) {
   const theme = useAppStore(selectTheme)
   const isDark = theme === 'dark'
 
@@ -238,14 +217,33 @@ function AlertCard({ alert, onClick }: { alert: Alert; onClick?: () => void }) {
       border: 'rgba(251, 146, 60, 0.3)',
       icon: 'text-orange-500',
     },
-    critical: {
+    error: {
       bg: isDark ? 'rgba(239, 68, 68, 0.1)' : 'rgba(239, 68, 68, 0.05)',
       border: 'rgba(239, 68, 68, 0.3)',
       icon: 'text-red-500',
     },
+    success: {
+      bg: isDark ? 'rgba(34, 197, 94, 0.1)' : 'rgba(34, 197, 94, 0.05)',
+      border: 'rgba(34, 197, 94, 0.3)',
+      icon: 'text-green-500',
+    },
   }
 
-  const config = severityConfig[alert.severity]
+  const config = severityConfig[alert.type] || severityConfig.info
+
+  // Format timestamp
+  const formatTimestamp = (timestamp: string) => {
+    const date = new Date(timestamp)
+    const now = new Date()
+    const diffMs = now.getTime() - date.getTime()
+    const diffMins = Math.floor(diffMs / 60000)
+    const diffHours = Math.floor(diffMins / 60)
+    const diffDays = Math.floor(diffHours / 24)
+
+    if (diffMins < 60) return `Hace ${diffMins} min`
+    if (diffHours < 24) return `Hace ${diffHours} hora${diffHours > 1 ? 's' : ''}`
+    return `Hace ${diffDays} día${diffDays > 1 ? 's' : ''}`
+  }
 
   return (
     <div
@@ -266,7 +264,7 @@ function AlertCard({ alert, onClick }: { alert: Alert; onClick?: () => void }) {
             {alert.message}
           </p>
           <p className={cn('text-xs', isDark ? 'text-neutral-500' : 'text-neutral-500')}>
-            {alert.timestamp}
+            {formatTimestamp(alert.createdAt)}
           </p>
         </div>
       </div>
@@ -316,6 +314,41 @@ function QuickActionCard({ action, onClick }: { action: QuickAction; onClick: ()
 }
 
 // ============================================================================
+// ERROR STATE COMPONENT
+// ============================================================================
+
+function ErrorState({ message, onRetry }: { message: string; onRetry: () => void }) {
+  const theme = useAppStore(selectTheme)
+  const isDark = theme === 'dark'
+
+  return (
+    <div
+      className={cn(
+        'flex flex-col items-center justify-center p-8 rounded-[24px] border',
+        isDark ? 'bg-red-950/20 border-red-900/30' : 'bg-red-50 border-red-200'
+      )}
+    >
+      <AlertCircle className={cn('h-12 w-12 mb-4', isDark ? 'text-red-400' : 'text-red-500')} />
+      <p className={cn('text-sm mb-4 text-center', isDark ? 'text-neutral-300' : 'text-neutral-700')}>
+        {message}
+      </p>
+      <button
+        onClick={onRetry}
+        className={cn(
+          'flex items-center gap-2 px-4 py-2 rounded-lg transition-colors',
+          isDark
+            ? 'bg-red-900/30 hover:bg-red-900/50 text-red-300'
+            : 'bg-red-100 hover:bg-red-200 text-red-700'
+        )}
+      >
+        <RefreshCw className="h-4 w-4" />
+        Reintentar
+      </button>
+    </div>
+  )
+}
+
+// ============================================================================
 // MAIN DASHBOARD COMPONENT
 // ============================================================================
 
@@ -325,165 +358,117 @@ export function DashboardEnterprise() {
   const navigate = useNavigate()
   const dashboardAnimationData = getAnimation('home')
 
-  // Fetch real data from API
-  const { data: statisticsData, isLoading: isLoadingStats } = useValidationStatistics()
-  const { data: recentData, isLoading: isLoadingRecent } = useRecentValidations(10)
-  const { data: allValidationsData } = useValidations({ page: 1, pageSize: 200 })
+  // Fetch all dashboard data from backend
+  const {
+    statistics,
+    alerts,
+    isLoading,
+    isError,
+    refetchAll,
+  } = useDashboard()
 
-  const statistics = statisticsData?.data || {
-    total: 0,
-    processing: 0,
-    success: 0,
-    error: 0,
-    warning: 0,
-    pending: 0,
-  }
-
-  const recentValidations = recentData?.data || []
-  const allValidations = allValidationsData?.data || []
-
-  // Calculate advanced metrics with machine learning insights (simulated)
+  // Computed metrics from real backend data
   const metrics = useMemo(() => {
-    const successRate = statistics.total > 0
-      ? ((statistics.success / statistics.total) * 100).toFixed(1)
-      : '0.0'
+    if (!statistics) {
+      return {
+        successRate: '0.0',
+        complianceScore: '0',
+        avgProcessingTime: '0',
+        retransmissionRequired: 0,
+        todayValidations: 0,
+        slaComplianceRate: '0',
+        criticalErrors: 0,
+      }
+    }
 
-    const complianceScore = statistics.total > 0
-      ? Math.min(100, ((statistics.success + statistics.warning * 0.7) / statistics.total) * 100).toFixed(0)
+    // Success rate from backend
+    const successRate = statistics.successRate.toFixed(1)
+
+    // Compliance score based on approved validations
+    const complianceScore = statistics.totalValidations > 0
+      ? Math.min(100, (statistics.approvedValidations / statistics.totalValidations) * 100).toFixed(0)
       : '0'
 
-    // Average processing time (calculated from real data)
-    const processedValidations = allValidations.filter(v => v.processedAt && v.uploadedAt)
-    const avgProcessingTime = processedValidations.length > 0
-      ? (processedValidations.reduce((sum, v) => {
-          const diff = new Date(v.processedAt!).getTime() - new Date(v.uploadedAt).getTime()
-          return sum + diff
-        }, 0) / processedValidations.length / 60000).toFixed(1) // Convert to minutes
-      : '0'
+    // Processing time in minutes (backend returns ms)
+    const avgProcessingTime = (statistics.averageProcessingTimeMs / 60000).toFixed(1)
 
     // Files requiring retransmission
-    const retransmissionRequired = statistics.error + statistics.warning
+    const retransmissionRequired = statistics.failedValidations + statistics.rejectedValidations
 
-    // Today's validations
-    const today = new Date()
-    today.setHours(0, 0, 0, 0)
-    const todayValidations = allValidations.filter(v => {
-      const uploadedDate = new Date(v.uploadedAt)
-      uploadedDate.setHours(0, 0, 0, 0)
-      return uploadedDate.getTime() === today.getTime()
-    }).length
-
-    // SLA compliance (assuming 4 hour SLA for processing)
-    const slaTarget = 4 * 60 // 4 hours in minutes
-    const slaCompliant = processedValidations.filter(v => {
-      const diff = new Date(v.processedAt!).getTime() - new Date(v.uploadedAt).getTime()
-      return diff / 60000 <= slaTarget
-    }).length
-    const slaComplianceRate = processedValidations.length > 0
-      ? ((slaCompliant / processedValidations.length) * 100).toFixed(1)
+    // SLA compliance (based on completion rate)
+    const completedAndApproved = statistics.completedValidations + statistics.approvedValidations
+    const slaComplianceRate = statistics.totalValidations > 0
+      ? ((completedAndApproved / statistics.totalValidations) * 100).toFixed(1)
       : '0'
 
-    // Critical errors requiring immediate action
-    const criticalErrors = allValidations.filter(v => v.status === 'error' && v.errorCount > 10).length
-
-    // ML-detected anomalies (simulated - would come from ML service)
-    const anomaliesDetected = Math.floor(allValidations.length * 0.03) // 3% anomaly rate
-
-    // Fraud risk score (simulated ML output)
-    const fraudRiskScore = Math.max(0, 100 - parseInt(complianceScore))
+    // Critical errors count
+    const criticalErrors = statistics.failedValidations
 
     return {
       successRate,
       complianceScore,
       avgProcessingTime,
       retransmissionRequired,
-      todayValidations,
+      todayValidations: statistics.pendingValidations + statistics.processingValidations,
       slaComplianceRate,
       criticalErrors,
-      anomaliesDetected,
-      fraudRiskScore,
     }
-  }, [statistics, allValidations])
+  }, [statistics])
 
-  // Trend data (last 7 days)
+  // Calculate trend from backend trendData
+  const calculateTrend = useMemo(() => {
+    if (!statistics?.trendData || statistics.trendData.length < 2) {
+      return null
+    }
+
+    const recent = statistics.trendData.slice(-7)
+    const previous = statistics.trendData.slice(-14, -7)
+
+    if (previous.length === 0) return null
+
+    const recentTotal = recent.reduce((sum, d) => sum + d.total, 0)
+    const previousTotal = previous.reduce((sum, d) => sum + d.total, 0)
+
+    if (previousTotal === 0) return null
+
+    const change = ((recentTotal - previousTotal) / previousTotal) * 100
+    return {
+      value: `${Math.abs(change).toFixed(1)}%`,
+      isPositive: change >= 0,
+    }
+  }, [statistics?.trendData])
+
+  // Transform trend data for chart
   const trendData: TrendDataPoint[] = useMemo(() => {
-    const days = 7
-    const data: TrendDataPoint[] = []
+    if (!statistics?.trendData) return []
 
-    for (let i = days - 1; i >= 0; i--) {
-      const date = new Date()
-      date.setDate(date.getDate() - i)
-      date.setHours(0, 0, 0, 0)
+    return statistics.trendData.slice(-7).map(d => ({
+      date: new Date(d.date).toLocaleDateString('es-MX', { month: 'short', day: 'numeric' }),
+      exitosas: d.approved,
+      errores: d.withErrors,
+      advertencias: Math.max(0, d.total - d.approved - d.withErrors),
+    }))
+  }, [statistics?.trendData])
 
-      const dayValidations = allValidations.filter(v => {
-        const vDate = new Date(v.uploadedAt)
-        vDate.setHours(0, 0, 0, 0)
-        return vDate.getTime() === date.getTime()
-      })
-
-      data.push({
-        date: date.toLocaleDateString('es-MX', { month: 'short', day: 'numeric' }),
-        exitosas: dayValidations.filter(v => v.status === 'success').length,
-        errores: dayValidations.filter(v => v.status === 'error').length,
-        advertencias: dayValidations.filter(v => v.status === 'warning').length,
-      })
-    }
-
-    return data
-  }, [allValidations])
-
-  // Distribution data by file type
+  // Distribution data by file type from backend
   const fileTypeDistribution: DistributionData[] = useMemo(() => {
-    const nomina = allValidations.filter(v => v.fileType === 'NOMINA').length
-    const contable = allValidations.filter(v => v.fileType === 'CONTABLE').length
-    const regularizacion = allValidations.filter(v => v.fileType === 'REGULARIZACION').length
+    if (!statistics?.byFileType) return []
 
-    return [
-      { label: 'NOMINA', value: nomina, color: '#3B82F6' },
-      { label: 'CONTABLE', value: contable, color: '#10B981' },
-      { label: 'REGULARIZACION', value: regularizacion, color: '#F59E0B' },
-    ]
-  }, [allValidations])
-
-  // Alerts (compliance and regulatory)
-  const alerts: Alert[] = useMemo(() => {
-    const alertsList: Alert[] = []
-
-    // CONSAR Circular compliance alerts
-    if (metrics.criticalErrors > 5) {
-      alertsList.push({
-        id: '1',
-        title: 'Errores Críticos Detectados',
-        message: `${metrics.criticalErrors} archivos con errores críticos requieren retransmisión urgente (Circular CONSAR 19-8)`,
-        severity: 'critical',
-        timestamp: 'Hace 15 minutos',
-        actionLabel: 'Ver detalles',
-        actionPath: '/validations?status=error',
-      })
+    const colors: Record<string, string> = {
+      NOMINA: '#3B82F6',
+      Nomina: '#3B82F6',
+      CONTABLE: '#10B981',
+      Contable: '#10B981',
+      REGULARIZACION: '#F59E0B',
+      Regularizacion: '#F59E0B',
     }
 
-    if (parseFloat(metrics.slaComplianceRate) < 95) {
-      alertsList.push({
-        id: '2',
-        title: 'SLA en Riesgo',
-        message: `Tasa de cumplimiento SLA: ${metrics.slaComplianceRate}%. Meta: 95%+`,
-        severity: 'warning',
-        timestamp: 'Hace 1 hora',
-      })
-    }
-
-    if (metrics.anomaliesDetected > 0) {
-      alertsList.push({
-        id: '3',
-        title: 'Anomalías ML Detectadas',
-        message: `Sistema de Machine Learning detectó ${metrics.anomaliesDetected} patrones anómalos en transacciones`,
-        severity: 'warning',
-        timestamp: 'Hace 2 horas',
-      })
-    }
-
-    return alertsList
-  }, [metrics])
+    return Object.entries(statistics.byFileType).map(([label, stats]) => ({
+      label,
+      value: stats.total,
+      color: colors[label] || '#8B5CF6',
+    }))
+  }, [statistics?.byFileType])
 
   // Quick actions
   const quickActions: QuickAction[] = [
@@ -521,8 +506,26 @@ export function DashboardEnterprise() {
     },
   ]
 
-  if (isLoadingStats && isLoadingRecent) {
+  // Show skeleton while loading
+  if (isLoading) {
     return <DashboardSkeleton />
+  }
+
+  // Show error state if API failed
+  if (isError) {
+    return (
+      <div className="space-y-6">
+        <div className="flex items-center gap-4">
+          <h1 className={cn('text-2xl font-bold', isDark ? 'text-neutral-100' : 'text-neutral-900')}>
+            Dashboard Enterprise
+          </h1>
+        </div>
+        <ErrorState
+          message="No se pudieron cargar los datos del dashboard. Verifica tu conexión e intenta nuevamente."
+          onRetry={refetchAll}
+        />
+      </div>
+    )
   }
 
   return (
@@ -563,7 +566,7 @@ export function DashboardEnterprise() {
                 <LottieIcon
                   animationData={dashboardAnimationData}
                   isActive={true}
-                  loop={true}
+                  loop={false}
                   autoplay={true}
                   speed={1.0}
                   className="transition-all duration-300"
@@ -591,23 +594,37 @@ export function DashboardEnterprise() {
             </p>
           </div>
         </div>
-        <PremiumButtonV2
-          label="Subir Archivo"
-          icon={Upload}
-          size="lg"
-          onClick={() => navigate('/validations')}
-        />
+        <div className="flex items-center gap-3">
+          <button
+            onClick={refetchAll}
+            className={cn(
+              'p-2 rounded-lg transition-colors',
+              isDark
+                ? 'hover:bg-neutral-800 text-neutral-400 hover:text-neutral-200'
+                : 'hover:bg-neutral-100 text-neutral-500 hover:text-neutral-700'
+            )}
+            title="Actualizar datos"
+          >
+            <RefreshCw className="h-5 w-5" />
+          </button>
+          <PremiumButtonV2
+            label="Subir Archivo"
+            icon={Upload}
+            size="lg"
+            onClick={() => navigate('/validations')}
+          />
+        </div>
       </div>
 
       {/* KPI Stats Grid - 3x4 Grid (12 KPIs) */}
       <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
         <StatCard
           label="Total Validaciones"
-          value={statistics.total}
+          value={statistics?.totalValidations || 0}
           icon={FileCheck}
           color="blue"
-          trend={{ value: '+12%', isPositive: true }}
-          loading={isLoadingStats}
+          trend={calculateTrend || undefined}
+          loading={isLoading}
           onClick={() => navigate('/validations')}
         />
         <StatCard
@@ -615,54 +632,50 @@ export function DashboardEnterprise() {
           value={`${metrics.successRate}%`}
           icon={TrendingUp}
           color="green"
-          trend={{ value: '+2.3%', isPositive: true }}
-          loading={isLoadingStats}
+          loading={isLoading}
         />
         <StatCard
           label="Compliance Score"
           value={`${metrics.complianceScore}/100`}
           icon={Shield}
           color="purple"
-          loading={isLoadingStats}
+          loading={isLoading}
         />
         <StatCard
           label="Tiempo Promedio"
           value={`${metrics.avgProcessingTime}m`}
           icon={Clock}
           color="yellow"
-          trend={{ value: '-15%', isPositive: true }}
-          loading={isLoadingStats}
+          loading={isLoading}
         />
 
         <StatCard
-          label="Validaciones Hoy"
-          value={metrics.todayValidations}
+          label="En Proceso"
+          value={statistics?.processingValidations || 0}
           icon={Calendar}
           color="cyan"
-          loading={isLoadingStats}
+          loading={isLoading}
         />
         <StatCard
           label="SLA Compliance"
           value={`${metrics.slaComplianceRate}%`}
           icon={Target}
           color="green"
-          trend={{ value: '+5%', isPositive: true }}
-          loading={isLoadingStats}
+          loading={isLoading}
         />
         <StatCard
-          label="En Proceso"
-          value={statistics.processing}
+          label="Procesando"
+          value={statistics?.processingValidations || 0}
           icon={Activity}
           color="blue"
-          loading={isLoadingStats}
+          loading={isLoading}
         />
         <StatCard
           label="Errores Críticos"
           value={metrics.criticalErrors}
           icon={XCircle}
           color="red"
-          trend={{ value: '-18%', isPositive: true }}
-          loading={isLoadingStats}
+          loading={isLoading}
         />
 
         <StatCard
@@ -670,30 +683,29 @@ export function DashboardEnterprise() {
           value={metrics.retransmissionRequired}
           icon={AlertTriangle}
           color="yellow"
-          loading={isLoadingStats}
-          onClick={() => navigate('/validations?status=error,warning')}
+          loading={isLoading}
+          onClick={() => navigate('/validations?status=Failed,Rejected')}
         />
         <StatCard
-          label="Fraud Risk Score"
-          value={`${metrics.fraudRiskScore}`}
-          icon={Shield}
-          color="red"
-          trend={{ value: '-8%', isPositive: true }}
-          loading={isLoadingStats}
-        />
-        <StatCard
-          label="Anomalías ML"
-          value={metrics.anomaliesDetected}
-          icon={Zap}
+          label="Pendientes"
+          value={statistics?.pendingValidations || 0}
+          icon={Clock}
           color="indigo"
-          loading={isLoadingStats}
+          loading={isLoading}
         />
         <StatCard
-          label="Archivos Exitosos"
-          value={statistics.success}
+          label="Rechazadas"
+          value={statistics?.rejectedValidations || 0}
+          icon={XCircle}
+          color="red"
+          loading={isLoading}
+        />
+        <StatCard
+          label="Aprobadas"
+          value={statistics?.approvedValidations || 0}
           icon={CheckCircle}
           color="green"
-          loading={isLoadingStats}
+          loading={isLoading}
         />
       </div>
 
@@ -754,7 +766,7 @@ export function DashboardEnterprise() {
 
       {/* Alerts & Quick Actions - 2 columns */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        {/* Compliance Alerts */}
+        {/* Compliance Alerts - From Backend */}
         <div
           className={cn(
             'glass-ultra-premium depth-layer-3 fresnel-edge',
@@ -783,7 +795,7 @@ export function DashboardEnterprise() {
           </div>
 
           <div className="space-y-3">
-            {alerts.length === 0 ? (
+            {!alerts || alerts.length === 0 ? (
               <div className="text-center py-8">
                 <CheckCircle className={cn('h-12 w-12 mx-auto mb-3', isDark ? 'text-green-500' : 'text-green-600')} />
                 <p className={cn('text-sm', isDark ? 'text-neutral-400' : 'text-neutral-600')}>
@@ -795,7 +807,7 @@ export function DashboardEnterprise() {
                 <AlertCard
                   key={alert.id}
                   alert={alert}
-                  onClick={() => alert.actionPath && navigate(alert.actionPath)}
+                  onClick={() => alert.actionUrl && navigate(alert.actionUrl)}
                 />
               ))
             )}

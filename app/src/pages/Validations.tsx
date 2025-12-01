@@ -34,12 +34,12 @@ import {
 } from '@/hooks/useValidations'
 import type { Validation } from '@/types'
 import { useNavigate } from 'react-router-dom'
+import { ValidationsSkeleton } from '@/components/ui/skeleton'
 
 export function Validations() {
   const theme = useAppStore(selectTheme)
   const isDark = theme === 'dark'
   const validationsAnimationData = getAnimation('validations')
-  const loadFileAnimationData = getAnimation('loadFile')
   const navigate = useNavigate()
 
   const [showUploadDialog, setShowUploadDialog] = useState(false)
@@ -120,6 +120,11 @@ export function Validations() {
     console.error('Upload error:', error)
   }
 
+  // Show skeleton on initial load
+  if (isLoadingValidations && validations.length === 0) {
+    return <ValidationsSkeleton />
+  }
+
   return (
     <div className="space-y-6">
       {/* Header Section */}
@@ -158,7 +163,7 @@ export function Validations() {
                 <LottieIcon
                   animationData={validationsAnimationData}
                   isActive={true}
-                  loop={true}
+                  loop={false}
                   autoplay={true}
                   speed={1.0}
                   className="transition-all duration-300"
@@ -281,20 +286,18 @@ export function Validations() {
         <ResponsiveModalContent size="lg">
           <ResponsiveModalHeader>
             <div className="flex items-center gap-3">
-              {loadFileAnimationData && (
-                <div
-                  className={cn(
-                    'flex-shrink-0 w-11 h-11 rounded-xl flex items-center justify-center',
-                    'glass-ultra-premium'
-                  )}
-                  style={{
-                    background: `linear-gradient(135deg, #0066FF 0%, #5856D6 50%, #7C3AED 100%)`,
-                    border: '1.5px solid rgba(255, 255, 255, 0.3)',
-                  }}
-                >
-                  <Upload className="h-5 w-5 text-white" />
-                </div>
-              )}
+              <div
+                className={cn(
+                  'flex-shrink-0 w-11 h-11 rounded-xl flex items-center justify-center',
+                  'glass-ultra-premium'
+                )}
+                style={{
+                  background: `linear-gradient(135deg, #0066FF 0%, #5856D6 50%, #7C3AED 100%)`,
+                  border: '1.5px solid rgba(255, 255, 255, 0.3)',
+                }}
+              >
+                <Upload className="h-5 w-5 text-white" />
+              </div>
               <div>
                 <ResponsiveModalTitle>Subir Archivo</ResponsiveModalTitle>
                 <ResponsiveModalDescription>

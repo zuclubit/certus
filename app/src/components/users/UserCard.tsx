@@ -218,8 +218,8 @@ const UserInfo = memo(function UserInfo({
       </div>
 
       {/* Email y teléfono - stack en móvil, inline en desktop */}
-      <div className="flex flex-col sm:flex-row sm:items-center gap-1 sm:gap-4 text-sm mb-2 sm:mb-3">
-        <div className="flex items-center gap-1.5 min-w-0">
+      <div className="flex flex-col xs:flex-row xs:items-center gap-1 xs:gap-3 sm:gap-4 text-[13px] sm:text-sm mb-2 sm:mb-3">
+        <div className="flex items-center gap-1.5 min-w-0 flex-1">
           <Mail
             className={cn(
               'h-3.5 w-3.5 sm:h-4 sm:w-4 flex-shrink-0',
@@ -237,25 +237,31 @@ const UserInfo = memo(function UserInfo({
           </span>
         </div>
         {user.phone && (
-          <div className="flex items-center gap-1.5 flex-shrink-0">
+          <div className="flex items-center gap-1.5 min-w-0 xs:max-w-[140px] sm:max-w-none">
             <Phone
               className={cn(
-                'h-3.5 w-3.5 sm:h-4 sm:w-4',
+                'h-3.5 w-3.5 sm:h-4 sm:w-4 flex-shrink-0',
                 isDark ? 'text-neutral-500' : 'text-neutral-400'
               )}
             />
-            <span className={cn(isDark ? 'text-neutral-400' : 'text-neutral-600')}>
+            <span
+              className={cn(
+                'truncate',
+                isDark ? 'text-neutral-400' : 'text-neutral-600'
+              )}
+              title={user.phone}
+            >
               {user.phone}
             </span>
           </div>
         )}
       </div>
 
-      {/* Metadata badges - scrollable en móvil */}
-      <div className="flex items-center gap-2 sm:gap-3 flex-wrap">
-        {/* Role badge */}
+      {/* Metadata badges - responsive con overflow hidden */}
+      <div className="flex items-center gap-1.5 xs:gap-2 sm:gap-3 flex-wrap overflow-hidden">
+        {/* Role badge - siempre visible */}
         <div
-          className="flex-shrink-0 px-2 sm:px-3 py-0.5 sm:py-1 rounded-md sm:rounded-[8px] text-[10px] sm:text-xs font-semibold"
+          className="flex-shrink-0 px-2 sm:px-3 py-0.5 sm:py-1 rounded-md sm:rounded-lg text-[10px] sm:text-xs font-semibold"
           style={{
             background: roleBadge.bg,
             border: `1px solid ${roleBadge.border}`,
@@ -265,18 +271,31 @@ const UserInfo = memo(function UserInfo({
           {formatRoleLabel(user.role)}
         </div>
 
-        {/* Department - oculto en móvil pequeño */}
+        {/* Last login - siempre visible, compacto en móvil */}
+        <div className="flex items-center gap-1 sm:gap-1.5 text-[10px] sm:text-xs flex-shrink-0">
+          <Clock
+            className={cn(
+              'h-3 w-3 flex-shrink-0',
+              isDark ? 'text-neutral-500' : 'text-neutral-400'
+            )}
+          />
+          <span className={cn(isDark ? 'text-neutral-500' : 'text-neutral-500')}>
+            {formatRelativeTime(user.lastLogin)}
+          </span>
+        </div>
+
+        {/* Department - oculto en móvil muy pequeño */}
         {user.department && (
-          <div className="hidden xs:flex items-center gap-1 sm:gap-1.5 text-[10px] sm:text-xs">
+          <div className="hidden xs:flex items-center gap-1 sm:gap-1.5 text-[10px] sm:text-xs min-w-0">
             <Building2
               className={cn(
-                'h-3 w-3',
+                'h-3 w-3 flex-shrink-0',
                 isDark ? 'text-neutral-500' : 'text-neutral-400'
               )}
             />
             <span
               className={cn(
-                'truncate max-w-[80px] sm:max-w-[120px]',
+                'truncate max-w-[60px] sm:max-w-[100px] md:max-w-[140px]',
                 isDark ? 'text-neutral-500' : 'text-neutral-500'
               )}
               title={user.department}
@@ -286,24 +305,11 @@ const UserInfo = memo(function UserInfo({
           </div>
         )}
 
-        {/* Last login */}
-        <div className="flex items-center gap-1 sm:gap-1.5 text-[10px] sm:text-xs">
-          <Clock
-            className={cn(
-              'h-3 w-3',
-              isDark ? 'text-neutral-500' : 'text-neutral-400'
-            )}
-          />
-          <span className={cn(isDark ? 'text-neutral-500' : 'text-neutral-500')}>
-            {formatRelativeTime(user.lastLogin)}
-          </span>
-        </div>
-
-        {/* Sessions - oculto en móvil */}
-        <div className="hidden sm:flex items-center gap-1.5 text-xs">
+        {/* Sessions - solo en desktop */}
+        <div className="hidden md:flex items-center gap-1.5 text-xs flex-shrink-0">
           <Activity
             className={cn(
-              'h-3 w-3',
+              'h-3 w-3 flex-shrink-0',
               isDark ? 'text-neutral-500' : 'text-neutral-400'
             )}
           />

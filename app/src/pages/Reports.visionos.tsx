@@ -1,26 +1,24 @@
 /**
  * Reports Page - Enterprise 2025 VisionOS
  *
- * Módulo de reportes con cumplimiento CONSAR 2025
- * - Generación de reportes de validación con trazabilidad
- * - Exportación en múltiples formatos (PDF, Excel, CSV)
- * - Auditoría completa y retención de 10 años
- * - Firmas digitales y no repudio
+ * Módulo de exportación y reportes CONSAR 2025
+ * Conectado a endpoints reales del backend:
+ * - GET /v1/exports/reports/period - Reporte por período
+ * - GET /v1/exports/reports/compliance - Reporte de cumplimiento
+ * - GET /v1/exports/validations/{id}/pdf|excel|csv|json - Exportar validación
  *
  * @compliance CONSAR Circular 19-8, NOM-151-SCFI-2016
- * @version 2.0.0
+ * @version 2.1.0
  */
 
-import { useState } from 'react'
+import { useState, useMemo } from 'react'
 import { useNavigate } from 'react-router-dom'
 import {
   FileText,
   Download,
   Clock,
   CheckCircle2,
-  XCircle,
   AlertTriangle,
-  Plus,
   Filter,
   Calendar,
   FileDown,
@@ -28,238 +26,402 @@ import {
   BarChart3,
   Activity,
   Shield,
-  Eye,
-  Trash2,
+  Loader2,
+  FileSpreadsheet,
+  FileJson,
+  AlertCircle,
   RefreshCw,
 } from 'lucide-react'
 import { Card, CardHeader, CardTitle, CardDescription, CardContent } from '@/components/ui/card'
 import { PremiumButtonV2 } from '@/components/ui'
-import { ConfirmationModal } from '@/components/ui/confirmation-modal'
 import { cn } from '@/lib/utils'
 import { useAppStore, selectTheme } from '@/stores/appStore'
 import { LottieIcon } from '@/components/ui/LottieIcon'
 import { getAnimation } from '@/lib/lottiePreloader'
-import { formatDistanceToNow } from 'date-fns'
-import { es } from 'date-fns/locale'
-import type { Report, ReportType, ReportFormat } from '@/types'
-import {
-  ReportGeneratorModal,
-  type ReportGeneratorFormData,
-} from '@/components/reports/ReportGeneratorModal.visionos'
+import { useToast } from '@/hooks/use-toast'
+import { useValidations } from '@/hooks/useValidations'
+import { ExportService } from '@/lib/services/api/export.service'
+import type { Validation } from '@/types'
+
+// ============================================================================
+// TYPES
+// ============================================================================
+
+type ExportFormat = 'pdf' | 'excel' | 'csv' | 'json'
+
+interface ExportOption {
+  format: ExportFormat
+  label: string
+  icon: React.ElementType
+  description: string
+  color: string
+}
+
+// ============================================================================
+// CONSTANTS
+// ============================================================================
+
+const EXPORT_OPTIONS: ExportOption[] = [
+  {
+    format: 'pdf',
+    label: 'PDF',
+    icon: FileText,
+    description: 'Reporte formal con gráficos y resumen ejecutivo',
+    color: '#EF4444',
+  },
+  {
+    format: 'excel',
+    label: 'Excel',
+    icon: FileSpreadsheet,
+    description: 'Datos detallados para análisis en hojas de cálculo',
+    color: '#22C55E',
+  },
+  {
+    format: 'csv',
+    label: 'CSV',
+    icon: FileDown,
+    description: 'Datos planos para importación a otros sistemas',
+    color: '#3B82F6',
+  },
+  {
+    format: 'json',
+    label: 'JSON',
+    icon: FileJson,
+    description: 'Formato estructurado para integraciones API',
+    color: '#F59E0B',
+  },
+]
+
+// ============================================================================
+// COMPONENTS
+// ============================================================================
+
+interface ExportCardProps {
+  option: ExportOption
+  onExport: (format: ExportFormat) => void
+  isLoading: boolean
+  disabled?: boolean
+}
+
+function ExportCard({ option, onExport, isLoading, disabled }: ExportCardProps) {
+  const theme = useAppStore(selectTheme)
+  const isDark = theme === 'dark'
+  const Icon = option.icon
+
+  return (
+    <button
+      onClick={() => onExport(option.format)}
+      disabled={isLoading || disabled}
+      className={cn(
+        'p-5 rounded-[16px] border transition-all duration-300 text-left w-full',
+        'hover:scale-[1.02] hover:shadow-lg',
+        isLoading && 'opacity-50 cursor-wait',
+        disabled && 'opacity-50 cursor-not-allowed',
+        isDark
+          ? 'bg-neutral-800/50 border-neutral-700/50 hover:bg-neutral-800'
+          : 'bg-white border-neutral-200 hover:bg-neutral-50'
+      )}
+    >
+      <div className="flex items-start gap-4">
+        <div
+          className="p-3 rounded-[12px] flex-shrink-0"
+          style={{
+            background: `${option.color}20`,
+            boxShadow: `0 0 20px ${option.color}30`,
+          }}
+        >
+          {isLoading ? (
+            <Loader2 className="h-6 w-6 animate-spin" style={{ color: option.color }} />
+          ) : (
+            <Icon className="h-6 w-6" style={{ color: option.color }} />
+          )}
+        </div>
+        <div className="flex-1 min-w-0">
+          <h3
+            className={cn(
+              'text-base font-bold mb-1',
+              isDark ? 'text-neutral-100' : 'text-neutral-900'
+            )}
+          >
+            {option.label}
+          </h3>
+          <p
+            className={cn(
+              'text-sm',
+              isDark ? 'text-neutral-400' : 'text-neutral-600'
+            )}
+          >
+            {option.description}
+          </p>
+        </div>
+        <Download
+          className={cn(
+            'h-5 w-5 flex-shrink-0',
+            isDark ? 'text-neutral-500' : 'text-neutral-400'
+          )}
+        />
+      </div>
+    </button>
+  )
+}
+
+interface ValidationExportRowProps {
+  validation: Validation
+  onExport: (validationId: string, format: ExportFormat) => void
+  exportingId: string | null
+}
+
+function ValidationExportRow({ validation, onExport, exportingId }: ValidationExportRowProps) {
+  const theme = useAppStore(selectTheme)
+  const isDark = theme === 'dark'
+
+  // Guard against undefined/null validation
+  if (!validation || !validation.id) return null
+
+  const isExporting = exportingId === validation.id
+
+  const getStatusConfig = (status: string | undefined) => {
+    const configs: Record<string, { icon: typeof CheckCircle2; color: string; label: string }> = {
+      Completed: { icon: CheckCircle2, color: 'text-green-500', label: 'Completado' },
+      Approved: { icon: CheckCircle2, color: 'text-green-500', label: 'Aprobado' },
+      Failed: { icon: AlertCircle, color: 'text-red-500', label: 'Fallido' },
+      Rejected: { icon: AlertCircle, color: 'text-red-500', label: 'Rechazado' },
+      Pending: { icon: Clock, color: 'text-yellow-500', label: 'Pendiente' },
+      Processing: { icon: Loader2, color: 'text-blue-500', label: 'Procesando' },
+    }
+    return (status && configs[status]) || configs.Pending
+  }
+
+  const statusConfig = getStatusConfig(validation.status)
+  const StatusIcon = statusConfig.icon
+  const canExport = validation.status === 'Completed' || validation.status === 'Approved'
+
+  // Safe accessors for potentially undefined fields
+  const totalRecords = validation.totalRecords ?? 0
+  const fileName = validation.fileName ?? 'Sin nombre'
+  const fileType = validation.fileType ?? 'Desconocido'
+  const uploadedAt = validation.uploadedAt
+    ? new Date(validation.uploadedAt).toLocaleDateString('es-MX')
+    : 'Fecha desconocida'
+
+  return (
+    <div
+      className={cn(
+        'p-4 rounded-[12px] border transition-all duration-200',
+        isDark
+          ? 'bg-neutral-800/30 border-neutral-700/50'
+          : 'bg-white border-neutral-200'
+      )}
+    >
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
+        <div className="flex items-center gap-3 flex-1 min-w-0">
+          <StatusIcon className={cn('h-5 w-5 flex-shrink-0', statusConfig.color)} />
+          <div className="min-w-0 flex-1">
+            <p
+              className={cn(
+                'text-sm font-medium truncate',
+                isDark ? 'text-neutral-100' : 'text-neutral-900'
+              )}
+            >
+              {fileName}
+            </p>
+            <p
+              className={cn(
+                'text-xs',
+                isDark ? 'text-neutral-500' : 'text-neutral-500'
+              )}
+            >
+              {fileType} • {totalRecords.toLocaleString()} registros • {uploadedAt}
+            </p>
+          </div>
+        </div>
+
+        <div className="flex items-center gap-2">
+          {canExport ? (
+            <>
+              {EXPORT_OPTIONS.slice(0, 3).map((opt) => (
+                <button
+                  key={opt.format}
+                  onClick={() => onExport(validation.id, opt.format)}
+                  disabled={isExporting}
+                  className={cn(
+                    'p-2 rounded-lg transition-all duration-200',
+                    'hover:scale-110',
+                    isDark
+                      ? 'hover:bg-neutral-700 text-neutral-400'
+                      : 'hover:bg-neutral-100 text-neutral-600'
+                  )}
+                  title={`Exportar a ${opt.label}`}
+                >
+                  {isExporting ? (
+                    <Loader2 className="h-4 w-4 animate-spin" />
+                  ) : (
+                    <opt.icon className="h-4 w-4" />
+                  )}
+                </button>
+              ))}
+            </>
+          ) : (
+            <span
+              className={cn(
+                'text-xs px-2 py-1 rounded',
+                isDark ? 'bg-neutral-700 text-neutral-400' : 'bg-neutral-100 text-neutral-500'
+              )}
+            >
+              {statusConfig.label}
+            </span>
+          )}
+        </div>
+      </div>
+    </div>
+  )
+}
+
+// ============================================================================
+// MAIN COMPONENT
+// ============================================================================
 
 export function ReportsVisionOS() {
   const theme = useAppStore(selectTheme)
   const isDark = theme === 'dark'
   const navigate = useNavigate()
+  const { toast } = useToast()
   const reportsAnimationData = getAnimation('reports')
 
-  const [showGeneratorModal, setShowGeneratorModal] = useState(false)
-  const [showDeleteModal, setShowDeleteModal] = useState(false)
-  const [reportToDelete, setReportToDelete] = useState<Report | null>(null)
-  const [selectedStatus, setSelectedStatus] = useState<string>('all')
-  const [isGenerating, setIsGenerating] = useState(false)
-
-  // ============================================================================
-  // MOCK DATA - Enterprise Grade Reports
-  // ============================================================================
-
-  const statistics = {
-    totalReports: 248,
-    thisMonth: 45,
-    completed: 231,
-    processing: 3,
-    failed: 14,
-    averageTime: '2.4m',
-  }
-
-  const mockReports: Report[] = [
-    {
-      id: 'RPT_001',
-      name: 'Reporte Mensual de Validaciones - Enero 2025',
-      type: 'monthly',
-      format: 'pdf',
-      status: 'completed',
-      createdBy: 'Ana García',
-      createdAt: '2025-01-23T10:30:00Z',
-      completedAt: '2025-01-23T10:32:45Z',
-      downloadUrl: '/api/reports/RPT_001/download',
-      filters: {
-        dateFrom: '2025-01-01',
-        dateTo: '2025-01-31',
-        status: ['success', 'error', 'warning'],
-      },
-    },
-    {
-      id: 'RPT_002',
-      name: 'Análisis de Errores Críticos - Q4 2024',
-      type: 'custom',
-      format: 'xlsx',
-      status: 'completed',
-      createdBy: 'Carlos Mendoza',
-      createdAt: '2025-01-22T14:15:00Z',
-      completedAt: '2025-01-22T14:18:23Z',
-      downloadUrl: '/api/reports/RPT_002/download',
-      filters: {
-        dateFrom: '2024-10-01',
-        dateTo: '2024-12-31',
-        status: ['error'],
-      },
-    },
-    {
-      id: 'RPT_003',
-      name: 'Reporte Semanal de Cumplimiento',
-      type: 'weekly',
-      format: 'pdf',
-      status: 'processing',
-      createdBy: 'Laura Sánchez',
-      createdAt: '2025-01-23T15:45:00Z',
-      filters: {
-        dateFrom: '2025-01-20',
-        dateTo: '2025-01-26',
-      },
-    },
-    {
-      id: 'RPT_004',
-      name: 'Exportación Completa de Validaciones',
-      type: 'custom',
-      format: 'csv',
-      status: 'completed',
-      createdBy: 'Roberto Torres',
-      createdAt: '2025-01-21T09:00:00Z',
-      completedAt: '2025-01-21T09:05:12Z',
-      downloadUrl: '/api/reports/RPT_004/download',
-      filters: {
-        dateFrom: '2025-01-01',
-        dateTo: '2025-01-21',
-      },
-    },
-    {
-      id: 'RPT_005',
-      name: 'Auditoría de Trazabilidad CONSAR',
-      type: 'custom',
-      format: 'pdf',
-      status: 'failed',
-      createdBy: 'Patricia Ramírez',
-      createdAt: '2025-01-20T16:30:00Z',
-      filters: {
-        dateFrom: '2024-12-01',
-        dateTo: '2025-01-20',
-      },
-    },
-  ]
-
-  // Filter reports by status
-  const filteredReports = mockReports.filter((report) => {
-    if (selectedStatus === 'all') return true
-    return report.status === selectedStatus
+  // State
+  const [exportingFormat, setExportingFormat] = useState<ExportFormat | null>(null)
+  const [exportingValidationId, setExportingValidationId] = useState<string | null>(null)
+  const [periodForm, setPeriodForm] = useState({
+    startDate: '',
+    endDate: '',
+    fileType: '',
+    format: 'pdf' as ExportFormat,
   })
+
+  // Fetch recent validations for export
+  const {
+    data: validationsResponse,
+    isLoading: validationsLoading,
+    refetch: refetchValidations,
+  } = useValidations({ pageSize: 20 })
+
+  const validations = validationsResponse?.data || []
+
+  // Calculate statistics from validations with defensive checks
+  const statistics = useMemo(() => {
+    // Filter out invalid entries
+    const validEntries = validations.filter((v) => v && v.id)
+
+    const completed = validEntries.filter(
+      (v) => v.status === 'Completed' || v.status === 'Approved'
+    ).length
+    const withErrors = validEntries.filter((v) => (v.errorCount ?? 0) > 0).length
+    const totalRecords = validEntries.reduce((sum, v) => sum + (v.totalRecords ?? 0), 0)
+
+    return {
+      totalValidations: validEntries.length,
+      completed,
+      withErrors,
+      totalRecords,
+      complianceRate: validEntries.length > 0 ? (completed / validEntries.length) * 100 : 0,
+    }
+  }, [validations])
 
   // ============================================================================
   // HANDLERS
   // ============================================================================
 
-  const handleGenerateReport = () => {
-    setShowGeneratorModal(true)
-  }
-
-  const handleSubmitReport = (data: ReportGeneratorFormData) => {
-    setIsGenerating(true)
-    console.log('Generating report with data:', data)
-
-    // Simulate report generation
-    setTimeout(() => {
-      setIsGenerating(false)
-      setShowGeneratorModal(false)
-      // TODO: Implement actual API call and refresh reports list
-    }, 3000)
-  }
-
-  const handleDeleteClick = (report: Report) => {
-    setReportToDelete(report)
-    setShowDeleteModal(true)
-  }
-
-  const handleDeleteConfirm = (justification?: string) => {
-    console.log('Deleting report:', reportToDelete?.id, 'Justification:', justification)
-    // TODO: Implement API call with audit trail
-    setShowDeleteModal(false)
-    setReportToDelete(null)
-  }
-
-  const handleDownload = (report: Report) => {
-    console.log('Downloading report:', report.id, report.format)
-    // TODO: Implement download functionality
-  }
-
-  const handleRetry = (report: Report) => {
-    console.log('Retrying report generation:', report.id)
-    // TODO: Implement retry functionality
-  }
-
-  const handleViewDetails = (report: Report) => {
-    console.log('Viewing report details:', report.id)
-    // TODO: Navigate to report detail page
-  }
-
-  // ============================================================================
-  // HELPER FUNCTIONS
-  // ============================================================================
-
-  const getStatusConfig = (status: Report['status']) => {
-    const configs = {
-      completed: {
-        icon: CheckCircle2,
-        label: 'Completado',
-        gradient: isDark
-          ? 'linear-gradient(135deg, rgba(34, 197, 94, 0.2) 0%, rgba(22, 163, 74, 0.2) 100%)'
-          : 'linear-gradient(135deg, rgba(34, 197, 94, 0.12) 0%, rgba(22, 163, 74, 0.12) 100%)',
-        border: isDark ? 'rgba(34, 197, 94, 0.4)' : 'rgba(34, 197, 94, 0.3)',
-        iconColor: 'text-green-500',
-        textColor: isDark ? 'text-green-400' : 'text-green-700',
-      },
-      processing: {
-        icon: Clock,
-        label: 'Procesando',
-        gradient: isDark
-          ? 'linear-gradient(135deg, rgba(59, 130, 246, 0.2) 0%, rgba(37, 99, 235, 0.2) 100%)'
-          : 'linear-gradient(135deg, rgba(59, 130, 246, 0.12) 0%, rgba(37, 99, 235, 0.12) 100%)',
-        border: isDark ? 'rgba(59, 130, 246, 0.4)' : 'rgba(59, 130, 246, 0.3)',
-        iconColor: 'text-blue-500',
-        textColor: isDark ? 'text-blue-400' : 'text-blue-700',
-      },
-      failed: {
-        icon: XCircle,
-        label: 'Fallido',
-        gradient: isDark
-          ? 'linear-gradient(135deg, rgba(239, 68, 68, 0.2) 0%, rgba(220, 38, 38, 0.2) 100%)'
-          : 'linear-gradient(135deg, rgba(239, 68, 68, 0.12) 0%, rgba(220, 38, 38, 0.12) 100%)',
-        border: isDark ? 'rgba(239, 68, 68, 0.4)' : 'rgba(239, 68, 68, 0.3)',
-        iconColor: 'text-red-500',
-        textColor: isDark ? 'text-red-400' : 'text-red-700',
-      },
-      pending: {
-        icon: Clock,
-        label: 'Pendiente',
-        gradient: isDark
-          ? 'linear-gradient(135deg, rgba(107, 114, 128, 0.2) 0%, rgba(75, 85, 99, 0.2) 100%)'
-          : 'linear-gradient(135deg, rgba(107, 114, 128, 0.12) 0%, rgba(75, 85, 99, 0.12) 100%)',
-        border: isDark ? 'rgba(107, 114, 128, 0.4)' : 'rgba(107, 114, 128, 0.3)',
-        iconColor: 'text-gray-500',
-        textColor: isDark ? 'text-gray-400' : 'text-gray-700',
-      },
+  const handleExportValidation = async (validationId: string, format: ExportFormat) => {
+    setExportingValidationId(validationId)
+    try {
+      await ExportService.exportAndDownload(validationId, format)
+      toast({
+        title: 'Exportación completada',
+        description: `El archivo ${format.toUpperCase()} se ha descargado correctamente.`,
+      })
+    } catch (error) {
+      toast({
+        title: 'Error de exportación',
+        description:
+          error instanceof Error ? error.message : 'No se pudo exportar el archivo.',
+        variant: 'destructive',
+      })
+    } finally {
+      setExportingValidationId(null)
     }
-    return configs[status] || configs.pending
   }
 
-  const getFormatIcon = (format: ReportFormat) => {
-    const icons = {
-      pdf: FileText,
-      xlsx: FileDown,
-      csv: FileDown,
-      json: FileDown,
+  const handlePeriodReportExport = async () => {
+    if (!periodForm.startDate || !periodForm.endDate) {
+      toast({
+        title: 'Campos requeridos',
+        description: 'Por favor selecciona las fechas de inicio y fin.',
+        variant: 'destructive',
+      })
+      return
     }
-    return icons[format] || FileText
+
+    setExportingFormat(periodForm.format)
+    try {
+      const result = await ExportService.generatePeriodReport({
+        startDate: periodForm.startDate,
+        endDate: periodForm.endDate,
+        format: periodForm.format === 'excel' ? 'excel' : periodForm.format as 'pdf' | 'csv',
+        fileTypes: periodForm.fileType ? [periodForm.fileType] : undefined,
+      })
+      ExportService.downloadFile(result.data)
+      toast({
+        title: 'Reporte generado',
+        description: 'El reporte de período se ha descargado correctamente.',
+      })
+    } catch (error) {
+      toast({
+        title: 'Error',
+        description:
+          error instanceof Error ? error.message : 'No se pudo generar el reporte.',
+        variant: 'destructive',
+      })
+    } finally {
+      setExportingFormat(null)
+    }
   }
+
+  const handleComplianceReportExport = async (format: ExportFormat) => {
+    if (!periodForm.startDate || !periodForm.endDate) {
+      toast({
+        title: 'Campos requeridos',
+        description: 'Por favor selecciona las fechas de inicio y fin.',
+        variant: 'destructive',
+      })
+      return
+    }
+
+    setExportingFormat(format)
+    try {
+      const result = await ExportService.generateComplianceReport({
+        startDate: periodForm.startDate,
+        endDate: periodForm.endDate,
+        format: format === 'excel' ? 'excel' : 'pdf',
+      })
+      ExportService.downloadFile(result.data)
+      toast({
+        title: 'Reporte de cumplimiento generado',
+        description: 'El reporte se ha descargado correctamente.',
+      })
+    } catch (error) {
+      toast({
+        title: 'Error',
+        description:
+          error instanceof Error ? error.message : 'No se pudo generar el reporte.',
+        variant: 'destructive',
+      })
+    } finally {
+      setExportingFormat(null)
+    }
+  }
+
+  // Get today's date for max attribute
+  const today = new Date().toISOString().split('T')[0]
 
   // ============================================================================
   // RENDER
@@ -267,12 +429,9 @@ export function ReportsVisionOS() {
 
   return (
     <div className="space-y-6">
-      {/* ================================================================ */}
-      {/* HEADER SECTION (Matching Validations/Catalogs structure) */}
-      {/* ================================================================ */}
+      {/* Header Section */}
       <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
         <div className="flex items-center gap-4">
-          {/* Lottie Icon */}
           {reportsAnimationData && (
             <div
               className={cn(
@@ -306,7 +465,7 @@ export function ReportsVisionOS() {
                 <LottieIcon
                   animationData={reportsAnimationData}
                   isActive={true}
-                  loop={true}
+                  loop={false}
                   autoplay={true}
                   speed={1.0}
                   className="transition-all duration-300"
@@ -315,16 +474,15 @@ export function ReportsVisionOS() {
             </div>
           )}
 
-          {/* Title and Description */}
           <div>
             <h1
               className={cn(
                 'ios-heading-title1 ios-text-glass-subtle lg:ios-heading-large',
                 isDark ? 'text-neutral-100' : 'text-neutral-900'
               )}
-              data-text="Reportes"
+              data-text="Reportes y Exportación"
             >
-              Reportes
+              Reportes y Exportación
             </h1>
             <p
               className={cn(
@@ -332,47 +490,50 @@ export function ReportsVisionOS() {
                 isDark ? 'text-neutral-400' : 'text-neutral-600'
               )}
             >
-              Generación y gestión de reportes regulatorios CONSAR
+              Generación de reportes regulatorios CONSAR en múltiples formatos
             </p>
           </div>
         </div>
 
-        {/* Action Button */}
-        <PremiumButtonV2
-          label="Generar Reporte"
-          icon={Plus}
-          size="lg"
-          onClick={handleGenerateReport}
-        />
+        <button
+          onClick={() => refetchValidations()}
+          className={cn(
+            'p-2 rounded-lg transition-colors',
+            isDark
+              ? 'hover:bg-neutral-800 text-neutral-400 hover:text-neutral-200'
+              : 'hover:bg-neutral-100 text-neutral-500 hover:text-neutral-700'
+          )}
+          title="Actualizar datos"
+        >
+          <RefreshCw className="h-5 w-5" />
+        </button>
       </div>
 
-      {/* ================================================================ */}
-      {/* STATS CARDS (Matching Validations/Catalogs grid layout) */}
-      {/* ================================================================ */}
+      {/* Stats Cards */}
       <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
         {[
           {
-            label: 'Total de Reportes',
-            value: statistics.totalReports.toString(),
+            label: 'Total Validaciones',
+            value: statistics.totalValidations.toString(),
             icon: FileText,
             color: 'blue',
           },
           {
-            label: 'Este Mes',
-            value: statistics.thisMonth.toString(),
-            icon: Calendar,
-            color: 'purple',
-          },
-          {
-            label: 'Completados',
+            label: 'Completadas',
             value: statistics.completed.toString(),
             icon: CheckCircle2,
             color: 'green',
           },
           {
-            label: 'Tiempo Promedio',
-            value: statistics.averageTime,
+            label: 'Tasa Cumplimiento',
+            value: `${statistics.complianceRate.toFixed(1)}%`,
             icon: TrendingUp,
+            color: 'purple',
+          },
+          {
+            label: 'Registros Procesados',
+            value: statistics.totalRecords.toLocaleString(),
+            icon: BarChart3,
             color: 'yellow',
           },
         ].map((stat) => (
@@ -402,9 +563,6 @@ export function ReportsVisionOS() {
                     'flex h-12 w-12 items-center justify-center rounded-[12px]',
                     'glass-ultra-clear depth-layer-2'
                   )}
-                  style={{
-                    backdropFilter: 'blur(12px)',
-                  }}
                 >
                   <stat.icon
                     className={cn('h-6 w-6', isDark ? 'text-neutral-300' : 'text-neutral-700')}
@@ -416,56 +574,155 @@ export function ReportsVisionOS() {
         ))}
       </div>
 
-      {/* ================================================================ */}
-      {/* FILTERS BAR */}
-      {/* ================================================================ */}
+      {/* Period Report Generator */}
       <Card>
-        <CardContent className="p-4">
-          <div className="flex flex-col xxs:flex-row flex-wrap items-start xxs:items-center gap-3">
-            <Filter className={cn('h-5 w-5 flex-shrink-0', isDark ? 'text-neutral-400' : 'text-neutral-600')} />
-            <div className="flex flex-wrap gap-2 w-full xxs:w-auto">
-              {[
-                { value: 'all', label: 'Todos' },
-                { value: 'completed', label: 'Completados' },
-                { value: 'processing', label: 'En Proceso' },
-                { value: 'failed', label: 'Fallidos' },
-              ].map((filter) => (
-                <button
-                  key={filter.value}
-                  onClick={() => setSelectedStatus(filter.value)}
-                  className={cn(
-                    'px-3 py-1.5 sm:px-4 sm:py-2 rounded-lg text-xs sm:text-sm font-medium transition-all duration-200',
-                    'whitespace-nowrap shrink-0',
-                    selectedStatus === filter.value
-                      ? isDark
-                        ? 'bg-primary-600 text-white'
-                        : 'bg-primary-500 text-white'
-                      : isDark
-                      ? 'bg-neutral-800 text-neutral-300 hover:bg-neutral-700'
-                      : 'bg-neutral-100 text-neutral-700 hover:bg-neutral-200'
-                  )}
-                >
-                  {filter.label}
-                </button>
-              ))}
+        <CardHeader>
+          <CardTitle className="flex items-center gap-2">
+            <Calendar className="h-5 w-5" />
+            Generar Reporte por Período
+          </CardTitle>
+          <CardDescription>
+            Exporta un reporte consolidado de validaciones para un rango de fechas específico
+          </CardDescription>
+        </CardHeader>
+        <CardContent>
+          <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
+            <div>
+              <label
+                className={cn(
+                  'block text-sm font-medium mb-2',
+                  isDark ? 'text-neutral-300' : 'text-neutral-700'
+                )}
+              >
+                Fecha Inicio *
+              </label>
+              <input
+                type="date"
+                value={periodForm.startDate}
+                onChange={(e) => setPeriodForm({ ...periodForm, startDate: e.target.value })}
+                max={today}
+                className={cn(
+                  'w-full px-3 py-2.5 rounded-lg border text-sm',
+                  isDark
+                    ? 'bg-neutral-800 border-neutral-700 text-neutral-100'
+                    : 'bg-white border-neutral-300 text-neutral-900'
+                )}
+              />
             </div>
+            <div>
+              <label
+                className={cn(
+                  'block text-sm font-medium mb-2',
+                  isDark ? 'text-neutral-300' : 'text-neutral-700'
+                )}
+              >
+                Fecha Fin *
+              </label>
+              <input
+                type="date"
+                value={periodForm.endDate}
+                onChange={(e) => setPeriodForm({ ...periodForm, endDate: e.target.value })}
+                min={periodForm.startDate || undefined}
+                max={today}
+                className={cn(
+                  'w-full px-3 py-2.5 rounded-lg border text-sm',
+                  isDark
+                    ? 'bg-neutral-800 border-neutral-700 text-neutral-100'
+                    : 'bg-white border-neutral-300 text-neutral-900'
+                )}
+              />
+            </div>
+            <div>
+              <label
+                className={cn(
+                  'block text-sm font-medium mb-2',
+                  isDark ? 'text-neutral-300' : 'text-neutral-700'
+                )}
+              >
+                Tipo de Archivo
+              </label>
+              <select
+                value={periodForm.fileType}
+                onChange={(e) => setPeriodForm({ ...periodForm, fileType: e.target.value })}
+                className={cn(
+                  'w-full px-3 py-2.5 rounded-lg border text-sm',
+                  isDark
+                    ? 'bg-neutral-800 border-neutral-700 text-neutral-100'
+                    : 'bg-white border-neutral-300 text-neutral-900'
+                )}
+              >
+                <option value="">Todos</option>
+                <option value="Nomina">NOMINA</option>
+                <option value="Contable">CONTABLE</option>
+                <option value="Regularizacion">REGULARIZACIÓN</option>
+              </select>
+            </div>
+            <div>
+              <label
+                className={cn(
+                  'block text-sm font-medium mb-2',
+                  isDark ? 'text-neutral-300' : 'text-neutral-700'
+                )}
+              >
+                Formato
+              </label>
+              <select
+                value={periodForm.format}
+                onChange={(e) =>
+                  setPeriodForm({ ...periodForm, format: e.target.value as ExportFormat })
+                }
+                className={cn(
+                  'w-full px-3 py-2.5 rounded-lg border text-sm',
+                  isDark
+                    ? 'bg-neutral-800 border-neutral-700 text-neutral-100'
+                    : 'bg-white border-neutral-300 text-neutral-900'
+                )}
+              >
+                <option value="pdf">PDF</option>
+                <option value="excel">Excel</option>
+                <option value="csv">CSV</option>
+              </select>
+            </div>
+          </div>
+
+          <div className="flex flex-col sm:flex-row gap-3">
+            <PremiumButtonV2
+              label="Generar Reporte de Período"
+              icon={exportingFormat ? Loader2 : Download}
+              size="lg"
+              onClick={handlePeriodReportExport}
+              disabled={!!exportingFormat || !periodForm.startDate || !periodForm.endDate}
+            />
+            <PremiumButtonV2
+              label="Reporte de Cumplimiento CONSAR"
+              icon={exportingFormat ? Loader2 : Shield}
+              size="lg"
+              variant="secondary"
+              onClick={() => handleComplianceReportExport('pdf')}
+              disabled={!!exportingFormat || !periodForm.startDate || !periodForm.endDate}
+            />
           </div>
         </CardContent>
       </Card>
 
-      {/* ================================================================ */}
-      {/* REPORTS TABLE */}
-      {/* ================================================================ */}
+      {/* Recent Validations for Export */}
       <Card>
         <CardHeader>
-          <CardTitle>Reportes Generados</CardTitle>
+          <CardTitle className="flex items-center gap-2">
+            <FileText className="h-5 w-5" />
+            Exportar Validaciones Individuales
+          </CardTitle>
           <CardDescription>
-            Historial completo de reportes con trazabilidad y auditoría
+            Descarga reportes detallados de validaciones específicas
           </CardDescription>
         </CardHeader>
         <CardContent>
           <div className="space-y-3">
-            {filteredReports.length === 0 ? (
+            {validationsLoading ? (
+              <div className="flex items-center justify-center py-12">
+                <Loader2 className="h-8 w-8 animate-spin text-primary-500" />
+              </div>
+            ) : validations.length === 0 ? (
               <div
                 className={cn(
                   'text-center py-12',
@@ -478,217 +735,34 @@ export function ReportsVisionOS() {
                     isDark ? 'text-neutral-600' : 'text-neutral-300'
                   )}
                 />
-                <p className="ios-text-callout">
-                  No se encontraron reportes con el filtro seleccionado
-                </p>
+                <p className="ios-text-callout">No hay validaciones disponibles para exportar</p>
+                <button
+                  onClick={() => navigate('/validations')}
+                  className={cn(
+                    'mt-4 text-sm font-medium',
+                    isDark ? 'text-primary-400' : 'text-primary-600'
+                  )}
+                >
+                  Ir a Validaciones →
+                </button>
               </div>
             ) : (
-              filteredReports.map((report) => {
-                const statusConfig = getStatusConfig(report.status)
-                const FormatIcon = getFormatIcon(report.format)
-                const StatusIcon = statusConfig.icon
-
-                return (
-                  <div
-                    key={report.id}
-                    className={cn(
-                      'p-4 rounded-[16px] border transition-all duration-300',
-                      'hover:shadow-lg cursor-pointer',
-                      isDark
-                        ? 'bg-neutral-800/50 border-neutral-700/50 hover:bg-neutral-800'
-                        : 'bg-white border-neutral-200 hover:bg-neutral-50'
-                    )}
-                  >
-                    <div className="flex flex-col sm:flex-row items-start sm:justify-between gap-4">
-                      {/* Left: Report Info */}
-                      <div className="flex-1 min-w-0 w-full sm:w-auto">
-                        <div className="flex items-start gap-3">
-                          {/* Format Icon */}
-                          <div
-                            className={cn(
-                              'flex h-10 w-10 items-center justify-center rounded-[10px] flex-shrink-0',
-                              'glass-ultra-clear depth-layer-2'
-                            )}
-                          >
-                            <FormatIcon className="h-5 w-5 text-primary-500" />
-                          </div>
-
-                          {/* Report Details */}
-                          <div className="flex-1 min-w-0">
-                            <h3
-                              className={cn(
-                                'text-sm sm:text-base font-semibold truncate',
-                                isDark ? 'text-neutral-100' : 'text-neutral-900'
-                              )}
-                            >
-                              {report.name}
-                            </h3>
-                            <div className="flex flex-wrap items-center gap-2 sm:gap-4 mt-1 text-xs sm:text-sm">
-                              <span
-                                className={cn(
-                                  isDark ? 'text-neutral-400' : 'text-neutral-600'
-                                )}
-                              >
-                                {report.createdBy}
-                              </span>
-                              <span
-                                className={cn(
-                                  isDark ? 'text-neutral-500' : 'text-neutral-500'
-                                )}
-                              >
-                                •
-                              </span>
-                              <span
-                                className={cn(
-                                  isDark ? 'text-neutral-400' : 'text-neutral-600'
-                                )}
-                              >
-                                {formatDistanceToNow(new Date(report.createdAt), {
-                                  addSuffix: true,
-                                  locale: es,
-                                })}
-                              </span>
-                              <span
-                                className={cn(
-                                  isDark ? 'text-neutral-500' : 'text-neutral-500'
-                                )}
-                              >
-                                •
-                              </span>
-                              <span
-                                className={cn(
-                                  'uppercase font-semibold',
-                                  isDark ? 'text-neutral-400' : 'text-neutral-600'
-                                )}
-                              >
-                                {report.format}
-                              </span>
-                            </div>
-
-                            {/* Processing Time */}
-                            {report.completedAt && (
-                              <div className="mt-2 text-xs">
-                                <span
-                                  className={cn(
-                                    isDark ? 'text-neutral-500' : 'text-neutral-500'
-                                  )}
-                                >
-                                  Tiempo de generación:{' '}
-                                  {(() => {
-                                    const start = new Date(report.createdAt)
-                                    const end = new Date(report.completedAt)
-                                    const diff = Math.floor((end.getTime() - start.getTime()) / 1000)
-                                    return diff < 60 ? `${diff}s` : `${Math.floor(diff / 60)}m ${diff % 60}s`
-                                  })()}
-                                </span>
-                              </div>
-                            )}
-                          </div>
-                        </div>
-                      </div>
-
-                      {/* Right: Status and Actions */}
-                      <div className="flex flex-col xxs:flex-row items-start xxs:items-center gap-3 w-full sm:w-auto">
-                        {/* Status Badge */}
-                        <div
-                          className={cn(
-                            'flex items-center gap-2 px-3 py-1.5 rounded-[10px]',
-                            'glass-ultra-clear depth-layer-2 shrink-0'
-                          )}
-                          style={{
-                            background: statusConfig.gradient,
-                            border: `1px solid ${statusConfig.border}`,
-                          }}
-                        >
-                          <StatusIcon className={cn('h-4 w-4', statusConfig.iconColor)} />
-                          <span className={cn('text-xs sm:text-sm font-medium', statusConfig.textColor)}>
-                            {statusConfig.label}
-                          </span>
-                        </div>
-
-                        {/* Action Buttons */}
-                        <div className="flex items-center gap-1 flex-wrap">
-                          {report.status === 'completed' && (
-                            <button
-                              onClick={() => handleDownload(report)}
-                              className={cn(
-                                'p-2 rounded-[10px] transition-all duration-200',
-                                'hover:scale-110 glass-ultra-clear'
-                              )}
-                              title="Descargar"
-                            >
-                              <Download
-                                className={cn(
-                                  'h-4 w-4',
-                                  isDark ? 'text-neutral-400' : 'text-neutral-600'
-                                )}
-                              />
-                            </button>
-                          )}
-
-                          {report.status === 'failed' && (
-                            <button
-                              onClick={() => handleRetry(report)}
-                              className={cn(
-                                'p-2 rounded-[10px] transition-all duration-200',
-                                'hover:scale-110 glass-ultra-clear'
-                              )}
-                              title="Reintentar"
-                            >
-                              <RefreshCw
-                                className={cn(
-                                  'h-4 w-4',
-                                  isDark ? 'text-neutral-400' : 'text-neutral-600'
-                                )}
-                              />
-                            </button>
-                          )}
-
-                          <button
-                            onClick={() => handleViewDetails(report)}
-                            className={cn(
-                              'p-2 rounded-[10px] transition-all duration-200',
-                              'hover:scale-110 glass-ultra-clear'
-                            )}
-                            title="Ver detalles"
-                          >
-                            <Eye
-                              className={cn(
-                                'h-4 w-4',
-                                isDark ? 'text-neutral-400' : 'text-neutral-600'
-                              )}
-                            />
-                          </button>
-
-                          <button
-                            onClick={() => handleDeleteClick(report)}
-                            className={cn(
-                              'p-2 rounded-[10px] transition-all duration-200',
-                              'hover:scale-110 glass-ultra-clear'
-                            )}
-                            title="Eliminar"
-                          >
-                            <Trash2
-                              className={cn(
-                                'h-4 w-4',
-                                isDark ? 'text-red-400' : 'text-red-600'
-                              )}
-                            />
-                          </button>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                )
-              })
+              validations
+                .filter((v) => v && v.id) // Filter out invalid entries
+                .map((validation) => (
+                  <ValidationExportRow
+                    key={validation.id}
+                    validation={validation}
+                    onExport={handleExportValidation}
+                    exportingId={exportingValidationId}
+                  />
+                ))
             )}
           </div>
         </CardContent>
       </Card>
 
-      {/* ================================================================ */}
-      {/* ADDITIONAL INFO GRID */}
-      {/* ================================================================ */}
+      {/* Compliance Info Grid */}
       <div className="grid grid-cols-1 gap-4 lg:grid-cols-3">
         {/* Compliance Info */}
         <Card>
@@ -722,103 +796,90 @@ export function ReportsVisionOS() {
           </CardContent>
         </Card>
 
-        {/* Recent Activity */}
+        {/* Export Formats */}
         <Card>
           <CardHeader>
             <CardTitle className="text-base flex items-center gap-2">
-              <Activity className="h-4 w-4" />
-              Actividad Reciente
+              <Download className="h-4 w-4" />
+              Formatos Disponibles
             </CardTitle>
           </CardHeader>
           <CardContent>
             <div className="space-y-3">
-              {mockReports.slice(0, 3).map((report) => {
-                const statusConfig = getStatusConfig(report.status)
-                return (
-                  <div key={report.id} className="flex items-center gap-2">
-                    <statusConfig.icon
-                      className={cn('h-4 w-4 flex-shrink-0', statusConfig.iconColor)}
-                    />
-                    <span
-                      className={cn(
-                        'text-sm truncate',
-                        isDark ? 'text-neutral-300' : 'text-neutral-700'
-                      )}
-                    >
-                      {report.name.slice(0, 30)}...
-                    </span>
-                  </div>
-                )
-              })}
+              {EXPORT_OPTIONS.map((opt) => (
+                <div key={opt.format} className="flex items-center gap-2">
+                  <opt.icon className="h-4 w-4" style={{ color: opt.color }} />
+                  <span
+                    className={cn(
+                      'text-sm font-medium',
+                      isDark ? 'text-neutral-300' : 'text-neutral-700'
+                    )}
+                  >
+                    {opt.label}
+                  </span>
+                  <span
+                    className={cn('text-xs', isDark ? 'text-neutral-500' : 'text-neutral-500')}
+                  >
+                    - {opt.description.split(' ').slice(0, 3).join(' ')}...
+                  </span>
+                </div>
+              ))}
             </div>
           </CardContent>
         </Card>
 
-        {/* Stats Summary */}
+        {/* Quick Stats */}
         <Card>
           <CardHeader>
             <CardTitle className="text-base flex items-center gap-2">
-              <BarChart3 className="h-4 w-4" />
-              Estadísticas
+              <Activity className="h-4 w-4" />
+              Resumen Rápido
             </CardTitle>
           </CardHeader>
           <CardContent>
             <div className="space-y-3">
               <div className="flex items-center justify-between">
                 <span className={cn('text-sm', isDark ? 'text-neutral-400' : 'text-neutral-600')}>
-                  Tasa de éxito
+                  Exportables
                 </span>
                 <span className={cn('text-sm font-bold text-green-500')}>
-                  {((statistics.completed / statistics.totalReports) * 100).toFixed(1)}%
+                  {statistics.completed}
                 </span>
               </div>
               <div className="flex items-center justify-between">
                 <span className={cn('text-sm', isDark ? 'text-neutral-400' : 'text-neutral-600')}>
-                  En proceso
+                  Con errores
                 </span>
-                <span className={cn('text-sm font-bold text-blue-500')}>
-                  {statistics.processing}
+                <span className={cn('text-sm font-bold text-red-500')}>
+                  {statistics.withErrors}
                 </span>
               </div>
               <div className="flex items-center justify-between">
                 <span className={cn('text-sm', isDark ? 'text-neutral-400' : 'text-neutral-600')}>
-                  Fallidos
+                  Pendientes
                 </span>
-                <span className={cn('text-sm font-bold text-red-500')}>{statistics.failed}</span>
+                <span className={cn('text-sm font-bold text-yellow-500')}>
+                  {statistics.totalValidations - statistics.completed}
+                </span>
               </div>
             </div>
           </CardContent>
         </Card>
       </div>
 
-      {/* ================================================================ */}
-      {/* MODALS */}
-      {/* ================================================================ */}
-
-      {/* Delete Confirmation Modal */}
-      <ConfirmationModal
-        open={showDeleteModal}
-        onOpenChange={setShowDeleteModal}
-        title="Eliminar Reporte"
-        description={`¿Está seguro de eliminar el reporte "${reportToDelete?.name}"? Esta acción se registrará en el historial de auditoría según NOM-151-SCFI-2016.`}
-        confirmLabel="Eliminar"
-        cancelLabel="Cancelar"
-        variant="danger"
-        requireJustification={true}
-        justificationLabel="Justificación (requerida por normatividad)"
-        justificationPlaceholder="Por favor proporciona una razón detallada para eliminar este reporte. Esta información se registrará en el historial de auditoría y es requerida por las regulaciones de CONSAR."
-        minJustificationLength={20}
-        onConfirm={handleDeleteConfirm}
-        isLoading={false}
-      />
-
-      {/* Report Generator Modal */}
-      <ReportGeneratorModal
-        isOpen={showGeneratorModal}
-        onClose={() => setShowGeneratorModal(false)}
-        onSubmit={handleSubmitReport}
-        isGenerating={isGenerating}
-      />
+      {/* Animation styles */}
+      <style>{`
+        @keyframes mesh-flow {
+          0%, 100% {
+            background-position: 0% 50%;
+          }
+          50% {
+            background-position: 100% 50%;
+          }
+        }
+      `}</style>
     </div>
   )
 }
+
+export default ReportsVisionOS

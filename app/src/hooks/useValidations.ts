@@ -7,7 +7,7 @@
 
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
 import type { ValidationStatus, FileType } from '@/lib/constants'
-import { ValidationService } from '@/lib/services/validation.service'
+import { ValidationService } from '@/lib/services/validation.adapter'
 import type { Validation, ValidationDetail } from '@/types'
 
 // Query keys for cache management
@@ -209,15 +209,15 @@ export function useSearchValidations(query: string, enabled: boolean = true) {
 }
 
 /**
- * Hook for creating corrected version
+ * Hook for creating corrected version with file upload
  * Complies with CONSAR Circular 19-8 - RETRANSMISION process
  */
 export function useCreateCorrectedVersion() {
   const queryClient = useQueryClient()
 
   return useMutation({
-    mutationFn: ({ id, reason }: { id: string; reason: string }) =>
-      ValidationService.createCorrectedVersion(id, reason),
+    mutationFn: ({ id, reason, file }: { id: string; reason: string; file: File }) =>
+      ValidationService.createCorrectedVersion(id, reason, file),
     onSuccess: (response) => {
       // Invalidate and refetch queries
       queryClient.invalidateQueries({ queryKey: validationKeys.lists() })

@@ -3,17 +3,15 @@
  *
  * Main page for viewing and managing approval workflows
  * Features: Filtering, sorting, search, bulk actions
+ * Uses TanStack Query for data fetching
  */
 
-import React, { useEffect, useState } from 'react'
+import { useMemo, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { cn } from '@/lib/utils'
 import { useAppStore, selectTheme } from '@/stores/appStore'
-import { useApproval } from '@/hooks/useApproval'
-import {
-  ApprovalWorkflowCard,
-  ApprovalStageIndicator,
-} from '@/components/approval'
+import { useApprovals, useApprovalStatistics } from '@/hooks/useApproval'
+import { ApprovalWorkflowCard } from '@/components/approval'
 import { SearchBar, FilterChip, PremiumButtonV2 } from '@/components/ui'
 import {
   Filter,
@@ -25,7 +23,7 @@ import {
   CheckCircle2,
   XCircle,
 } from 'lucide-react'
-import type { ApprovalStatus, ApprovalLevel, SLAStatus } from '@/types'
+import type { ApprovalStatus, SLAStatus, ApprovalWorkflow } from '@/types'
 
 // ============================================
 // MAIN COMPONENT
@@ -36,70 +34,100 @@ export default function ApprovalsList() {
   const theme = useAppStore(selectTheme)
   const isDark = theme === 'dark'
 
-  const {
-    workflows,
-    filters,
-    isLoading,
-    loadWorkflows,
-    setFilters,
-    resetFilters,
-    getPendingWorkflows,
-    getWorkflowsByStatus,
-    getWorkflowsBySLA,
-  } = useApproval()
-
+  // Local filter state
   const [searchQuery, setSearchQuery] = useState('')
   const [selectedStatuses, setSelectedStatuses] = useState<ApprovalStatus[]>([])
   const [selectedSLAs, setSelectedSLAs] = useState<SLAStatus[]>([])
 
-  // Load workflows on mount
-  useEffect(() => {
-    loadWorkflows()
-  }, [])
-
-  // Apply filters
-  useEffect(() => {
-    setFilters({
-      search: searchQuery || undefined,
-      status: selectedStatuses.length > 0 ? selectedStatuses : undefined,
-      slaStatus: selectedSLAs.length > 0 ? selectedSLAs : undefined,
-    })
-  }, [searchQuery, selectedStatuses, selectedSLAs])
-
-  // Filter workflows locally for display
-  const filteredWorkflows = workflows.filter((workflow) => {
-    // Search filter
-    if (searchQuery) {
-      const query = searchQuery.toLowerCase()
-      const matchesSearch =
-        workflow.fileName.toLowerCase().includes(query) ||
-        workflow.fileType.toLowerCase().includes(query) ||
-        workflow.afore.toLowerCase().includes(query) ||
-        workflow.submittedBy.name.toLowerCase().includes(query)
-
-      if (!matchesSearch) return false
-    }
-
-    // Status filter
-    if (selectedStatuses.length > 0 && !selectedStatuses.includes(workflow.status)) {
-      return false
-    }
-
-    // SLA filter
-    if (selectedSLAs.length > 0 && !selectedSLAs.includes(workflow.overallSLAStatus)) {
-      return false
-    }
-
-    return true
+  // TanStack Query hooks
+  const {
+    data: approvalsResponse,
+    isLoading,
+    refetch,
+  } = useApprovals({
+    search: searchQuery || undefined,
+    status: selectedStatuses.length > 0 ? selectedStatuses : undefined,
+    slaStatus: selectedSLAs.length > 0 ? selectedSLAs : undefined,
   })
 
-  // Stats
-  const stats = {
-    total: workflows.length,
-    pending: getPendingWorkflows().length,
-    approved: getWorkflowsByStatus('approved').length,
-    rejected: getWorkflowsByStatus('rejected').length,
-    breached: getWorkflowsBySLA('breached').length,
+  const { data: statisticsResponse } = useApprovalStatistics()
+
+  // Extract workflows from response
+  const workflows: ApprovalWorkflow[] = useMemo(() => {
+    return approvalsResponse?.data || []
+  }, [approvalsResponse])
+
+  // Compute local filter stats from all workflows
+  const filterStats = useMemo(() => {
+    const all = workflows
+    return {
+      pending: all.filter((w) => w.status === 'pending').length,
+      in_progress: all.filter((w) => w.status === 'in_progress').length,
+      approved: all.filter((w) => w.status === 'approved').length,
+      rejected: all.filter((w) => w.status === 'rejected').length,
+      warning: all.filter((w) => w.overallSLAStatus === 'warning').length,
+      critical: all.filter((w) => w.overallSLAStatus === 'critical').length,
+      breached: all.filter((w) => w.overallSLAStatus === 'breached').length,
+    }
+  }, [workflows])
+
+  // Filter workflows locally for display
+  const filteredWorkflows = useMemo(() => {
+    return workflows.filter((workflow) => {
+      // Search filter
+      if (searchQuery) {
+        const query = searchQuery.toLowerCase()
+        const matchesSearch =
+          workflow.fileName.toLowerCase().includes(query) ||
+          workflow.fileType.toLowerCase().includes(query) ||
+          workflow.afore.toLowerCase().includes(query) ||
+          workflow.submittedBy.name.toLowerCase().includes(query)
+
+        if (!matchesSearch) return false
+      }
+
+      // Status filter
+      if (selectedStatuses.length > 0 && !selectedStatuses.includes(workflow.status)) {
+        return false
+      }
+
+      // SLA filter
+      if (selectedSLAs.length > 0 && !selectedSLAs.includes(workflow.overallSLAStatus)) {
+        return false
+      }
+
+      return true
+    })
+  }, [workflows, searchQuery, selectedStatuses, selectedSLAs])
+
+  // Stats from server or computed locally
+  const stats = useMemo(() => {
+    if (statisticsResponse?.data) {
+      return {
+        total: statisticsResponse.data.total || workflows.length,
+        pending: statisticsResponse.data.pending || filterStats.pending,
+        approved: statisticsResponse.data.approved || filterStats.approved,
+        rejected: statisticsResponse.data.rejected || filterStats.rejected,
+        breached: statisticsResponse.data.breached || filterStats.breached,
+      }
+    }
+    return {
+      total: workflows.length,
+      pending: filterStats.pending,
+      approved: filterStats.approved,
+      rejected: filterStats.rejected,
+      breached: filterStats.breached,
+    }
+  }, [statisticsResponse, workflows, filterStats])
+
+  const handleRefresh = () => {
+    refetch()
+  }
+
+  const handleClearFilters = () => {
+    setSelectedStatuses([])
+    setSelectedSLAs([])
+    setSearchQuery('')
   }
 
   return (
@@ -127,7 +155,7 @@ export default function ApprovalsList() {
 
         <div className="flex items-center gap-3">
           <PremiumButtonV2
-            onClick={() => loadWorkflows()}
+            onClick={handleRefresh}
             disabled={isLoading}
             variant="secondary"
             size="md"
@@ -324,7 +352,7 @@ export default function ApprovalsList() {
           {/* Status Filters */}
           <FilterChip
             label="Pendiente"
-            count={getWorkflowsByStatus('pending').length}
+            count={filterStats.pending}
             isActive={selectedStatuses.includes('pending')}
             onClick={() =>
               setSelectedStatuses((prev) =>
@@ -337,7 +365,7 @@ export default function ApprovalsList() {
 
           <FilterChip
             label="En Proceso"
-            count={getWorkflowsByStatus('in_progress').length}
+            count={filterStats.in_progress}
             isActive={selectedStatuses.includes('in_progress')}
             onClick={() =>
               setSelectedStatuses((prev) =>
@@ -377,12 +405,7 @@ export default function ApprovalsList() {
           {/* Clear Filters */}
           {(selectedStatuses.length > 0 || selectedSLAs.length > 0 || searchQuery) && (
             <PremiumButtonV2
-              onClick={() => {
-                setSelectedStatuses([])
-                setSelectedSLAs([])
-                setSearchQuery('')
-                resetFilters()
-              }}
+              onClick={handleClearFilters}
               variant="ghost"
               size="sm"
             >

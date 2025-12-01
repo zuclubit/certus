@@ -283,15 +283,15 @@ export function UsersVisionOS() {
 
   return (
     <div
-      className="min-h-screen"
+      className="min-h-screen pb-safe"
       style={{
         background: isDark
           ? 'linear-gradient(180deg, #070B14 0%, #0C111C 50%, #0A0E18 100%)'
           : 'linear-gradient(180deg, #F8FAFC 0%, #F1F5F9 50%, #E2E8F0 100%)',
       }}
     >
-      {/* Contenedor principal con padding responsive */}
-      <div className="max-w-[1800px] mx-auto px-4 sm:px-6 py-4 sm:py-6 space-y-4 sm:space-y-6">
+      {/* Contenedor principal con padding responsive y safe areas */}
+      <div className="max-w-[1800px] mx-auto px-3 xs:px-4 sm:px-6 py-3 xs:py-4 sm:py-6 space-y-3 xs:space-y-4 sm:space-y-6">
         {/* ================================================================ */}
         {/* HEADER - Responsive con stack en móvil */}
         {/* ================================================================ */}

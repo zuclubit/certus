@@ -18,6 +18,7 @@ const iconMap: Record<string, LottieIconKey> = {
   validators: 'validators', // Dedicated validators icon
   users: 'users',
   settings: 'settings',
+  tenants: 'analytics', // AFOREs management icon
 }
 
 // Ultra-optimized mobile labels - Shorter versions for tiny screens
@@ -30,6 +31,7 @@ const mobileLabels: Record<string, { xs: string; sm: string; md: string }> = {
   'Validadores': { xs: 'Valid', sm: 'Config', md: 'Config' },
   'Usuarios': { xs: 'Users', sm: 'Usuarios', md: 'Usuarios' },
   'Configuración': { xs: 'Config', sm: 'Ajustes', md: 'Ajustes' },
+  'AFOREs': { xs: 'AFORE', sm: 'AFOREs', md: 'AFOREs' },
 }
 
 // Hook to get current screen size - SSR-safe with debouncing

@@ -1,0 +1,11 @@
+blank_issues_enabled: false
+contact_links:
+  - name: Documentacion
+    url: https://docs.certus.mx
+    about: Consulta la documentacion oficial antes de abrir un issue
+  - name: Figma Design System
+    url: https://figma.com/certus
+    about: Consulta el design system en Figma
+  - name: Soporte
+    url: mailto:soporte@hergon.digital
+    about: Para soporte tecnico urgente

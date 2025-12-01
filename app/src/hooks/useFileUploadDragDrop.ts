@@ -6,7 +6,6 @@
  */
 
 import { useState, useCallback, useRef } from 'react'
-import type { FileType } from '@/lib/constants'
 
 export interface UseFileUploadDragDropOptions {
   maxFileSize?: number // in bytes
@@ -32,7 +31,7 @@ export interface UseFileUploadDragDropReturn {
   handleFileInputChange: (e: React.ChangeEvent<HTMLInputElement>) => void
   setIsUploading: (uploading: boolean) => void
   setUploadProgress: (progress: number) => void
-  fileInputRef: React.RefObject<HTMLInputElement>
+  fileInputRef: React.RefObject<HTMLInputElement | null>
 }
 
 /**

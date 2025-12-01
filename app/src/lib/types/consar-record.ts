@@ -9,8 +9,26 @@
 
 /**
  * File types supported by CONSAR validation system
+ *
+ * Based on Circular 19-8 and subsequent modifications (19-9 to 19-31)
+ * - NOMINA: Aportaciones patronales
+ * - CONTABLE: Movimientos contables SIEFORES
+ * - REGULARIZACION: Correcciones y ajustes
+ * - TRASPASOS: Solicitudes de traspaso entre AFOREs
+ * - RETIROS: Solicitudes de retiro parcial/total
+ * - APORTACIONES: Aportaciones voluntarias
+ * - CARTERA_SIEFORE: Portafolio de inversiones (formato especial 150 chars)
+ * - DERIVADOS: Posiciones en derivados (formato especial 150 chars)
  */
-export type CONSARFileType = 'NOMINA' | 'CONTABLE' | 'REGULARIZACION'
+export type CONSARFileType =
+  | 'NOMINA'
+  | 'CONTABLE'
+  | 'REGULARIZACION'
+  | 'TRASPASOS'
+  | 'RETIROS'
+  | 'APORTACIONES'
+  | 'CARTERA_SIEFORE'
+  | 'DERIVADOS'
 
 /**
  * Record types within CONSAR files
@@ -151,9 +169,93 @@ export interface RegularizacionRecord extends CONSARRecord {
 }
 
 /**
+ * TRASPASOS specific record fields
+ * For transfer requests between AFOREs
+ */
+export interface TraspasosRecord extends CONSARRecord {
+  fileType: 'TRASPASOS'
+  /** Employee account number */
+  account: string
+  /** CURP (18 characters) */
+  curp: string
+  /** NSS (11 digits) */
+  nss: string
+  /** Origin AFORE code */
+  originAFORE: string
+  /** Destination AFORE code */
+  destinationAFORE: string
+  /** Request date */
+  requestDate: string
+  /** Request status */
+  status: 'P' | 'A' | 'R' | string // Pending, Approved, Rejected
+  /** Transfer amount in cents */
+  transferAmount: number
+  /** Additional fields */
+  [key: string]: unknown
+}
+
+/**
+ * RETIROS specific record fields
+ * For withdrawal requests
+ */
+export interface RetirosRecord extends CONSARRecord {
+  fileType: 'RETIROS'
+  /** Employee account number */
+  account: string
+  /** CURP (18 characters) */
+  curp: string
+  /** NSS (11 digits) */
+  nss: string
+  /** Withdrawal type (P=Partial, T=Total, M=Marriage, U=Unemployment) */
+  withdrawalType: 'P' | 'T' | 'M' | 'U' | string
+  /** Request date */
+  requestDate: string
+  /** Requested amount in cents */
+  requestedAmount: number
+  /** Approved amount in cents */
+  approvedAmount?: number
+  /** Beneficiary name */
+  beneficiaryName?: string
+  /** Beneficiary CLABE */
+  beneficiaryCLABE?: string
+  /** Additional fields */
+  [key: string]: unknown
+}
+
+/**
+ * APORTACIONES specific record fields
+ * For voluntary contributions
+ */
+export interface AportacionesRecord extends CONSARRecord {
+  fileType: 'APORTACIONES'
+  /** Employee account number */
+  account: string
+  /** CURP (18 characters) */
+  curp: string
+  /** NSS (11 digits) */
+  nss: string
+  /** Contribution type (AVO=Voluntary, CVO=Complementary Housing) */
+  contributionType: 'AVO' | 'CVO' | 'SOL' | string
+  /** Contribution date */
+  contributionDate: string
+  /** Amount in cents */
+  amount: number
+  /** Company RFC (if employer contribution) */
+  companyRFC?: string
+  /** Additional fields */
+  [key: string]: unknown
+}
+
+/**
  * Union type for all CONSAR record types
  */
-export type AnyRecord = NominaRecord | ContableRecord | RegularizacionRecord
+export type AnyRecord =
+  | NominaRecord
+  | ContableRecord
+  | RegularizacionRecord
+  | TraspasosRecord
+  | RetirosRecord
+  | AportacionesRecord
 
 /**
  * File metadata extracted from filename

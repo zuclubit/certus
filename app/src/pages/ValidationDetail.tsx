@@ -255,11 +255,11 @@ export function ValidationDetail() {
     setExpandedErrors(newExpanded)
   }
 
-  const handleCreateVersion = async (reason: string) => {
+  const handleCreateVersion = async (reason: string, file: File) => {
     if (!id || !validation) return
 
     try {
-      const response = await createVersionMutation.mutateAsync({ id, reason })
+      const response = await createVersionMutation.mutateAsync({ id, reason, file })
       setShowVersionModal(false)
 
       // Navigate to new version
@@ -523,11 +523,11 @@ export function ValidationDetail() {
       )}
 
       {activeTab === 'errores' && (
-        <ErroresTab errors={validation.errors} isDark={isDark} expandedErrors={expandedErrors} toggleError={toggleError} />
+        <ErroresTab errors={validation.errors ?? []} isDark={isDark} expandedErrors={expandedErrors} toggleError={toggleError} />
       )}
 
       {activeTab === 'advertencias' && (
-        <AdvertenciasTab warnings={validation.warnings} isDark={isDark} />
+        <AdvertenciasTab warnings={validation.warnings ?? []} isDark={isDark} />
       )}
 
       {activeTab === 'datos' && (
@@ -535,11 +535,11 @@ export function ValidationDetail() {
       )}
 
       {activeTab === 'timeline' && (
-        <TimelineTab timeline={validation.timeline} isDark={isDark} />
+        <TimelineTab timeline={validation.timeline ?? []} isDark={isDark} />
       )}
 
       {activeTab === 'audit' && (
-        <AuditTab auditLog={validation.auditLog} isDark={isDark} />
+        <AuditTab auditLog={validation.auditLog ?? []} isDark={isDark} />
       )}
 
       {activeTab === 'versions' && (
@@ -595,14 +595,16 @@ function ResumenTab({
         {[
           {
             label: 'Total Registros',
-            value: validation.recordCount.toLocaleString(),
+            value: (validation.recordCount ?? 0).toLocaleString(),
             icon: FileText,
             color: 'blue',
             glowColor: 'rgba(59, 130, 246, 0.3)',
           },
           {
             label: 'Validados OK',
-            value: `${validation.validRecordCount.toLocaleString()} (${Math.round((validation.validRecordCount / validation.recordCount) * 100)}%)`,
+            value: validation.recordCount
+              ? `${(validation.validRecordCount ?? 0).toLocaleString()} (${Math.round(((validation.validRecordCount ?? 0) / validation.recordCount) * 100)}%)`
+              : (validation.validRecordCount ?? 0).toLocaleString(),
             icon: CheckCircle2,
             color: 'green',
             glowColor: 'rgba(34, 197, 94, 0.3)',
@@ -709,7 +711,7 @@ function ResumenTab({
       >
         <div className="p-6 border-b" style={{ borderColor: isDark ? 'rgba(255,255,255,0.08)' : 'rgba(0,0,0,0.08)' }}>
           <h3 className={cn('ios-heading-title2 ios-font-bold mb-1', isDark ? 'text-neutral-200' : 'text-neutral-800')}>
-            Validadores Ejecutados ({validation.validators.length}/37)
+            Validadores Ejecutados ({validation.validators?.length ?? 0}/37)
           </h3>
           <p className={cn('ios-text-callout ios-font-regular', isDark ? 'text-neutral-400' : 'text-neutral-600')}>
             Agrupados por categoría según especificaciones CONSAR

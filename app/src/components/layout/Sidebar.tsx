@@ -17,6 +17,9 @@ const iconMap: Record<string, LottieIconKey> = {
   validators: 'validators', // Dedicated validators icon
   users: 'users',
   settings: 'settings',
+  tenants: 'analytics', // AFOREs management icon
+  scrapers: 'settings', // Scrapers/automation icon (using settings as fallback)
+  compliance: 'validators', // Compliance portal icon (using validators as proxy)
 }
 
 /**

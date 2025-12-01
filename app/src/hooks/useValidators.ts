@@ -1,450 +1,290 @@
 /**
  * useValidators Hook - CONSAR Compliance
  *
- * Custom React hook for validator configuration and testing
- * Combines store state with service methods for visual editor and playground
+ * Custom React hooks for validator configuration operations
+ * Uses TanStack Query for data fetching and caching
+ * Uses adapter pattern for API operations (always real API)
  */
 
-import { useCallback, useEffect, useMemo } from 'react'
-import { useValidatorStore } from '@/stores/validatorStore'
-import { validatorService } from '@/services/validator.service'
-import type {
-  ValidatorRule,
-  ValidatorGroup,
-  ValidatorPreset,
-  ValidatorTestCase,
-  ValidatorFilters,
-  ValidatorEditorState,
-  ValidatorType,
-  ValidatorCriticality,
-  ValidatorStatus,
-} from '@/types/validator.types'
+import React from 'react'
+import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
+import { ValidatorService } from '@/lib/services/validator.adapter'
+import type { ValidatorListParams } from '@/lib/services/validator.adapter'
+import type { ValidatorRule, ValidatorCriticality, ValidatorStatus } from '@/types/validator.types'
 
 // ============================================
-// MAIN HOOK
+// QUERY KEYS
 // ============================================
 
-export function useValidators() {
-  const store = useValidatorStore()
+export const validatorKeys = {
+  all: ['validators'] as const,
+  lists: () => [...validatorKeys.all, 'list'] as const,
+  list: (params: string) => [...validatorKeys.lists(), params] as const,
+  details: () => [...validatorKeys.all, 'detail'] as const,
+  detail: (id: string) => [...validatorKeys.details(), id] as const,
+  groups: () => [...validatorKeys.all, 'groups'] as const,
+  categories: () => [...validatorKeys.all, 'categories'] as const,
+  byFileType: (fileType: string) => [...validatorKeys.all, 'byFileType', fileType] as const,
+  byGroup: (groupId: string) => [...validatorKeys.all, 'byGroup', groupId] as const,
+  activeCount: () => [...validatorKeys.all, 'activeCount'] as const,
+}
 
-  // ============================================
-  // FETCH OPERATIONS
-  // ============================================
+// ============================================
+// QUERY HOOKS
+// ============================================
 
-  /**
-   * Load validators from API
-   */
-  const loadValidators = useCallback(async () => {
-    store.setLoading(true)
-    store.setError(null)
+/**
+ * Hook for fetching paginated validators with filters
+ */
+export function useValidatorsList(params: ValidatorListParams & { enabled?: boolean } = {}) {
+  const { enabled = true, ...filterParams } = params
 
-    try {
-      const validators = await validatorService.getValidators(store.filters)
-      store.setValidators(validators)
-    } catch (error) {
-      const message = error instanceof Error ? error.message : 'Error al cargar validadores'
-      store.setError(message)
-    } finally {
-      store.setLoading(false)
-    }
-  }, [store.filters])
+  return useQuery({
+    queryKey: validatorKeys.list(JSON.stringify(filterParams)),
+    queryFn: () => ValidatorService.getValidators(filterParams),
+    enabled,
+    staleTime: 30000, // 30 seconds
+    refetchInterval: false, // Disable auto-refetch for validators (config doesn't change often)
+  })
+}
 
-  /**
-   * Load single validator by ID
-   */
-  const loadValidatorById = useCallback(async (id: string) => {
-    store.setLoading(true)
-    store.setError(null)
+/**
+ * Hook for fetching validator detail
+ */
+export function useValidatorDetail(id: string | undefined, enabled: boolean = true) {
+  return useQuery({
+    queryKey: validatorKeys.detail(id || ''),
+    queryFn: () => ValidatorService.getValidatorById(id!),
+    enabled: enabled && !!id && id !== 'new',
+    staleTime: 60000, // 1 minute
+  })
+}
 
-    try {
-      const validator = await validatorService.getValidatorById(id)
-      store.setSelectedValidator(validator)
-      return validator
-    } catch (error) {
-      const message = error instanceof Error ? error.message : 'Error al cargar validador'
-      store.setError(message)
-      throw error
-    } finally {
-      store.setLoading(false)
-    }
-  }, [])
+/**
+ * Hook for fetching validator groups
+ */
+export function useValidatorGroups(enabled: boolean = true) {
+  return useQuery({
+    queryKey: validatorKeys.groups(),
+    queryFn: () => ValidatorService.getGroups(),
+    enabled,
+    staleTime: 300000, // 5 minutes (groups don't change often)
+  })
+}
 
-  /**
-   * Load groups
-   */
-  const loadGroups = useCallback(async () => {
-    try {
-      const groups = await validatorService.getGroups()
-      store.setGroups(groups)
-    } catch (error) {
-      console.error('Error loading groups:', error)
-    }
-  }, [])
+/**
+ * Hook for fetching validator categories
+ */
+export function useValidatorCategories(enabled: boolean = true) {
+  return useQuery({
+    queryKey: validatorKeys.categories(),
+    queryFn: () => ValidatorService.getCategories(),
+    enabled,
+    staleTime: 300000, // 5 minutes
+  })
+}
 
-  /**
-   * Load presets
-   */
-  const loadPresets = useCallback(async () => {
-    try {
-      const presets = await validatorService.getPresets()
-      store.setPresets(presets)
-    } catch (error) {
-      console.error('Error loading presets:', error)
-    }
-  }, [])
+/**
+ * Hook for fetching validators by file type
+ */
+export function useValidatorsByFileType(fileType: string, enabled: boolean = true) {
+  return useQuery({
+    queryKey: validatorKeys.byFileType(fileType),
+    queryFn: () => ValidatorService.getValidatorsByFileType(fileType),
+    enabled: enabled && !!fileType,
+    staleTime: 60000,
+  })
+}
 
-  /**
-   * Load test cases
-   */
-  const loadTestCases = useCallback(async (validatorId?: string) => {
-    try {
-      const testCases = await validatorService.getTestCases(validatorId)
-      store.setTestCases(testCases)
-    } catch (error) {
-      console.error('Error loading test cases:', error)
-    }
-  }, [])
+/**
+ * Hook for fetching validators by group
+ */
+export function useValidatorsByGroup(groupId: string, enabled: boolean = true) {
+  return useQuery({
+    queryKey: validatorKeys.byGroup(groupId),
+    queryFn: () => ValidatorService.getValidatorsByGroup(groupId),
+    enabled: enabled && !!groupId,
+    staleTime: 60000,
+  })
+}
 
-  /**
-   * Load metrics
-   */
-  const loadMetrics = useCallback(async (validatorId?: string) => {
-    try {
-      const metrics = await validatorService.getMetrics(validatorId)
-      store.setMetrics(metrics)
-    } catch (error) {
-      console.error('Error loading metrics:', error)
-    }
-  }, [])
+/**
+ * Hook for fetching active validators count
+ */
+export function useActiveValidatorsCount(enabled: boolean = true) {
+  return useQuery({
+    queryKey: validatorKeys.activeCount(),
+    queryFn: () => ValidatorService.getActiveCount(),
+    enabled,
+    staleTime: 30000,
+  })
+}
 
-  // ============================================
-  // VALIDATOR CRUD
-  // ============================================
+// ============================================
+// MUTATION HOOKS
+// ============================================
 
-  /**
-   * Create new validator
-   */
-  const createValidator = useCallback(
-    async (validator: Omit<ValidatorRule, 'id'>) => {
-      store.setLoading(true)
-      try {
-        const created = await validatorService.createValidator(validator)
-        store.addValidator(created)
-        return created
-      } catch (error) {
-        const message = error instanceof Error ? error.message : 'Error al crear validador'
-        store.setError(message)
-        throw error
-      } finally {
-        store.setLoading(false)
+/**
+ * Hook for toggling validator enabled/disabled
+ */
+export function useToggleValidator() {
+  const queryClient = useQueryClient()
+
+  return useMutation({
+    mutationFn: (id: string) => ValidatorService.toggleValidator(id),
+    onMutate: async (id) => {
+      // Cancel any outgoing refetches
+      await queryClient.cancelQueries({ queryKey: validatorKeys.detail(id) })
+
+      // Snapshot the previous value
+      const previousData = queryClient.getQueryData(validatorKeys.detail(id))
+
+      // Optimistically update
+      queryClient.setQueryData(validatorKeys.detail(id), (old: any) => {
+        if (!old?.data) return old
+        return {
+          ...old,
+          data: {
+            ...old.data,
+            isEnabled: !old.data.isEnabled,
+          },
+        }
+      })
+
+      return { previousData }
+    },
+    onError: (_err, id, context) => {
+      // Rollback on error
+      if (context?.previousData) {
+        queryClient.setQueryData(validatorKeys.detail(id), context.previousData)
       }
     },
-    []
-  )
-
-  /**
-   * Update validator
-   */
-  const updateValidator = useCallback(
-    async (id: string, updates: Partial<ValidatorRule>) => {
-      store.setLoading(true)
-      try {
-        const updated = await validatorService.updateValidator(id, updates)
-        store.updateValidator(id, updated)
-        return updated
-      } catch (error) {
-        const message = error instanceof Error ? error.message : 'Error al actualizar validador'
-        store.setError(message)
-        throw error
-      } finally {
-        store.setLoading(false)
-      }
+    onSuccess: () => {
+      // Invalidate related queries
+      queryClient.invalidateQueries({ queryKey: validatorKeys.lists() })
+      queryClient.invalidateQueries({ queryKey: validatorKeys.activeCount() })
     },
-    []
-  )
+  })
+}
 
-  /**
-   * Delete validator
-   */
-  const deleteValidator = useCallback(async (id: string) => {
-    store.setLoading(true)
-    try {
-      await validatorService.deleteValidator(id)
-      store.removeValidator(id)
-    } catch (error) {
-      const message = error instanceof Error ? error.message : 'Error al eliminar validador'
-      store.setError(message)
-      throw error
-    } finally {
-      store.setLoading(false)
-    }
-  }, [])
+/**
+ * Hook for updating validator configuration
+ */
+export function useUpdateValidatorConfig() {
+  const queryClient = useQueryClient()
 
-  /**
-   * Duplicate validator
-   */
-  const duplicateValidator = useCallback(
-    (id: string) => {
-      store.duplicateValidator(id)
+  return useMutation({
+    mutationFn: ({ id, config }: { id: string; config: Parameters<typeof ValidatorService.updateConfig>[1] }) =>
+      ValidatorService.updateConfig(id, config),
+    onSuccess: (_, { id }) => {
+      queryClient.invalidateQueries({ queryKey: validatorKeys.detail(id) })
+      queryClient.invalidateQueries({ queryKey: validatorKeys.lists() })
     },
-    []
-  )
+  })
+}
 
-  /**
-   * Toggle validator status
-   */
-  const toggleValidator = useCallback(
-    (id: string) => {
-      store.toggleValidatorStatus(id)
+/**
+ * Hook for bulk enabling validators
+ */
+export function useBulkEnableValidators() {
+  const queryClient = useQueryClient()
+
+  return useMutation({
+    mutationFn: (ids: string[]) => ValidatorService.bulkEnable(ids),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: validatorKeys.lists() })
+      queryClient.invalidateQueries({ queryKey: validatorKeys.activeCount() })
     },
-    []
-  )
+  })
+}
 
-  // ============================================
-  // TESTING PLAYGROUND
-  // ============================================
+/**
+ * Hook for bulk disabling validators
+ */
+export function useBulkDisableValidators() {
+  const queryClient = useQueryClient()
 
-  /**
-   * Run single test case
-   */
-  const runTest = useCallback(async (testCaseId: string) => {
-    return await store.runTest(testCaseId)
-  }, [])
-
-  /**
-   * Run all tests for a validator
-   */
-  const runTestsForValidator = useCallback(async (validatorId: string) => {
-    return await store.runTestsForValidator(validatorId)
-  }, [])
-
-  /**
-   * Run all tests
-   */
-  const runAllTests = useCallback(async () => {
-    return await store.runAllTests()
-  }, [])
-
-  /**
-   * Add test case
-   */
-  const addTestCase = useCallback(
-    (testCase: ValidatorTestCase) => {
-      store.addTestCase(testCase)
+  return useMutation({
+    mutationFn: (ids: string[]) => ValidatorService.bulkDisable(ids),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: validatorKeys.lists() })
+      queryClient.invalidateQueries({ queryKey: validatorKeys.activeCount() })
     },
-    []
-  )
+  })
+}
 
-  /**
-   * Update test case
-   */
-  const updateTestCase = useCallback(
-    (id: string, updates: Partial<ValidatorTestCase>) => {
-      store.updateTestCase(id, updates)
-    },
-    []
-  )
+/**
+ * Hook for testing validator with sample data
+ */
+export function useTestValidator() {
+  return useMutation({
+    mutationFn: ({ id, testData }: { id: string; testData: Record<string, unknown> }) =>
+      ValidatorService.testValidator(id, testData),
+  })
+}
 
-  /**
-   * Delete test case
-   */
-  const deleteTestCase = useCallback(
-    (id: string) => {
-      store.removeTestCase(id)
-    },
-    []
-  )
+// ============================================
+// COMBINED HOOK FOR CONVENIENCE
+// ============================================
 
-  // ============================================
-  // VALIDATION EXECUTION
-  // ============================================
+/**
+ * Combined hook providing all validator operations
+ * Use individual hooks for better tree-shaking
+ */
+export function useValidators(params: ValidatorListParams = {}) {
+  const queryClient = useQueryClient()
 
-  /**
-   * Validate file
-   */
-  const validateFile = useCallback(async (fileId: string, presetId?: string) => {
-    return await store.validateFile(fileId, presetId)
-  }, [])
+  // Query for validators list
+  const {
+    data: validatorsResponse,
+    isLoading,
+    error,
+    refetch,
+  } = useValidatorsList(params)
 
-  // ============================================
-  // VISUAL EDITOR
-  // ============================================
+  // Extract validators from response
+  const validators = validatorsResponse?.data || []
+  const totalValidators = validatorsResponse?.total || 0
+  const currentPage = validatorsResponse?.page || 1
+  const pageSize = validatorsResponse?.pageSize || 50
 
-  /**
-   * Initialize editor with validator
-   */
-  const initializeEditor = useCallback(
-    (validator: ValidatorRule) => {
-      // Convert validator to editor state
-      const editorState: ValidatorEditorState = {
-        nodes: [],
-        edges: [],
-        zoom: 1,
-        viewport: { x: 0, y: 0 },
-      }
-      store.setEditorState(editorState)
-    },
-    []
-  )
-
-  /**
-   * Update editor state
-   */
-  const updateEditor = useCallback(
-    (updates: Partial<ValidatorEditorState>) => {
-      store.updateEditorState(updates)
-    },
-    []
-  )
-
-  /**
-   * Save editor state as validator
-   */
-  const saveEditor = useCallback(async () => {
-    await store.saveEditorState()
-  }, [])
-
-  /**
-   * Reset editor
-   */
-  const resetEditor = useCallback(() => {
-    store.resetEditor()
-  }, [])
-
-  // ============================================
-  // IMPORT/EXPORT
-  // ============================================
-
-  /**
-   * Export validators
-   */
-  const exportValidators = useCallback(
-    (validatorIds: string[]) => {
-      return store.exportValidators(validatorIds)
-    },
-    []
-  )
-
-  /**
-   * Import validators
-   */
-  const importValidators = useCallback(async (data: string) => {
-    await store.importValidators(data)
-  }, [])
-
-  // ============================================
-  // FILTERS
-  // ============================================
-
-  /**
-   * Set filters
-   */
-  const setFilters = useCallback(
-    (filters: Partial<ValidatorFilters>) => {
-      store.setFilters(filters)
-    },
-    []
-  )
-
-  /**
-   * Reset filters
-   */
-  const resetFilters = useCallback(() => {
-    store.resetFilters()
-  }, [])
-
-  // ============================================
-  // RETURN API
-  // ============================================
+  // Toggle mutation
+  const toggleMutation = useToggleValidator()
 
   return {
-    // State
-    validators: store.validators,
-    groups: store.groups,
-    presets: store.presets,
-    testCases: store.testCases,
-    testResults: store.testResults,
-    testBatches: store.testBatches,
-    metrics: store.metrics,
-    reports: store.reports,
-    selectedValidator: store.selectedValidator,
-    selectedGroup: store.selectedGroup,
-    selectedPreset: store.selectedPreset,
-    selectedTestCase: store.selectedTestCase,
-    editorState: store.editorState,
-    isEditorDirty: store.isEditorDirty,
-    filters: store.filters,
-    isLoading: store.isLoading,
-    error: store.error,
-    validationInProgress: store.validationInProgress,
+    // Data
+    validators,
+    totalValidators,
+    currentPage,
+    pageSize,
+    isLoading,
+    error: error?.message || null,
 
-    // Selectors
-    getValidatorById: store.getValidatorById,
-    getValidatorByCode: store.getValidatorByCode,
-    getValidatorsByType: store.getValidatorsByType,
-    getValidatorsByCriticality: store.getValidatorsByCriticality,
-    getValidatorsByStatus: store.getValidatorsByStatus,
-    getActiveValidators: store.getActiveValidators,
-    getTestCasesByValidator: store.getTestCasesByValidator,
-    getTestResultsByValidator: store.getTestResultsByValidator,
-    getMetricsByValidator: store.getMetricsByValidator,
+    // Computed selectors (work with local data)
+    getValidatorById: (id: string) => validators.find((v) => v.id === id),
+    getValidatorByCode: (code: string) => validators.find((v) => v.code === code),
+    getValidatorsByType: (type: string) => validators.filter((v) => v.type === type),
+    getValidatorsByCriticality: (criticality: ValidatorCriticality) =>
+      validators.filter((v) => v.criticality === criticality),
+    getValidatorsByStatus: (status: ValidatorStatus) =>
+      validators.filter((v) => v.status === status),
+    getActiveValidators: () => validators.filter((v) => v.isEnabled),
 
-    // Actions - Data Loading
-    loadValidators,
-    loadValidatorById,
-    loadGroups,
-    loadPresets,
-    loadTestCases,
-    loadMetrics,
+    // Actions
+    loadValidators: refetch,
+    toggleValidator: (id: string) => toggleMutation.mutateAsync(id),
+    invalidateAll: () => queryClient.invalidateQueries({ queryKey: validatorKeys.all }),
 
-    // Actions - CRUD
-    createValidator,
-    updateValidator,
-    deleteValidator,
-    duplicateValidator,
-    toggleValidator,
-
-    // Actions - Selection
-    setSelectedValidator: store.setSelectedValidator,
-    setSelectedGroup: store.setSelectedGroup,
-    setSelectedPreset: store.setSelectedPreset,
-    setSelectedTestCase: store.setSelectedTestCase,
-
-    // Actions - Testing
-    runTest,
-    runTestsForValidator,
-    runAllTests,
-    addTestCase,
-    updateTestCase,
-    deleteTestCase,
-
-    // Actions - Validation
-    validateFile,
-
-    // Actions - Visual Editor
-    initializeEditor,
-    updateEditor,
-    saveEditor,
-    resetEditor,
-
-    // Actions - Import/Export
-    exportValidators,
-    importValidators,
-
-    // Actions - Filters
-    setFilters,
-    resetFilters,
-
-    // Actions - Groups
-    addGroup: store.addGroup,
-    updateGroup: store.updateGroup,
-    removeGroup: store.removeGroup,
-
-    // Actions - Presets
-    addPreset: store.addPreset,
-    updatePreset: store.updatePreset,
-    removePreset: store.removePreset,
-    setDefaultPreset: store.setDefaultPreset,
+    // Hooks for component use
+    useValidatorsList,
+    useValidatorDetail,
+    useValidatorGroups,
+    useValidatorCategories,
+    useToggleValidator,
+    useUpdateValidatorConfig,
+    useBulkEnableValidators,
+    useBulkDisableValidators,
+    useTestValidator,
   }
 }
 
@@ -453,221 +293,160 @@ export function useValidators() {
 // ============================================
 
 /**
- * Hook for validator detail
+ * Hook for validator detail page
  */
-export function useValidatorDetail(validatorId: string) {
-  // Get individual state slices to avoid re-renders
-  const selectedValidator = useValidatorStore((state) => state.selectedValidator)
-  const testCases = useValidatorStore((state) => state.testCases)
-  const isLoading = useValidatorStore((state) => state.isLoading)
-  const error = useValidatorStore((state) => state.error)
-  const setLoading = useValidatorStore((state) => state.setLoading)
-  const setSelectedValidator = useValidatorStore((state) => state.setSelectedValidator)
-  const setError = useValidatorStore((state) => state.setError)
-  const setTestCases = useValidatorStore((state) => state.setTestCases)
-
-  // Load validator data only when validatorId changes
-  useEffect(() => {
-    if (validatorId && validatorId !== 'new') {
-      // Load validator
-      setLoading(true)
-      validatorService.getValidatorById(validatorId)
-        .then((validator) => {
-          setSelectedValidator(validator)
-        })
-        .catch((err) => {
-          setError(err instanceof Error ? err.message : 'Error al cargar validador')
-        })
-        .finally(() => {
-          setLoading(false)
-        })
-
-      // Load test cases
-      validatorService.getTestCases(validatorId)
-        .then((cases) => {
-          setTestCases(cases)
-        })
-        .catch(console.error)
-    }
-  }, [validatorId, setLoading, setSelectedValidator, setError, setTestCases])
-
-  // Memoize filtered test cases
-  const validatorTestCases = useMemo(
-    () => testCases.filter((tc) => tc.validatorId === validatorId),
-    [testCases, validatorId]
-  )
-
-  const refresh = useCallback(() => {
-    if (validatorId && validatorId !== 'new') {
-      validatorService.getValidatorById(validatorId)
-        .then((validator) => setSelectedValidator(validator))
-        .catch(console.error)
-      validatorService.getTestCases(validatorId)
-        .then((cases) => setTestCases(cases))
-        .catch(console.error)
-    }
-  }, [validatorId, setSelectedValidator, setTestCases])
+export function useValidatorDetailPage(validatorId: string) {
+  const { data: validatorResponse, isLoading, error, refetch } = useValidatorDetail(validatorId)
 
   return {
-    validator: selectedValidator,
-    testCases: validatorTestCases,
+    validator: validatorResponse?.data || null,
     isLoading,
-    error,
-    refresh,
+    error: error?.message || null,
+    refresh: refetch,
   }
 }
 
+// ============================================
+// TEST CASE TYPES
+// ============================================
+
+export interface ValidatorTestCase {
+  id: string
+  name: string
+  description?: string
+  input: Record<string, unknown>
+  expectedResult: 'pass' | 'fail'
+  createdAt: string
+}
+
+export interface ValidatorTestResult {
+  testCaseId: string
+  passed: boolean
+  message?: string
+  errors?: string[]
+  executedAt: string
+  duration?: number
+}
+
+// ============================================
+// VALIDATOR TESTING HOOK
+// ============================================
+
 /**
- * Hook for validator testing
+ * Hook for validator testing functionality
+ * Manages test cases locally and uses real API for test execution
  */
-export function useValidatorTesting(validatorId?: string) {
-  // Get individual state slices
-  const testCases = useValidatorStore((state) => state.testCases)
-  const testResults = useValidatorStore((state) => state.testResults)
-  const testBatches = useValidatorStore((state) => state.testBatches)
-  const isLoading = useValidatorStore((state) => state.isLoading)
-  const setTestCases = useValidatorStore((state) => state.setTestCases)
-  const runTestStore = useValidatorStore((state) => state.runTest)
-  const runTestsForValidatorStore = useValidatorStore((state) => state.runTestsForValidator)
-  const runAllTestsStore = useValidatorStore((state) => state.runAllTests)
+export function useValidatorTesting(validatorId: string | undefined) {
+  const [testCases, setTestCases] = React.useState<ValidatorTestCase[]>([])
+  const [testResults, setTestResults] = React.useState<Map<string, ValidatorTestResult>>(new Map())
+  const [isLoading, setIsLoading] = React.useState(false)
 
-  useEffect(() => {
-    validatorService.getTestCases(validatorId)
-      .then((cases) => setTestCases(cases))
-      .catch(console.error)
-  }, [validatorId, setTestCases])
+  const testMutation = useTestValidator()
 
-  // Memoize filtered results
-  const filteredTestCases = useMemo(
-    () => validatorId
-      ? testCases.filter((tc) => tc.validatorId === validatorId)
-      : testCases,
-    [testCases, validatorId]
-  )
+  // Run a single test case
+  const runTest = React.useCallback(async (testCaseId: string) => {
+    if (!validatorId) return
 
-  const filteredTestResults = useMemo(
-    () => validatorId
-      ? testResults.filter((tr) => tr.validatorId === validatorId)
-      : testResults,
-    [testResults, validatorId]
-  )
+    const testCase = testCases.find((tc) => tc.id === testCaseId)
+    if (!testCase) return
 
-  const runTest = useCallback(async (testCaseId: string) => {
-    return await runTestStore(testCaseId)
-  }, [runTestStore])
+    setIsLoading(true)
+    const startTime = Date.now()
 
-  const runTestsForValidator = useCallback(async (valId: string) => {
-    return await runTestsForValidatorStore(valId)
-  }, [runTestsForValidatorStore])
+    try {
+      const result = await testMutation.mutateAsync({
+        id: validatorId,
+        testData: testCase.input,
+      })
 
-  const refresh = useCallback(() => {
-    validatorService.getTestCases(validatorId)
-      .then((cases) => setTestCases(cases))
-      .catch(console.error)
-  }, [validatorId, setTestCases])
+      const testResult: ValidatorTestResult = {
+        testCaseId,
+        passed: result.data.passed,
+        message: result.data.message,
+        errors: result.data.errors,
+        executedAt: new Date().toISOString(),
+        duration: Date.now() - startTime,
+      }
+
+      setTestResults((prev) => new Map(prev).set(testCaseId, testResult))
+    } catch (error) {
+      const testResult: ValidatorTestResult = {
+        testCaseId,
+        passed: false,
+        message: error instanceof Error ? error.message : 'Test execution failed',
+        executedAt: new Date().toISOString(),
+        duration: Date.now() - startTime,
+      }
+      setTestResults((prev) => new Map(prev).set(testCaseId, testResult))
+    } finally {
+      setIsLoading(false)
+    }
+  }, [validatorId, testCases, testMutation])
+
+  // Run all tests for validator
+  const runTestsForValidator = React.useCallback(async (id: string) => {
+    if (!id || testCases.length === 0) return
+
+    setIsLoading(true)
+
+    for (const testCase of testCases) {
+      await runTest(testCase.id)
+    }
+
+    setIsLoading(false)
+  }, [testCases, runTest])
+
+  // Add a test case
+  const addTestCase = React.useCallback((testCase: Omit<ValidatorTestCase, 'id' | 'createdAt'>) => {
+    const newTestCase: ValidatorTestCase = {
+      ...testCase,
+      id: crypto.randomUUID(),
+      createdAt: new Date().toISOString(),
+    }
+    setTestCases((prev) => [...prev, newTestCase])
+    return newTestCase
+  }, [])
+
+  // Remove a test case
+  const removeTestCase = React.useCallback((testCaseId: string) => {
+    setTestCases((prev) => prev.filter((tc) => tc.id !== testCaseId))
+    setTestResults((prev) => {
+      const newResults = new Map(prev)
+      newResults.delete(testCaseId)
+      return newResults
+    })
+  }, [])
+
+  // Clear all results
+  const clearResults = React.useCallback(() => {
+    setTestResults(new Map())
+  }, [])
 
   return {
-    testCases: filteredTestCases,
-    testResults: filteredTestResults,
-    testBatches,
+    testCases,
+    testResults: Object.fromEntries(testResults),
     isLoading,
     runTest,
     runTestsForValidator,
-    runAllTests: runAllTestsStore,
-    refresh,
+    addTestCase,
+    removeTestCase,
+    clearResults,
   }
 }
 
 /**
- * Hook for validator metrics
+ * Hook for validator groups management
  */
-export function useValidatorMetrics(validatorId?: string) {
-  const { loadMetrics, metrics, isLoading } = useValidators()
-
-  useEffect(() => {
-    loadMetrics(validatorId)
-  }, [validatorId, loadMetrics])
-
-  const filteredMetrics = validatorId
-    ? metrics.find((m) => m.validatorId === validatorId)
-    : undefined
+export function useValidatorGroupsManagement() {
+  const { data: groupsResponse, isLoading, error, refetch } = useValidatorGroups()
 
   return {
-    metrics: filteredMetrics,
-    allMetrics: metrics,
+    groups: groupsResponse?.data || [],
     isLoading,
-    refresh: () => loadMetrics(validatorId),
+    error: error?.message || null,
+    refresh: refetch,
   }
 }
 
-/**
- * Hook for validator presets
- */
-export function useValidatorPresets() {
-  const { loadPresets, presets, selectedPreset, setSelectedPreset, setDefaultPreset, isLoading } =
-    useValidators()
-
-  useEffect(() => {
-    loadPresets()
-  }, [loadPresets])
-
-  const defaultPreset = presets.find((p) => p.isDefault)
-
-  return {
-    presets,
-    selectedPreset,
-    defaultPreset,
-    setSelectedPreset,
-    setDefaultPreset,
-    isLoading,
-    refresh: loadPresets,
-  }
-}
-
-/**
- * Hook for visual validator editor
- */
-export function useValidatorEditor() {
-  const {
-    editorState,
-    isEditorDirty,
-    initializeEditor,
-    updateEditor,
-    saveEditor,
-    resetEditor,
-    isLoading,
-  } = useValidators()
-
-  return {
-    editorState,
-    isEditorDirty,
-    isLoading,
-    initializeEditor,
-    updateEditor,
-    saveEditor,
-    resetEditor,
-  }
-}
-
-/**
- * Hook for validator groups
- */
-export function useValidatorGroups() {
-  const { loadGroups, groups, selectedGroup, setSelectedGroup, addGroup, updateGroup, removeGroup, isLoading } =
-    useValidators()
-
-  useEffect(() => {
-    loadGroups()
-  }, [loadGroups])
-
-  return {
-    groups,
-    selectedGroup,
-    setSelectedGroup,
-    addGroup,
-    updateGroup,
-    removeGroup,
-    isLoading,
-    refresh: loadGroups,
-  }
-}
+// Default export for backwards compatibility
+export default useValidators

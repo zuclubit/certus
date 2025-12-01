@@ -4,10 +4,18 @@
  * Field definitions for parsing CONSAR positional format files (77 characters)
  * Based on Circular 19-8 and related CONSAR circulars
  *
+ * Enhanced with complete validation algorithms for Mexican documents
+ * (CURP, NSS, RFC) including check digit verification.
+ *
  * @module consar-schema
  */
 
 import type { CONSARFileType, RecordType } from '@/lib/types/consar-record'
+import {
+  validateCURP,
+  validateNSS,
+  validateRFC,
+} from '@/lib/validators/mexican-validators'
 
 /**
  * Field data types
@@ -89,30 +97,34 @@ export interface CONSARSchema {
 
 /**
  * Common validators used across schemas
+ * Enhanced with complete Mexican document validation algorithms
  */
 export const commonValidators = {
   /**
-   * Validates RFC format (12-13 characters)
+   * Validates RFC format and check digit (12-13 characters)
+   * Uses complete SAT algorithm for check digit verification
    */
   isValidRFC: (value: string): boolean => {
-    const rfcPattern = /^[A-ZÑ&]{3,4}\d{6}[A-Z0-9]{3}$/
-    return rfcPattern.test(value.trim())
+    const result = validateRFC(value)
+    return result.isValid
   },
 
   /**
-   * Validates CURP format (18 characters)
+   * Validates CURP format and check digit (18 characters)
+   * Uses complete RENAPO algorithm for check digit verification
    */
   isValidCURP: (value: string): boolean => {
-    const curpPattern = /^[A-Z]{4}\d{6}[HM][A-Z]{5}[0-9A-Z]\d$/
-    return curpPattern.test(value.trim())
+    const result = validateCURP(value)
+    return result.isValid
   },
 
   /**
-   * Validates NSS format (11 digits)
+   * Validates NSS format and check digit (11 digits)
+   * Uses Luhn algorithm for check digit verification
    */
   isValidNSS: (value: string): boolean => {
-    const nssPattern = /^\d{11}$/
-    return nssPattern.test(value.trim())
+    const result = validateNSS(value)
+    return result.isValid
   },
 
   /**
