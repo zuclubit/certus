@@ -44,12 +44,13 @@ jobs:
           cache-dependency-path: './app/package-lock.json'
 
       - name: Install dependencies
-        run: npm ci
+        run: npm ci --legacy-peer-deps
 
       - name: Build application
         run: npm run build
         env:
-          VITE_API_URL: ${{ secrets.VITE_API_URL_PREVIEW }}
+          # Use /api proxy - Cloudflare Functions forwards to backend
+          VITE_API_URL: ${{ secrets.VITE_API_URL_PREVIEW || '/api' }}
           VITE_AZURE_CLIENT_ID: ${{ secrets.VITE_AZURE_CLIENT_ID }}
           VITE_AZURE_TENANT_ID: ${{ secrets.VITE_AZURE_TENANT_ID }}
           VITE_APP_INSIGHTS_CONNECTION_STRING: ${{ secrets.VITE_APP_INSIGHTS_CONNECTION_STRING }}
@@ -102,12 +103,13 @@ jobs:
           cache-dependency-path: './app/package-lock.json'
 
       - name: Install dependencies
-        run: npm ci
+        run: npm ci --legacy-peer-deps
 
       - name: Build application
         run: npm run build
         env:
-          VITE_API_URL: ${{ secrets.VITE_API_URL_PRODUCTION }}
+          # Use /api proxy - Cloudflare Functions forwards to backend
+          VITE_API_URL: ${{ secrets.VITE_API_URL_PRODUCTION || '/api' }}
           VITE_AZURE_CLIENT_ID: ${{ secrets.VITE_AZURE_CLIENT_ID }}
           VITE_AZURE_TENANT_ID: ${{ secrets.VITE_AZURE_TENANT_ID }}
           VITE_APP_INSIGHTS_CONNECTION_STRING: ${{ secrets.VITE_APP_INSIGHTS_CONNECTION_STRING }}
