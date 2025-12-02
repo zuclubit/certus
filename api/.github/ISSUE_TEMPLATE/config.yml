@@ -1,0 +1,8 @@
+blank_issues_enabled: false
+contact_links:
+  - name: Documentacion
+    url: https://docs.certus.mx
+    about: Consulta la documentacion oficial antes de abrir un issue
+  - name: Soporte
+    url: mailto:soporte@hergon.digital
+    about: Para soporte tecnico urgente contacta al equipo

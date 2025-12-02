@@ -1,0 +1,13 @@
+**/bin/
+**/obj/
+**/.git/
+**/.gitignore
+**/node_modules/
+**/*.md
+**/tests/
+**/*.user
+**/*.suo
+**/.vs/
+**/.idea/
+**/logs/
+**/*.log

@@ -1,0 +1,34 @@
+# Certus API Code Owners
+# These owners will be requested for review when someone opens a pull request.
+
+# Global owners (will be requested for review on all PRs)
+* @sh-certus/backend-team
+
+# Domain layer - requires domain expert review
+/src/Certus.Domain/ @sh-certus/architects
+
+# Application layer - CQRS handlers and business logic
+/src/Certus.Application/ @sh-certus/backend-team
+
+# Infrastructure - database, external services
+/src/Certus.Infrastructure/ @sh-certus/backend-team @sh-certus/devops
+
+# API layer - controllers, middleware
+/src/Certus.Api/ @sh-certus/backend-team
+
+# Scrapers - normative data collection
+/src/Certus.Infrastructure/Services/Scrapers/ @sh-certus/data-team
+
+# Database migrations - require DBA review
+/src/Certus.Infrastructure/Data/Migrations/ @sh-certus/dba-team
+
+# Docker and infrastructure files
+Dockerfile @sh-certus/devops
+docker-compose*.yml @sh-certus/devops
+
+# CI/CD workflows
+/.github/workflows/ @sh-certus/devops
+
+# Security-sensitive files
+/src/Certus.Infrastructure/Identity/ @sh-certus/security
+/src/Certus.Api/Controllers/AuthController.cs @sh-certus/security

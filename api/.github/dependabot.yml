@@ -1,0 +1,52 @@
+version: 2
+updates:
+  # NuGet packages
+  - package-ecosystem: "nuget"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+      day: "monday"
+    open-pull-requests-limit: 10
+    reviewers:
+      - "sh-certus/backend-team"
+    labels:
+      - "dependencies"
+      - "nuget"
+    commit-message:
+      prefix: "chore(deps)"
+    groups:
+      microsoft:
+        patterns:
+          - "Microsoft.*"
+          - "System.*"
+      ef-core:
+        patterns:
+          - "Microsoft.EntityFrameworkCore*"
+          - "Npgsql.EntityFrameworkCore*"
+      testing:
+        patterns:
+          - "xunit*"
+          - "Moq*"
+          - "FluentAssertions*"
+
+  # GitHub Actions
+  - package-ecosystem: "github-actions"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+    labels:
+      - "dependencies"
+      - "github-actions"
+    commit-message:
+      prefix: "chore(ci)"
+
+  # Docker
+  - package-ecosystem: "docker"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+    labels:
+      - "dependencies"
+      - "docker"
+    commit-message:
+      prefix: "chore(docker)"

@@ -1,0 +1,319 @@
+name: CD Pipeline - Azure Container Instances
+
+on:
+  push:
+    branches:
+      - main
+      - develop
+    tags:
+      - 'v*'
+  workflow_dispatch:
+    inputs:
+      environment:
+        description: 'Environment to deploy'
+        required: true
+        default: 'development'
+        type: choice
+        options:
+          - development
+          - staging
+          - production
+
+env:
+  DOTNET_VERSION: '10.0.x'
+  ACR_REGISTRY: ${{ secrets.ACR_LOGIN_SERVER }}
+  IMAGE_NAME: certus-api
+  RESOURCE_GROUP: ${{ secrets.AZURE_RESOURCE_GROUP }}
+
+jobs:
+  # ============================================
+  # BUILD & PUSH TO AZURE CONTAINER REGISTRY
+  # ============================================
+  build-and-push:
+    name: Build & Push to ACR
+    runs-on: ubuntu-latest
+
+    outputs:
+      image-tag: ${{ steps.set-tag.outputs.tag }}
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set image tag
+        id: set-tag
+        run: |
+          if [[ "${{ github.ref }}" == refs/tags/v* ]]; then
+            TAG="${GITHUB_REF#refs/tags/}"
+          elif [[ "${{ github.ref }}" == "refs/heads/main" ]]; then
+            TAG="main-$(echo $GITHUB_SHA | cut -c1-7)"
+          elif [[ "${{ github.ref }}" == "refs/heads/develop" ]]; then
+            TAG="dev-$(echo $GITHUB_SHA | cut -c1-7)"
+          else
+            TAG="sha-$(echo $GITHUB_SHA | cut -c1-7)"
+          fi
+          echo "tag=$TAG" >> $GITHUB_OUTPUT
+          echo "Image tag: $TAG"
+
+      - name: Login to Azure
+        uses: azure/login@v2
+        with:
+          creds: ${{ secrets.AZURE_CREDENTIALS }}
+
+      - name: Build and push with ACR Tasks
+        uses: azure/cli@v2
+        with:
+          azcliversion: latest
+          inlineScript: |
+            echo "Building image using ACR Tasks..."
+            az acr build \
+              --registry acrcertusdev \
+              --image ${{ env.IMAGE_NAME }}:${{ steps.set-tag.outputs.tag }} \
+              --image ${{ env.IMAGE_NAME }}:latest \
+              --platform linux/amd64 \
+              .
+
+      - name: Summary
+        run: |
+          echo "## Docker Image Built with ACR Tasks" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "| Property | Value |" >> $GITHUB_STEP_SUMMARY
+          echo "|----------|-------|" >> $GITHUB_STEP_SUMMARY
+          echo "| Registry | \`${{ secrets.ACR_LOGIN_SERVER }}\` |" >> $GITHUB_STEP_SUMMARY
+          echo "| Image | \`${{ env.IMAGE_NAME }}\` |" >> $GITHUB_STEP_SUMMARY
+          echo "| Tag | \`${{ steps.set-tag.outputs.tag }}\` |" >> $GITHUB_STEP_SUMMARY
+
+  # ============================================
+  # DEPLOY TO DEVELOPMENT (develop branch)
+  # ============================================
+  deploy-development:
+    name: Deploy to Development
+    runs-on: ubuntu-latest
+    needs: build-and-push
+    if: |
+      github.ref == 'refs/heads/develop' ||
+      (github.event_name == 'workflow_dispatch' && github.event.inputs.environment == 'development')
+    environment:
+      name: development
+      url: http://certus-api-dev.eastus2.azurecontainer.io:8080
+
+    steps:
+      - name: Login to Azure
+        uses: azure/login@v2
+        with:
+          creds: ${{ secrets.AZURE_CREDENTIALS }}
+
+      - name: Deploy to Azure Container Instances
+        uses: azure/cli@v2
+        with:
+          azcliversion: latest
+          inlineScript: |
+            echo "Deploying to Development..."
+
+            # Delete existing container if it exists
+            echo "Checking for existing container..."
+            if az container show --resource-group ${{ env.RESOURCE_GROUP }} --name aci-certus-dev-api --query id -o tsv 2>/dev/null; then
+              echo "Deleting existing container..."
+              az container delete --resource-group ${{ env.RESOURCE_GROUP }} --name aci-certus-dev-api --yes
+              sleep 10
+            fi
+
+            echo "Creating new container..."
+            az container create \
+              --resource-group ${{ env.RESOURCE_GROUP }} \
+              --name aci-certus-dev-api \
+              --image ${{ secrets.ACR_LOGIN_SERVER }}/${{ env.IMAGE_NAME }}:${{ needs.build-and-push.outputs.image-tag }} \
+              --registry-login-server ${{ secrets.ACR_LOGIN_SERVER }} \
+              --registry-username ${{ secrets.ACR_USERNAME }} \
+              --registry-password ${{ secrets.ACR_PASSWORD }} \
+              --dns-name-label certus-api-dev \
+              --ports 8080 \
+              --cpu 2 \
+              --memory 4 \
+              --os-type Linux \
+              --restart-policy Always \
+              --environment-variables \
+                ASPNETCORE_ENVIRONMENT=Development \
+                ASPNETCORE_URLS=http://+:8080 \
+                "CORS_ALLOWED_ORIGINS=http://localhost:3000,http://localhost:5173,http://127.0.0.1:3000,http://127.0.0.1:5173,https://certus-admin.pages.dev,https://certus-6ob.pages.dev,https://certus-app.pages.dev,https://hergon-certus.pages.dev,https://certus.hergon.digital,https://hergon.pages.dev" \
+              --secure-environment-variables \
+                "ConnectionStrings__DefaultConnection=${{ secrets.DATABASE_CONNECTION_STRING }}" \
+                "ConnectionStrings__AzureStorage=${{ secrets.AZURE_STORAGE_CONNECTION_STRING }}" \
+                "Jwt__SecretKey=${{ secrets.JWT_SECRET_KEY }}" \
+                "ApplicationInsights__ConnectionString=${{ secrets.APP_INSIGHTS_CONNECTION_STRING }}"
+
+            echo "Deployment complete!"
+
+      - name: Verify deployment
+        uses: azure/cli@v2
+        with:
+          azcliversion: latest
+          inlineScript: |
+            echo "Verifying deployment..."
+            sleep 30
+
+            STATUS=$(az container show \
+              --resource-group ${{ env.RESOURCE_GROUP }} \
+              --name aci-certus-dev-api \
+              --query instanceView.state \
+              --output tsv)
+
+            echo "Container status: $STATUS"
+
+            if [ "$STATUS" != "Running" ]; then
+              echo "Container is not running!"
+              az container logs --resource-group ${{ env.RESOURCE_GROUP }} --name aci-certus-dev-api
+              exit 1
+            fi
+
+            echo "Container is running!"
+
+      - name: Summary
+        run: |
+          echo "## Deployment to Development Complete" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "| Property | Value |" >> $GITHUB_STEP_SUMMARY
+          echo "|----------|-------|" >> $GITHUB_STEP_SUMMARY
+          echo "| Environment | Development |" >> $GITHUB_STEP_SUMMARY
+          echo "| Image | \`${{ env.IMAGE_NAME }}:${{ needs.build-and-push.outputs.image-tag }}\` |" >> $GITHUB_STEP_SUMMARY
+          echo "| URL | http://certus-api-dev.eastus2.azurecontainer.io:8080 |" >> $GITHUB_STEP_SUMMARY
+
+  # ============================================
+  # DEPLOY TO STAGING (main branch)
+  # ============================================
+  deploy-staging:
+    name: Deploy to Staging
+    runs-on: ubuntu-latest
+    needs: build-and-push
+    if: |
+      github.ref == 'refs/heads/main' ||
+      (github.event_name == 'workflow_dispatch' && github.event.inputs.environment == 'staging')
+    environment:
+      name: staging
+      url: http://certus-api-staging.eastus2.azurecontainer.io:8080
+
+    steps:
+      - name: Login to Azure
+        uses: azure/login@v2
+        with:
+          creds: ${{ secrets.AZURE_CREDENTIALS }}
+
+      - name: Deploy to Azure Container Instances (Staging)
+        uses: azure/cli@v2
+        with:
+          azcliversion: latest
+          inlineScript: |
+            echo "Deploying to Staging..."
+
+            # Delete existing container if it exists
+            if az container show --resource-group ${{ env.RESOURCE_GROUP }} --name aci-certus-staging-api --query id -o tsv 2>/dev/null; then
+              echo "Deleting existing container..."
+              az container delete --resource-group ${{ env.RESOURCE_GROUP }} --name aci-certus-staging-api --yes
+              sleep 10
+            fi
+
+            echo "Creating new container..."
+            az container create \
+              --resource-group ${{ env.RESOURCE_GROUP }} \
+              --name aci-certus-staging-api \
+              --image ${{ secrets.ACR_LOGIN_SERVER }}/${{ env.IMAGE_NAME }}:${{ needs.build-and-push.outputs.image-tag }} \
+              --registry-login-server ${{ secrets.ACR_LOGIN_SERVER }} \
+              --registry-username ${{ secrets.ACR_USERNAME }} \
+              --registry-password ${{ secrets.ACR_PASSWORD }} \
+              --dns-name-label certus-api-staging \
+              --ports 8080 \
+              --cpu 2 \
+              --memory 4 \
+              --os-type Linux \
+              --restart-policy Always \
+              --environment-variables \
+                ASPNETCORE_ENVIRONMENT=Staging \
+                ASPNETCORE_URLS=http://+:8080 \
+                "CORS_ALLOWED_ORIGINS=http://localhost:3000,http://localhost:5173,https://certus-staging.pages.dev,https://certus-admin.pages.dev,https://certus-6ob.pages.dev,https://certus-app.pages.dev,https://hergon-certus.pages.dev,https://certus.hergon.digital,https://hergon.pages.dev" \
+              --secure-environment-variables \
+                "ConnectionStrings__DefaultConnection=${{ secrets.DATABASE_CONNECTION_STRING }}" \
+                "ConnectionStrings__AzureStorage=${{ secrets.AZURE_STORAGE_CONNECTION_STRING }}" \
+                "Jwt__SecretKey=${{ secrets.JWT_SECRET_KEY }}" \
+                "ApplicationInsights__ConnectionString=${{ secrets.APP_INSIGHTS_CONNECTION_STRING }}"
+
+            echo "Staging deployment complete!"
+
+      - name: Summary
+        run: |
+          echo "## Deployment to Staging Complete" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "| Property | Value |" >> $GITHUB_STEP_SUMMARY
+          echo "|----------|-------|" >> $GITHUB_STEP_SUMMARY
+          echo "| Environment | Staging |" >> $GITHUB_STEP_SUMMARY
+          echo "| Image | \`${{ env.IMAGE_NAME }}:${{ needs.build-and-push.outputs.image-tag }}\` |" >> $GITHUB_STEP_SUMMARY
+          echo "| URL | http://certus-api-staging.eastus2.azurecontainer.io:8080 |" >> $GITHUB_STEP_SUMMARY
+
+  # ============================================
+  # DEPLOY TO PRODUCTION (tags only)
+  # ============================================
+  deploy-production:
+    name: Deploy to Production
+    runs-on: ubuntu-latest
+    needs: [build-and-push, deploy-staging]
+    if: |
+      startsWith(github.ref, 'refs/tags/v') ||
+      (github.event_name == 'workflow_dispatch' && github.event.inputs.environment == 'production')
+    environment:
+      name: production
+      url: http://certus-api.eastus2.azurecontainer.io:8080
+
+    steps:
+      - name: Login to Azure
+        uses: azure/login@v2
+        with:
+          creds: ${{ secrets.AZURE_CREDENTIALS }}
+
+      - name: Deploy to Azure Container Instances (Production)
+        uses: azure/cli@v2
+        with:
+          azcliversion: latest
+          inlineScript: |
+            echo "Deploying to Production..."
+
+            # Delete existing container if it exists
+            if az container show --resource-group ${{ env.RESOURCE_GROUP }} --name aci-certus-prod-api --query id -o tsv 2>/dev/null; then
+              echo "Deleting existing container..."
+              az container delete --resource-group ${{ env.RESOURCE_GROUP }} --name aci-certus-prod-api --yes
+              sleep 10
+            fi
+
+            echo "Creating new container..."
+            az container create \
+              --resource-group ${{ env.RESOURCE_GROUP }} \
+              --name aci-certus-prod-api \
+              --image ${{ secrets.ACR_LOGIN_SERVER }}/${{ env.IMAGE_NAME }}:${{ needs.build-and-push.outputs.image-tag }} \
+              --registry-login-server ${{ secrets.ACR_LOGIN_SERVER }} \
+              --registry-username ${{ secrets.ACR_USERNAME }} \
+              --registry-password ${{ secrets.ACR_PASSWORD }} \
+              --dns-name-label certus-api \
+              --ports 8080 \
+              --cpu 4 \
+              --memory 8 \
+              --os-type Linux \
+              --restart-policy Always \
+              --environment-variables \
+                ASPNETCORE_ENVIRONMENT=Production \
+                ASPNETCORE_URLS=http://+:8080 \
+                "CORS_ALLOWED_ORIGINS=https://certus.mx,https://app.certus.mx,https://certus.pages.dev" \
+              --secure-environment-variables \
+                "ConnectionStrings__DefaultConnection=${{ secrets.DATABASE_CONNECTION_STRING }}" \
+                "ConnectionStrings__AzureStorage=${{ secrets.AZURE_STORAGE_CONNECTION_STRING }}" \
+                "Jwt__SecretKey=${{ secrets.JWT_SECRET_KEY }}" \
+                "ApplicationInsights__ConnectionString=${{ secrets.APP_INSIGHTS_CONNECTION_STRING }}"
+
+            echo "Production deployment complete!"
+
+      - name: Summary
+        run: |
+          echo "## Deployment to Production Complete" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "| Property | Value |" >> $GITHUB_STEP_SUMMARY
+          echo "|----------|-------|" >> $GITHUB_STEP_SUMMARY
+          echo "| Environment | Production |" >> $GITHUB_STEP_SUMMARY
+          echo "| Image | \`${{ env.IMAGE_NAME }}:${{ needs.build-and-push.outputs.image-tag }}\` |" >> $GITHUB_STEP_SUMMARY
+          echo "| URL | http://certus-api.eastus2.azurecontainer.io:8080 |" >> $GITHUB_STEP_SUMMARY

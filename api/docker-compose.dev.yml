@@ -1,0 +1,48 @@
+version: '3.8'
+
+# Development compose - solo servicios de soporte
+# La API se ejecuta localmente con hot reload
+
+services:
+  postgres:
+    image: postgres:16-alpine
+    container_name: certus-postgres-dev
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+      - POSTGRES_DB=certus_dev
+    ports:
+      - "5432:5432"
+    volumes:
+      - certus-postgres-dev-data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+    networks:
+      - certus-dev-network
+
+  pgadmin:
+    image: dpage/pgadmin4:latest
+    container_name: certus-pgadmin-dev
+    environment:
+      - PGADMIN_DEFAULT_EMAIL=admin@certus.mx
+      - PGADMIN_DEFAULT_PASSWORD=admin
+      - PGADMIN_LISTEN_PORT=5050
+    ports:
+      - "5050:5050"
+    volumes:
+      - certus-pgadmin-dev-data:/var/lib/pgadmin
+    depends_on:
+      - postgres
+    networks:
+      - certus-dev-network
+
+volumes:
+  certus-postgres-dev-data:
+  certus-pgadmin-dev-data:
+
+networks:
+  certus-dev-network:
+    driver: bridge
